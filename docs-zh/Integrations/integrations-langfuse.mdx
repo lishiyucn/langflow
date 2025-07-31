@@ -1,0 +1,157 @@
+---
+title: Langfuse
+slug: /integrations-langfuse
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+[Langfuse](https://langfuse.com) 是一个用于 LLM 可观测性的开源平台。它为 AI 应用程序提供跟踪和监控功能，帮助开发人员调试、分析和优化他们的 AI 系统。Langfuse 与各种工具和框架集成，包括工作流构建器和运行时（如 Langflow）。
+
+本指南解释了如何配置 Langflow 来收集关于流程执行的[跟踪](https://langfuse.com/docs/tracing)数据，并自动将数据发送到 Langfuse。
+
+<iframe width="760" height="415" src="https://www.youtube.com/embed/SA9gGbzwNGU?si=eDKvdtvhb3fJCSbl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## 前提条件
+
+- 在 [Langfuse Cloud](https://cloud.langfuse.com) 或 [Langfuse 自托管](https://langfuse.com/self-hosting)实例中的账户
+- 一个[运行中的 Langflow 服务器](/get-started-installation)，其中包含您想要跟踪的[流程](/concepts-flows)
+
+:::tip
+如果您需要一个流程来测试 Langfuse 集成，请参阅 [Langflow 快速入门](/get-started-quickstart)。
+:::
+
+## 将 Langfuse 凭据设置为环境变量 {#langfuse-credentials}
+
+1. 创建一组 [Langfuse API 密钥](https://langfuse.com/faq/all/where-are-langfuse-api-keys)。
+
+2. 复制以下 API 密钥信息：
+
+    - Secret Key
+    - Public Key
+    - Host URL
+
+3. 在运行 Langflow 的同一环境中，将您的 Langfuse 项目凭据设置为环境变量。
+
+    在以下示例中，将 `SECRET_KEY`、`PUBLIC_KEY` 和 `HOST_URL` 替换为您从 Langfuse 获取的 API 密钥详细信息。
+
+    <Tabs>
+    <TabItem value="linux-macos" label="Linux or macOS" default>
+
+    这些命令在 Linux 或 macOS 终端会话中设置环境变量：
+
+    ```
+    export LANGFUSE_SECRET_KEY=SECRET_KEY
+    export LANGFUSE_PUBLIC_KEY=PUBLIC_KEY
+    export LANGFUSE_HOST=HOST_URL
+    ```
+
+    </TabItem>
+    <TabItem value="windows" label="Windows">
+
+    这些命令在 Windows 命令提示符会话中设置环境变量：
+
+    ```
+    set LANGFUSE_SECRET_KEY=SECRET_KEY
+    set LANGFUSE_PUBLIC_KEY=PUBLIC_KEY
+    set LANGFUSE_HOST=HOST_URL
+    ```
+
+    </TabItem>
+    </Tabs>
+
+## 启动 Langflow 并在 Langfuse 中查看跟踪
+
+1. 在设置 Langfuse 环境变量的同一环境中启动 Langflow：
+
+    ```bash
+    uv run langflow run
+    ```
+
+2. 运行一个流程。
+
+    Langflow 会自动收集并将流程执行的跟踪数据发送到 Langfuse。
+
+3. 在您的 [Langfuse 仪表板](https://langfuse.com/docs/analytics/overview)中查看收集的数据。
+
+    Langfuse 还提供了一个[公开的实时跟踪示例仪表板](https://cloud.langfuse.com/project/cm0nywmaa005c3ol2msoisiho/traces/f016ae6d-4527-43f5-93ba-9d78388cd3d9)。
+
+## 禁用 Langfuse 跟踪
+
+要禁用 Langfuse 集成，请删除 [Langfuse 环境变量](#langfuse-credentials)，然后重启 Langflow。
+
+## 使用 Docker Compose 运行 Langfuse 和 Langflow
+
+作为前面设置的替代方案，特别是对于自托管的 Langfuse，您可以使用 Docker Compose 运行两个服务。
+
+1. 创建一组 [Langfuse API 密钥](https://langfuse.com/faq/all/where-are-langfuse-api-keys)。
+
+2. 复制以下 API 密钥信息：
+
+    - Secret Key
+    - Public Key
+    - Host URL
+
+3. 将您的 Langflow 凭据添加到 Langflow `docker-compose.yml` 文件的 `environment` 部分。
+
+    以下示例基于[示例 `docker-compose.yml`](https://github.com/langflow-ai/langflow/blob/main/docker_example/docker-compose.yml)。
+
+    ```yml
+    services:
+      langflow:
+        image: langflowai/langflow:latest # or another version tag on https://hub.docker.com/r/langflowai/langflow
+        pull_policy: always               # set to 'always' when using 'latest' image
+        ports:
+          - "7860:7860"
+        depends_on:
+          - postgres
+        environment:
+          - LANGFLOW_DATABASE_URL=postgresql://langflow:langflow@postgres:5432/langflow
+          # This variable defines where the logs, file storage, monitor data and secret keys are stored.
+          - LANGFLOW_CONFIG_DIR=app/langflow
+          - LANGFUSE_SECRET_KEY=sk-...
+          - LANGFUSE_PUBLIC_KEY=pk-...
+          - LANGFUSE_HOST=https://us.cloud.langfuse.com
+        volumes:
+          - langflow-data:/app/langflow
+
+      postgres:
+        image: postgres:16
+        environment:
+          POSTGRES_USER: langflow
+          POSTGRES_PASSWORD: langflow
+          POSTGRES_DB: langflow
+        ports:
+          - "5432:5432"
+        volumes:
+          - langflow-postgres:/var/lib/postgresql/data
+
+    volumes:
+      langflow-postgres:
+      langflow-data:
+    ```
+
+4. 启动 Docker 容器：
+
+    ```text
+    docker-compose up
+    ```
+
+5. 要确认 Langfuse 已连接到您的 Langflow 容器，请运行以下命令：
+
+    ```sh
+    docker compose exec langflow python -c "import requests, os; addr = os.environ.get('LANGFUSE_HOST'); print(addr); res = requests.get(addr, timeout=5); print(res.status_code)"
+    ```
+
+    如果出现错误，请确保您在终端会话中设置了 `LANGFUSE_HOST` 环境变量。
+
+    类似于以下输出表示成功：
+
+    ```text
+    https://us.cloud.langfuse.com
+    200
+    ```
+
+## 另见
+
+* [Langfuse GitHub 仓库](https://github.com/langfuse/langfuse)

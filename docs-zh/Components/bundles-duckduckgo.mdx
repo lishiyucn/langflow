@@ -1,0 +1,32 @@
+---
+title: DuckDuckGo
+slug: /bundles-duckduckgo
+---
+
+import Icon from "@site/src/components/icon";
+
+[Bundle](/components-bundle-components) 包含支持 Langflow 特定第三方集成的自定义组件。
+
+本页描述了 **DuckDuckGo** bundle 中可用的组件。
+
+## DuckDuckGo 搜索
+
+此组件使用 [DuckDuckGo](https://www.duckduckgo.com) 搜索引擎执行网络搜索，具有结果限制功能。
+
+它输出搜索结果列表作为 [`DataFrame`](/data-types#dataframe)，带有包含搜索结果单个字符串的 `text` 键。
+
+### DuckDuckGo 搜索参数
+
+某些 **DuckDuckGo 搜索**组件输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的<Icon name="SlidersHorizontal" aria-hidden="true"/> **控制**切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| input_value | String | 输入参数。要使用 DuckDuckGo 执行的搜索查询。 |
+| max_results | Integer | 输入参数。要返回的最大搜索结果数。默认：5。 |
+| max_snippet_length | Integer | 输入参数。每个结果摘要的最大长度。默认：100。 |
+
+## 另请参阅
+
+* [**Web Search** 组件](/components-data#web-search)
+* [**SearchApi** bundle](/bundles-searchapi)

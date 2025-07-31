@@ -1,0 +1,33 @@
+---
+title: Bing
+slug: /bundles-bing
+---
+
+import Icon from "@site/src/components/icon";
+
+[组件包](/components-bundle-components)包含支持 Langflow 与特定第三方集成的自定义组件。
+
+本页面描述了 **Bing** 组件包中可用的组件。
+
+## Bing 搜索 API
+
+该组件允许您调用 Bing 搜索 API。
+
+它以 [`DataFrame`](/data-types#dataframe) 的形式返回搜索结果列表。
+
+### Bing 搜索 API 参数
+
+默认情况下，一些 **Bing 搜索 API** 组件输入参数在可视化编辑器中是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制**来切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| bing_subscription_key | SecretString | 输入参数。Bing API 订阅密钥。 |
+| input_value | String | 输入参数。搜索查询输入。 |
+| bing_search_url | String | 输入参数。自定义 Bing 搜索 URL。 |
+| k | Integer | 输入参数。要返回的搜索结果数量。 |
+
+## 另请参阅
+
+* [**网站搜索**组件](/components-data#web-search)
+* [**SearchApi** 组件包](/bundles-searchapi)

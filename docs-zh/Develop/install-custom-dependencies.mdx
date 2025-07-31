@@ -1,0 +1,120 @@
+---
+title: 安装自定义依赖项
+slug: /install-custom-dependencies
+---
+
+Langflow 提供可选的依赖项组和对自定义依赖项的支持，以扩展 Langflow 功能。
+
+## 在 Langflow Desktop 中安装自定义依赖项 {#langflow-desktop}
+
+要向 Langflow Desktop 添加依赖项，请在应用程序的 `requirements.txt` 文件中为包添加条目：
+
+    * 在 macOS 上，文件位于 `/Users/USER/.langflow/data/requirements.txt`。
+    * 在 Windows 上，文件位于 `C:\Users\USER\AppData\Roaming\com.Langflow\data\requirements.txt`。
+
+将依赖项和版本以 `PACKAGE==VERSION` 格式单独添加到 `requirements.txt` 的不同行中，例如 `docling==2.40.0`。
+
+重新启动 Langflow Desktop 以安装依赖项。
+
+如果您需要更改或卸载自定义依赖项，请编辑 `requirements.txt` 文件，然后重新启动 Langflow Desktop。
+
+## 在 Langflow OSS 中安装自定义依赖项
+
+要在您的 Langflow 环境中安装自己的自定义依赖项，请使用包管理器添加它们。
+
+如果您在克隆的 Langflow 存储库中工作，请使用 `uv add` 添加依赖项，因为已经有一个 `pyproject.toml` 文件供 uv 参考：
+
+```bash
+uv add langflow DEPENDENCY
+```
+
+### 安装可选依赖项组
+
+Langflow OSS 提供扩展其功能的可选依赖项组。
+
+这些依赖项在 [pyproject.toml](https://github.com/langflow-ai/langflow/blob/main/pyproject.toml#L191) 文件的 `[project.optional-dependencies]` 部分中列出。
+
+使用 pip 的 `[extras]` 语法安装依赖项组。例如，要安装带有 `postgresql` 依赖项组的 Langflow，请输入以下命令：
+
+```bash
+uv pip install "langflow[postgresql]"
+```
+
+要安装多个额外功能，请使用逗号分隔每个依赖项组：
+
+```bash
+uv pip install "langflow[deploy,local,postgresql]"
+```
+
+### 使用虚拟环境测试自定义依赖项
+
+在本地测试时，使用虚拟环境来隔离您的依赖项并防止与其他 Python 项目冲突。
+
+例如，如果您想在 Langflow 中试验 `matplotlib`：
+
+```bash
+# 创建并激活虚拟环境
+uv venv YOUR_LANGFLOW_VENV
+source YOUR_LANGFLOW_VENV/bin/activate
+
+# 安装 langflow 和您的附加依赖项
+uv pip install langflow matplotlib
+```
+
+如果您在克隆的 Langflow 存储库中工作，请使用 `uv add` 添加依赖项以参考现有的 `pyproject.toml` 文件：
+
+```bash
+uv add langflow matplotlib
+```
+
+## 向 Langflow 代码库添加依赖项
+
+在为 Langflow 代码库做贡献时，您可能需要向 Langflow 添加依赖项。
+
+Langflow 使用包含两个包的工作区：
+
+* `main` 包（根级别）：用于最终用户功能和主应用程序代码
+* `base` 包（在 `src/backend/base` 中）：用于核心功能和共享代码
+
+依赖项可以添加到不同的组中：
+
+* 常规依赖项：运行包所需的核心功能
+* 开发依赖项：用于测试、代码检查或调试的工具在 `[dependency-groups.dev]` 部分中添加
+* 可选依赖项：用户可以选择安装的功能在 `[project.optional-dependencies]` 中添加
+
+有三种使用 make 命令添加包的方法：
+
+* 添加到主包依赖项（用于最终用户功能）：
+```bash
+make add main="matplotlib"
+```
+
+* 添加到开发工具（用于测试、代码检查、调试）：
+```bash
+make add devel="matplotlib"
+```
+
+* 添加到基础包依赖项（用于核心功能）：
+```bash
+make add base="matplotlib"
+```
+
+您也可以手动将这些依赖项添加到 `pyproject.toml` 文件中：
+
+```
+[project]
+dependencies = [
+    "matplotlib>=3.8.0"
+]
+```
+
+* 或作为可选依赖项：
+
+```
+[project.optional-dependencies]
+plotting = [
+    "matplotlib>=3.8.0",
+]
+```
+
+`make` 命令使用 `uv add` 添加依赖项并在适当位置更新 `uv.lock` 文件。

@@ -1,0 +1,88 @@
+---
+title: 使用语音模式
+slug: /concepts-voice-mode
+---
+
+import Icon from "@site/src/components/icon";
+
+您可以使用 Langflow 的语音模式通过麦克风和扬声器与您的流程进行语音交互。
+
+## 先决条件
+
+语音模式需要以下条件：
+
+* 包含 **聊天输入**、**语言模型** 和 **聊天输出** 组件的流程。
+
+    如果您的流程有 **智能体** 组件，请确保流程中的工具具有准确的名称和描述，以帮助智能体选择使用哪些工具。
+
+    此外，请注意语音模式会覆盖 **智能体** 组件的 **智能体指令** 字段中的输入指令。
+
+* [OpenAI](https://platform.openai.com/) 账户和 OpenAI API 密钥，因为 Langflow 使用 OpenAI API 来处理语音输入和生成响应。
+
+* 可选：[ElevenLabs](https://elevenlabs.io) API 密钥以启用 LLM 响应的语音选项。
+
+* 麦克风和扬声器。
+
+    建议使用高质量麦克风和最小背景噪音以获得最佳语音理解效果。
+
+## 在游乐场中测试语音模式
+
+在 **游乐场** 中，点击 <Icon name="Mic" aria-hidden="true"/> **麦克风** 以启用语音模式，并通过麦克风和扬声器与您的流程进行语音交互。
+
+以下步骤使用 [**简单智能体** 模板](/simple-agent) 来演示如何启用语音模式：
+
+1. 基于 **简单智能体** 模板创建流程。
+
+2. 将您的 **OpenAI API 密钥** 凭据添加到 **智能体** 组件。
+
+3. 点击 **游乐场**。
+
+4. 点击 <Icon name="Mic" aria-hidden="true"/> **麦克风** 图标以打开 **语音模式** 对话框。
+
+5. 输入您的 OpenAI API 密钥，然后点击 **保存**。Langflow 将密钥保存为 [全局变量](/configuration-global-variables)。
+
+6. 如果系统提示您授予麦克风访问权限，您必须允许麦克风访问才能使用语音模式。
+如果麦克风访问被阻止，您将无法提供语音输入。
+
+7. 对于 **音频输入**，选择要与语音模式一起使用的输入设备。
+
+8. 可选：添加 ElevenLabs API 密钥以启用更多 LLM 响应语音选项。
+Langflow 将此密钥保存为全局变量。
+
+9. 对于 **首选语言**，选择您想要用于与 LLM 对话的语言。
+此选项会同时更改预期的输入语言和响应语言。
+
+10. 对着麦克风说话以开始聊天。
+
+    如果配置正确，语音模式对话框中的波形会记录您的输入，然后智能体的逻辑和响应会在 **游乐场** 中以语音和文本形式描述。
+
+## 使用 websockets 端点开发应用程序
+
+Langflow 为您的流程公开了两个与 OpenAI 实时 API 兼容的 websocket 端点。
+您可以像构建 [OpenAI 实时 API websockets](https://platform.openai.com/docs/guides/realtime#connect-with-websockets) 一样构建基于这些端点的应用程序。
+
+Langflow API 的 websockets 端点需要 [OpenAI API 密钥](https://platform.openai.com/docs/overview) 进行身份验证，并且支持可选的 [ElevenLabs](https://elevenlabs.io) 集成（需要 ElevenLabs API 密钥）。
+
+此外，两个端点都要求您在端点路径中提供流程 ID。
+
+### 语音到语音音频流
+
+`/ws/flow_as_tool/$FLOW_ID` 端点建立与 OpenAI 实时语音的连接，然后根据 [OpenAI 实时模型](https://platform.openai.com/docs/guides/realtime-conversations#handling-audio-with-websockets) 将指定流程作为工具调用。
+
+这种方法适用于低延迟应用程序，但确定性较低，因为 OpenAI 语音到语音模型决定何时调用您的流程。
+
+### 语音到文本音频转录
+
+`/ws/flow_tts/$FLOW_ID` 端点使用 [OpenAI 实时语音转录](https://platform.openai.com/docs/guides/realtime-transcription) 将音频转换为文本，然后为每个转录直接调用指定的流程。
+
+这种方法更具确定性，但延迟更高。
+
+这是 Langflow **游乐场** 中使用的模式。
+
+### websockets 端点的会话 ID
+
+两个端点都接受可选的 `/$SESSION_ID` 路径参数，为对话提供唯一 ID。
+如果省略，Langflow 使用流程 ID 作为 [会话 ID](/session-id)。
+
+但是，请注意语音模式仅在当前对话实例中维护上下文。
+当您关闭 **游乐场** 或结束聊天时，语音聊天历史会被丢弃，不可用于未来的聊天会话。

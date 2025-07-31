@@ -1,0 +1,202 @@
+---
+title: 全局变量
+slug: /configuration-global-variables
+---
+
+import Icon from "@site/src/components/icon";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+全局变量让您在项目中存储和重用通用输入值和凭据。
+您可以在任何显示 <Icon name="Globe" aria-hidden="true"/> **Globe** 图标的文本输入字段中使用全局变量。
+
+Langflow 将全局变量存储在其内部数据库中，并使用密钥加密值。
+
+## 创建全局变量
+
+要创建新的全局变量，请按照以下步骤操作。
+
+1. 在 Langflow UI 标题栏中，点击您的个人资料图标，然后选择**设置**。
+2. 点击 **Global Variables**。
+
+3. 点击 **Add New**。
+
+4. 在 **Create Variable** 对话框中，在 **Variable Name** 字段中为您的变量输入名称。
+
+5. 可选：为您的全局变量选择 **Type**。可用类型是 **Generic**（默认）和 **Credential**。
+
+   Langflow 加密 **Generic** 和 **Credential** 类型的全局变量。区别在于变量在 UI 中的显示方式。
+
+   **Generic** 类型的全局变量在标准输入字段中显示，不进行遮罩。
+
+   **Credential** 类型的全局变量在 UI 中隐藏，并在遮罩值的密码式输入字段中输入。它们也不允许在会话 ID 字段中使用，因为在那里它们会被暴露。
+   所有默认环境变量和使用 `LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT` 从环境获取的变量都会自动设置为 **Credential** 类型的全局变量。
+
+6. 为您的全局变量输入 **Value**。
+
+7. 可选：使用 **Apply To Fields** 菜单选择一个或多个您希望 Langflow 自动应用您的全局变量的字段。例如，如果您选择 **OpenAI API Key**，Langflow 会自动将变量应用到任何 **OpenAI API Key** 字段。
+
+8. 点击 **Save Variable**。
+
+现在您可以从任何显示 <Icon name="Globe" aria-hidden="true"/> **Globe** 图标的文本输入字段中选择您的全局变量。
+
+## 编辑全局变量
+
+1. 在 Langflow UI 标题栏中，点击您的个人资料图标，然后选择**设置**。
+
+2. 点击 **Global Variables**。
+
+3. 点击您要编辑的全局变量。
+
+4. 在 **Update Variable** 对话框中，您可以编辑以下字段：**Variable Name**、**Value** 和 **Apply To Fields**。
+
+5. 点击 **Update Variable**。
+
+## 删除全局变量
+
+:::warning
+删除全局变量会永久删除现有项目中对它的任何引用。
+:::
+
+1. 在 Langflow UI 标题栏中，点击您的个人资料图标，然后选择**设置**。
+
+2. 点击 **Global Variables**。
+
+3. 点击您要删除的全局变量旁边的复选框。
+
+4. 点击 <Icon name="Trash2" aria-hidden="true"/> **Delete**。
+
+全局变量及其任何现有引用都将被删除。
+
+## 从环境中添加自定义全局变量
+
+您可以使用 `LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT` 环境变量从您的运行时环境中获取自定义全局变量。
+从环境中获取的所有全局变量都会自动设置为 **Credential** 类型的全局变量。
+
+Langflow 的[默认全局变量](#default-environment-variables)已经包含在此列表中，并在检测到时自动获取。
+您可以通过使用您的附加变量设置 `LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT` 来扩展此列表。
+
+<Tabs>
+<TabItem value="local" label="Local" default>
+
+如果您在本地安装了 Langflow，您必须在 `.env` 文件中定义 `LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT` 环境变量。
+
+1. 创建 `.env` 文件并在您首选的编辑器中打开它。
+
+2. 按如下所示添加 `LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT` 环境变量：
+
+   您可以将变量指定为不带空格的逗号分隔字符串，或作为 JSON 列表：
+
+   ```text
+   # Option 1: Comma-separated string (no spaces)
+   LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT=VARIABLE1,VARIABLE2
+
+   # Option 2: JSON list format
+   LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT=["VARIABLE1", "VARIABLE2"]
+   ```
+
+   将 `VARIABLE1,VARIABLE2` 替换为您希望 Langflow 从环境中获取的附加变量，例如 `my_key,some_string` 或 `["my_key", "some_string"]`。
+   这些变量将添加到 Langflow 已经监控的默认变量列表中。
+
+3. 保存并关闭文件。
+
+4. 使用 `.env` 文件启动 Langflow：
+
+   ```bash
+   VARIABLE1="VALUE1" VARIABLE2="VALUE2" python -m langflow run --env-file .env
+   ```
+
+   在此示例中，环境变量（`VARIABLE1="VALUE1"` 和 `VARIABLE2="VALUE2"`）作为启动命令的前缀。
+   这是在命令行上将环境变量暴露给 Python 的基本方法，仅用于说明目的。
+   请确保以最适合您自己环境的方式将环境变量暴露给 Langflow。
+
+5. 确认 Langflow 成功从环境中获取了全局变量：
+
+   1. 在 Langflow UI 标题栏中，点击您的个人资料图标，然后选择**设置**。
+
+   2. 点击 **Global Variables**，然后确保您的环境变量出现在 **Global Variables** 列表中。
+
+</TabItem>
+<TabItem value="docker" label="Docker">
+
+如果您使用 Docker，您可以直接从命令行或从 `.env` 文件传递 `LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT`。
+
+要直接从命令行传递 `LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT`：
+
+```bash
+docker run -it --rm \
+    -p 7860:7860 \
+    -e LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT="VARIABLE1,VARIABLE2" \
+    -e VARIABLE1="VALUE1" \
+    -e VARIABLE2="VALUE2" \
+    langflowai/langflow:latest
+```
+
+要从 `.env` 文件传递 `LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT`：
+
+```bash
+docker run -it --rm \
+    -p 7860:7860 \
+    --env-file .env \
+    -e VARIABLE1="VALUE1" \
+    -e VARIABLE2="VALUE2" \
+    langflowai/langflow:latest
+```
+
+</TabItem>
+</Tabs>
+
+:::info
+从环境中添加全局变量时，适用以下限制：
+
+- 您只能从环境中获取 **Name** 和 **Value**。
+  要添加其他参数（如 **Apply To Fields** 参数），您必须在 Langflow UI 中编辑全局变量。
+
+- 您从环境中添加的全局变量始终具有 **Credential** 类型。
+:::
+
+如果您想明确阻止 Langflow 从环境中获取全局变量，请在您的 `.env` 文件中将 `LANGFLOW_STORE_ENVIRONMENT_VARIABLES` 设置为 `false`：
+
+```text
+LANGFLOW_STORE_ENVIRONMENT_VARIABLES=false
+```
+
+如果您想自动为全局变量从环境变量中设置回退值，请在您的 `.env` 文件中将 `LANGFLOW_FALLBACK_FROM_ENV_VAR` 环境变量设置为 `true`。启用此功能后，如果找不到全局变量，Langflow 会尝试使用同名的环境变量作为回退。
+
+```text
+LANGFLOW_FALLBACK_FROM_ENV_VAR=true
+```
+
+## 默认环境变量
+
+Langflow 自动检测并将一些环境变量转换为 **Credential** 类型的全局变量，这些变量会应用到需要它们的组件中的特定字段。目前支持以下变量：
+
+- `ANTHROPIC_API_KEY`
+- `ASTRA_DB_API_ENDPOINT`
+- `ASTRA_DB_APPLICATION_TOKEN`
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AZURE_OPENAI_API_DEPLOYMENT_NAME`
+- `AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME`
+- `AZURE_OPENAI_API_INSTANCE_NAME`
+- `AZURE_OPENAI_API_KEY`
+- `AZURE_OPENAI_API_VERSION`
+- `COHERE_API_KEY`
+- `COMPOSIO_API_KEY`
+- `GOOGLE_API_KEY`
+- `GROQ_API_KEY`
+- `HUGGINGFACEHUB_API_TOKEN`
+- `NOVITA_API_KEY`
+- `OPENAI_API_KEY`
+- `PINECONE_API_KEY`
+- `SAMBANOVA_API_KEY`
+- `SEARCHAPI_API_KEY`
+- `SERPAPI_API_KEY`
+- `TAVILY_API_KEY`
+- `UPSTASH_VECTOR_REST_TOKEN`
+- `UPSTASH_VECTOR_REST_URL`
+- `VECTARA_API_KEY`
+- `VECTARA_CORPUS_ID`
+- `VECTARA_CUSTOMER_ID`
+
+有关其他环境变量及其用法的信息，请参阅[环境变量](/environment-variables)。

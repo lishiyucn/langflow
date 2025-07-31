@@ -1,0 +1,174 @@
+---
+title: 使用 Langflow 智能体
+slug: /agents
+---
+
+import Icon from "@site/src/components/icon";
+
+Langflow 的 [**Agent 组件**](/components-agents) 对于构建智能体流程至关重要。
+该组件提供创建智能体所需的一切，包括多个大型语言模型 (LLM) 提供商、工具调用和自定义指令。
+它简化了智能体配置，让您可以专注于应用程序开发。
+
+<details>
+<summary>智能体工作原理</summary>
+
+智能体通过集成_工具_来扩展 LLM，这些工具是提供附加上下文并启用自主任务执行的函数。
+这些集成使智能体比独立的 LLM 更专业化和强大。
+
+虽然 LLM 可能对一般查询和任务生成可接受的、静态响应，但智能体可以利用集成的上下文和工具来提供更相关的响应，甚至采取行动。
+例如，您可以创建一个智能体，它可以访问您公司的知识库、代码仓库和其他资源，以帮助您的团队完成需要了解您特定产品、客户和代码的任务。
+
+智能体使用 LLM 作为推理引擎来处理输入、确定采取哪些行动来处理查询，然后生成响应。
+响应可能是典型的基于文本的 LLM 响应，也可能涉及一个动作，如编辑文件、运行脚本或调用外部 API。
+
+在智能体上下文中，工具是智能体可以运行以执行任务或访问外部资源的函数。
+函数被包装为具有智能体理解的通用接口的 `Tool` 对象。
+智能体通过工具注册来了解工具，即在智能体初始化时通常为智能体提供可用工具列表。
+`Tool` 对象的描述告诉智能体工具能做什么，以便它可以决定工具是否适合给定的请求。
+
+</details>
+
+## 在流程中使用 Agent 组件
+
+以下步骤说明如何在 Langflow 中从空白流程创建智能体流程。
+对于预构建的示例，请使用 [**Simple Agent** 模板](/simple-agent) 或尝试 [Langflow 快速入门](/get-started-quickstart)。
+
+1. 点击 **New Flow**，然后点击 **Blank Flow**。
+2. 向 **Workspace** 添加一个 **Agent** 组件。
+3. 输入有效的 OpenAI API 密钥。
+
+    **Agent** 组件的默认模型是 OpenAI 模型。
+    如果您想使用不同的提供商，请相应地编辑 **Model Provider**、**Model Name** 和 **API Key** 字段。
+    有关更多信息，请参阅 [Agent 组件参数](#agent-component-parameters)。
+
+4. 向您的流程添加 [**Chat Input** 和 **Chat Output** 组件](/components-io)，然后将它们连接到 **Agent** 组件。
+
+    此时，您已经创建了一个基本的基于 LLM 的聊天流程，可以在 <Icon name="Play" aria-hidden="true" /> **Playground** 中测试。
+    但是，此流程只与 LLM 聊天。
+    要增强此流程并使其真正具有智能体特性，请添加一些工具，如后续步骤中所述。
+
+    ![具有 Chat Input、Agent 和 Chat Output 组件的基本智能体聊天流程。](/img/agent-example-add-chat.png)
+
+5. 向您的流程添加 **News Search**、**URL** 和 **Calculator** 组件。
+6. 在 **News Search**、**URL** 和 **Calculator** 组件中启用 **Tool Mode**：
+
+    1. 点击 **News Search** 组件以显示 [组件的标头菜单](/concepts-components#component-menus)，然后启用 **Tool Mode**。
+    2. 对 **URL** 和 **Calculator** 组件重复此操作。
+    3. 将每个工具组件的 **Toolset** 端口连接到 **Agent** 组件上的 **Tools** 端口。
+
+    **Tool Mode** 通过修改组件的输入使组件成为工具。
+    启用 **Tool Mode** 后，组件可以接受来自 **Agent** 组件的请求，以将组件的可用操作用作工具。
+
+    在 **Tool Mode** 下，组件具有 **Toolset** 端口，如果您希望允许智能体将该组件的操作用作工具，则必须将其连接到 **Agent** 组件的 **Tools** 端口。
+
+    有关更多信息，请参阅 [为智能体配置工具](/agents-tools)。
+
+    ![更复杂的智能体聊天流程，其中三个组件作为工具连接到 Agent 组件](/img/agent-example-add-tools.png)
+
+8. 打开 <Icon name="Play" aria-hidden="true" /> **Playground**，然后询问智能体："您使用什么工具来回答我的问题？"
+
+    智能体应该响应连接的工具列表。
+    它也可能包括内置工具。
+
+    ```text
+    我使用内置知识（截至 2024 年 6 月）和一组外部工具的组合来回答您的问题。以下是我可以使用的主要工具类型：
+    网络搜索和内容获取：我可以获取和总结网页内容，包括递归爬取链接。
+    新闻搜索：我可以通过 RSS 源使用 Google News 搜索最新新闻文章。
+    计算器：我可以执行算术计算和评估数学表达式。
+    日期和时间：我可以提供各种时区的当前日期和时间。
+    这些工具帮助我提供最新信息、执行计算并在需要时从互联网检索特定数据。如果您有具体问题，请告诉我，我将使用最合适的工具来帮助您！
+    ```
+
+9. 要测试特定工具，请向智能体提出使用其中一个工具的问题，例如"总结今天的科技新闻"。
+
+    为帮助您调试和测试流程，**Playground** 显示智能体的工具调用、提供的输入以及智能体在生成摘要之前收到的原始输出。
+    对于给定的示例，智能体应该调用 **News Search** 组件的 `search_news` 操作。
+
+您已成功创建了一个使用一些通用工具的基本智能体流程。
+
+要继续构建此教程，请尝试连接其他工具组件或 [使用 Langflow 作为 MCP 客户端](/mcp-client) 来支持更复杂和专业化的任务。
+
+有关多智能体示例，请参阅 [将智能体用作工具](/agents-tools#use-an-agent-as-a-tool)。
+
+## Agent 组件参数
+
+您可以配置 **Agent** 组件以使用您首选的提供商和模型、自定义指令和工具。
+
+:::tip
+许多可选的 **Agent** 组件输入参数在可视化编辑器中默认隐藏。
+您可以通过 [组件标头菜单](/concepts-components#component-menus) 中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 查看和切换所有参数。
+:::
+
+### 提供商和模型
+
+使用 **Model Provider** (`agent_llm`) 和 **Model Name** (`llm_model`) 设置来选择您希望智能体使用的模型提供商和 LLM。
+
+**Agent** 组件包括来自几个流行模型提供商的许多模型。
+要访问其他提供商和模型，请将 **Model Provider** 设置为 **Custom**，然后连接任何 [**Language Model** 组件](/components-models)。
+
+如果您需要在流程中生成嵌入，请使用 [**Embedding Model** 组件](/components-embedding-models)。
+
+### 模型提供商 API 密钥
+
+在 **API Key** 字段中，如果您使用内置提供商，请输入所选模型提供商的有效身份验证密钥。
+例如，要使用默认的 OpenAI 模型，您必须为具有积分和调用 OpenAI LLM 权限的 OpenAI 账户提供有效的 OpenAI API 密钥。
+
+您可以直接输入密钥，但建议您遵循存储和引用 API 密钥的行业最佳实践。
+例如，您可以使用 <Icon name="Globe" aria-hidden="true"/> [全局变量](/configuration-global-variables) 或 [环境变量](/environment-variables)。
+有关更多信息，请参阅 [向 Langflow 添加组件 API 密钥](/configuration-api-keys#add-component-api-keys-to-langflow)。
+
+如果您选择 **Custom** 作为模型提供商，则身份验证在传入的 **Language Model** 组件中处理。
+
+### 智能体指令和输入
+
+在 **Agent Instructions** (`system_prompt`) 字段中，您可以提供希望 **Agent** 组件用于每次对话的自定义指令。
+
+这些指令除了 **Input** (`input_value`) 之外还会应用，后者可以直接输入或通过其他组件（如 **Chat Input** 组件）提供。
+
+### 工具
+
+当智能体拥有完成请求的适当工具时，它们最有用。
+
+**Agent** 组件可以使用任何 Langflow 组件作为工具，包括其他智能体和 MCP 服务器。
+
+要将组件附加为工具，您必须在要附加的组件上启用 **Tool Mode**，然后将其附加到 **Agent** 组件的 **Tools** 端口。
+有关更多信息，请参阅 [为智能体配置工具](/agents-tools)。
+
+:::tip
+要允许智能体使用来自 MCP 服务器的工具，请使用 [**MCP Tools** 组件](/components-agents#mcp-connection)。
+:::
+
+### 智能体内存
+
+Langflow 智能体具有默认启用的内置聊天内存。
+此内存允许它们检索和引用之前对话中的消息，为每个聊天会话 ID 维护滚动上下文窗口。
+
+聊天内存按 [会话 ID (`session_id`)](/session-id) 分组。
+如果您需要为运行相同流程的不同用户或应用程序隔离聊天内存，建议使用自定义会话 ID。
+
+默认情况下，**Agent** 组件使用您的 Langflow 安装的存储，并检索有限数量的聊天消息，您可以使用 **Number of Chat History Messages** 参数配置此数量。
+
+虽然默认聊天内存不需要 **Message History** 组件，但它为排序、过滤和限制内存提供了更多选项，并且使用像 Mem0 这样的外部聊天内存需要 **Message History** 组件。
+
+有关更多信息，请参阅 [存储聊天内存](/memory#store-chat-memory) 和 [**Message History** 组件](/components-helpers#message-history)。
+
+### 其他参数
+
+许多可选的 **Agent** 组件输入参数在可视化编辑器中默认隐藏。
+您可以通过 [组件标头菜单](/concepts-components#component-menus) 中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 查看和切换所有参数。
+
+对于 **Agent** 组件，可用参数可能会根据所选的提供商和模型而变化。
+例如，某些模型支持其他模式、参数或功能，如聊天内存和温度。
+
+一些其他输入参数包括以下内容：
+
+* **Current Date** (`add_current_date_tool`)：启用时 (`true`)，此设置向智能体添加可以检索当前日期的工具。
+* **Handle Parse Errors** (`handle_parsing_errors`)：启用时 (`true`)，此设置允许智能体在分析用户输入时修复错误，如拼写错误。
+* **Verbose** (`verbose`)：启用时 (`true`)，此设置记录详细的日志输出以供调试和分析。
+
+## Agent 组件输出
+
+**Agent** 组件输出包含智能体对查询的原始响应的 **Response** (`response`)，它是 [`Message` 数据](/data-types#message)。
+
+通常，这会传递给 **Chat Output** 组件以人类可读的格式返回响应。
+如果您需要在返回给用户之前或除此之外进一步处理响应，它也可以传递给其他组件。

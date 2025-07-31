@@ -1,0 +1,105 @@
+---
+title: 将 Langflow 用作 MCP 客户端
+slug: /mcp-client
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Icon from "@site/src/components/icon";
+
+Langflow 集成了 [模型上下文协议 (MCP)](https://modelcontextprotocol.io/introduction)，既可以作为 MCP 服务器，也可以作为 MCP 客户端。
+
+本页面描述如何使用 [MCP 工具](#use-the-mcp-tools-component) 组件和**设置**中的 [MCP 服务器](#manage-connected-mcp-servers) 页面将 Langflow 用作 MCP 客户端。
+
+有关将 Langflow 用作 MCP 服务器的信息，请参阅 [将 Langflow 用作 MCP 服务器](/mcp-server)。
+
+## 使用 MCP 工具组件
+
+**MCP 工具** 组件连接到 [模型上下文协议 (MCP)](https://modelcontextprotocol.io/introduction) 服务器，并将 MCP 服务器的工具暴露为 [Langflow 代理](/agents) 的工具。
+
+该组件有两种模式，取决于您要访问的服务器类型：
+
+* [连接到非 Langflow MCP 服务器](#mcp-stdio-mode)，使用 JSON 配置文件、服务器启动命令或 SSE URL 来访问外部非 Langflow MCP 服务器提供的工具。
+* [连接到 Langflow MCP 服务器](#mcp-sse-mode)，将您的 [Langflow 项目](/concepts-flows#projects) 中的流程用作 MCP 工具。
+
+### 连接到非 Langflow MCP 服务器 {#mcp-stdio-mode}
+
+1. 向您的流程添加一个 **MCP 工具** 组件。
+
+2. 在 **MCP 服务器** 字段中，选择您要添加的服务器，或单击 <Icon name="Plus" aria-hidden="true"/> **添加 MCP 服务器**。
+
+    有多种方式添加新服务器。
+
+    * 在 **JSON** 面板中，粘贴 MCP 服务器的 JSON 配置文件，然后单击 **添加服务器**。
+    * 在 **STDIO** 面板中，输入 MCP 服务器的 **名称**、**命令** 以及服务器使用的任何 **参数** 或 **环境变量**，然后单击 **添加服务器**。
+    例如，要启动 [Fetch](https://github.com/modelcontextprotocol/servers/tree/main/src/fetch) 服务器，**命令** 是 `uvx mcp-server-fetch`。
+    * 在 **SSE** 面板中，输入您的 Langflow MCP 服务器的 **名称**、**SSE URL** 以及服务器使用的任何 **标头** 或 **环境变量**，然后单击 **添加服务器**。
+    默认的 **SSE URL** 是 `http://localhost:7860/api/v1/mcp/sse`。有关更多信息，请参阅 [使用 SSE 模式](#mcp-sse-mode)。
+
+    `uvx` 包含在 Langflow 包的 `uv` 中。
+    要使用 `npx` 服务器命令，您必须先安装 [Node.js](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 的 LTS 版本。
+    有关在 Langflow 中使用 `npx` MCP 服务器的示例，请参阅 [将 Astra DB MCP 服务器连接到 Langflow](/mcp-component-astra)。
+
+3. 要在服务器命令中使用环境变量，请在 **Env** 字段中输入每个变量，就像在脚本中定义它们一样，例如 `VARIABLE=value`。
+
+    :::important
+    Langflow 将 `.env` 文件中的环境变量传递给 MCP，但不会传递在 Langflow UI 中声明的全局变量。
+    要将 MCP 服务器环境变量定义为全局变量，请在启动时将其添加到 Langflow 的 `.env` 文件中。
+    有关更多信息，请参阅 [全局变量](/configuration-global-variables)。
+    :::
+
+4. 在 **工具** 字段中，选择您希望此组件使用的工具，或将字段留空以允许访问 MCP 服务器提供的所有工具。
+
+    如果您选择特定工具，可能需要配置其他特定于工具的字段。有关特定于工具的字段的信息，请参阅您的 MCP 服务器文档。
+
+    此时，**MCP 工具** 组件正在提供工具，但没有任何东西在使用该工具。下一步说明如何使工具对 [**代理** 组件](/components-agents) 可用，以便代理可以在其响应中使用该工具。
+
+5. 在 [组件菜单](/concepts-components#component-menus) 中，启用 **工具模式**，以便您可以将组件与代理一起使用。
+
+6. 将 **MCP 工具** 组件的 **工具集** 端口连接到 **代理** 组件的 **工具** 端口。
+
+    如果您的流程中尚未存在，请确保还将 **聊天输入** 和 **聊天输出** 组件附加到 **代理** 组件。
+
+    ![stdio 模式下的 MCP 工具组件](/img/component-mcp-stdio.png)
+
+7. 测试您的流程以确保 MCP 服务器已连接且代理使用了所选工具：单击 **Playground**，然后输入使用通过 **MCP 工具** 组件连接的工具的提示。
+例如，如果您使用 `mcp-server-fetch` 与 `fetch` 工具，您可以要求代理总结最新的科技新闻。代理调用 MCP 服务器函数 `fetch`，然后返回响应。
+
+8. 如果您希望代理能够使用更多工具，请重复这些步骤以添加具有不同服务器或工具的更多工具组件。
+
+### 连接 Langflow MCP 服务器 {#mcp-sse-mode}
+
+每个 Langflow 项目都运行一个单独的 MCP 服务器，将项目的流程暴露为 MCP 工具。
+有关您项目的 MCP 服务器的更多信息，包括如何管理暴露的流程，请参阅 [将 Langflow 用作 MCP 服务器](/mcp-server)。
+
+要利用流程即工具功能，请使用 **服务器推送事件 (SSE)** 模式下的 **MCP 工具** 组件连接到项目的 `/api/v1/mcp/sse` 端点：
+
+1. 向您的流程添加一个 **MCP 工具** 组件，单击 <Icon name="Plus" aria-hidden="true"/> **添加 MCP 服务器**，然后选择 **SSE** 模式。
+2. 在 **MCP SSE URL** 字段中，修改默认地址以指向您的 Langflow 服务器的 SSE 端点。其他 Langflow 安装的默认值是 `http://localhost:7860/api/v1/mcp/sse`。
+在 SSE 模式下，目标服务器上可用的所有流程都被视为工具。
+3. 在 [组件菜单](/concepts-components#component-menus) 中，启用 **工具模式**，以便您可以将组件与代理一起使用。
+4. 将 **MCP 工具** 组件的 **工具集** 端口连接到 **代理** 组件的 **工具** 端口。如果您的流程中尚未存在，请确保还将 **聊天输入** 和 **聊天输出** 组件附加到 **代理** 组件。
+![启用 SSE 模式的 MCP 组件](/img/component-mcp-sse-mode.png)
+5. 测试您的流程以确保代理使用您的流程响应查询：单击 **Playground**，然后输入使用通过 **MCP 工具** 组件连接的流程的提示。
+6. 如果您希望代理能够使用更多流程，请重复这些步骤以添加选择了不同服务器或工具的更多 **MCP 工具** 组件。
+
+## MCP 工具参数
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| command | String | 输入参数。仅限 Stdio 模式。MCP 服务器启动命令。默认值：`uvx mcp-sse-shim@latest`。 |
+| sse_url | String | 输入参数。仅限 SSE 模式。Langflow 项目的 MCP 服务器的 SSE URL。Langflow Desktop 的默认值：`http://localhost:7868/`。其他安装的默认值：`http://localhost:7860/api/v1/mcp/sse` |
+| tools | List[Tool] | 输出参数。包含 MCP 服务器暴露的工具列表的 [`Tool`](/data-types#tool) 对象。 |
+
+## 管理已连接的 MCP 服务器
+
+**设置 > MCP 服务器** 页面管理连接到 Langflow 客户端的 MCP 服务器。
+
+要添加新的 MCP 服务器，请单击 <Icon name="Plus" aria-hidden="true"/> **添加 MCP 服务器** 打开配置面板，然后按照 [使用 MCP 工具组件](#use-the-mcp-tools-component) 中的步骤操作。
+
+单击 <Icon name="Ellipsis" aria-hidden="true"/> **更多** 以配置或删除 MCP 服务器。
+
+## 另请参阅
+
+- [将 Langflow 用作 MCP 服务器](/mcp-server)
+- [将 DataStax Astra DB MCP 服务器与 MCP 工具组件一起使用](/mcp-component-astra)

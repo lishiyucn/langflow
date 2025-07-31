@@ -1,0 +1,184 @@
+---
+title: API 密钥
+slug: /configuration-api-keys
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Icon from "@site/src/components/icon";
+
+您可以使用 Langflow API 密钥以程序化方式与 Langflow 交互。
+
+API 密钥具有与您启动 Langflow 时相同的权限和访问权。这意味着您的 API 密钥只能访问您自己的 flow、组件和数据。您无法使用自己的 Langflow API 密钥访问其他用户的资源。
+API 密钥代表创建它的用户。如果您以超级用户身份创建密钥，那么该密钥将具有超级用户权限。
+任何拥有该密钥的人都可以通过 Langflow API 授权超级用户操作，包括用户管理和 flow 管理。
+
+在 Langflow 1.5 及更高版本中，大多数 API 端点都需要 Langflow API 密钥，即使 `AUTO_LOGIN` 设置为 `True`。
+唯一的例外是 MCP 端点 `/v1/mcp`、`/v1/mcp-projects` 和 `/v2/mcp`，它们从不需要身份验证。
+
+<details>
+<summary>AUTO_LOGIN and SKIP_AUTH options</summary>
+
+In Langflow versions earlier than 1.5, if `LANGFLOW_AUTO_LOGIN=true`, then Langflow automatically logs users in as a superuser without requiring authentication.
+In this case, API requests don't require a Langflow API key.
+
+In Langflow version 1.5, you can set `LANGFLOW_SKIP_AUTH_AUTO_LOGIN=true` and `LANGFLOW_AUTO_LOGIN=true` to skip authentication for API requests.
+However, the `LANGFLOW_SKIP_AUTH_AUTO_LOGIN` option will be removed in a future release.
+</details>
+
+## 生成 Langflow API 密钥
+
+您可以使用 UI 或 CLI 生成 Langflow API 密钥。
+
+UI 生成的密钥适用于大多数情况。当您的 Langflow 服务器在 `--backend-only` 模式下运行时，需要 CLI 生成的密钥。
+
+<Tabs>
+<TabItem value="Langflow UI" label="Langflow UI" default>
+
+1. 在 Langflow UI 标题栏中，点击您的个人资料图标，然后选择**设置**。
+2. 点击 **Langflow API Keys**，然后点击 **Add New**。
+3. 为您的密钥命名，然后点击 **Create API Key**。
+4. 复制 API 密钥并安全存储。
+
+</TabItem>
+<TabItem value="Langflow CLI" label="Langflow CLI">
+
+如果您使用 `--backend-only=true` 提供 flow 服务，您无法在 UI 中创建 API 密钥，因为前端没有运行。
+
+根据您的身份验证设置，请注意使用 Langflow CLI 创建 API 密钥的以下要求：
+
+* 如果 `AUTO_LOGIN` 为 `FALSE`，您必须以超级用户身份登录。
+* 如果 `AUTO_LOGIN` 为 `TRUE`，您已经以超级用户身份登录。
+
+要从 CLI 为用户创建 API 密钥，请执行以下操作：
+
+1. 在您的 `.env` 文件中，设置 `AUTO_LOGIN=FALSE`，并为您的服务器设置超级用户凭据。
+
+    ```text
+    LANGFLOW_AUTO_LOGIN=False
+    LANGFLOW_SUPERUSER=administrator
+    LANGFLOW_SUPERUSER_PASSWORD=securepassword
+    ```
+
+2. 要确认您的超级用户状态，请调用 [`GET /users/whoami`](/api-users#get-current-user)，然后检查响应是否包含 `"is_superuser": true`：
+
+    ```bash
+    curl -X GET \
+      "$LANGFLOW_URL/api/v1/users/whoami" \
+      -H "accept: application/json" \
+      -H "x-api-key: $LANGFLOW_API_KEY"
+    ```
+
+    <details>
+    <summary>Result</summary>
+
+    ```json
+    {
+      "id": "07e5b864-e367-4f52-b647-a48035ae7e5e",
+      "username": "langflow",
+      "profile_image": null,
+      "store_api_key": null,
+      "is_active": true,
+      "is_superuser": true,
+      "create_at": "2025-05-08T17:59:07.855965",
+      "updated_at": "2025-05-29T15:06:56.157860",
+      "last_login_at": "2025-05-29T15:06:56.157016",
+    }
+    ```
+
+    </details>
+
+3. 创建 API 密钥：
+
+    ```shell
+    uv run langflow api-key
+    ```
+
+</TabItem>
+</Tabs>
+
+## 使用 Langflow API 密钥身份验证请求
+
+在 API 请求中包含您的 API 密钥以对 Langflow 请求进行身份验证。
+
+API 密钥仅允许访问创建密钥的特定用户的 flow 和组件。
+
+<Tabs>
+<TabItem value="header" label="HTTP header" default>
+
+要在发送 API 请求时使用 API 密钥，请在 HTTP 头部中包含 API 密钥：
+
+```shell
+curl -X POST \
+  "http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID?stream=false" \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: LANGFLOW_API_KEY' \
+  -d '{"inputs": {"text":""}, "tweaks": {}}'
+```
+
+</TabItem>
+<TabItem value="query" label="Query parameter">
+
+要将 API 密钥作为查询参数传递：
+
+```shell
+curl -X POST \
+  "http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID?x-api-key=LANGFLOW_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{"inputs": {"text":""}, "tweaks": {}}'
+```
+
+</TabItem>
+</Tabs>
+
+## 生成 Langflow 密钥
+
+Langflow 使用 [Fernet](https://pypi.org/project/cryptography/) 库来加密敏感数据。
+
+如果未提供 `LANGFLOW_SECRET_KEY`，Langflow 会自动生成一个。
+
+有关更多信息，请参阅[身份验证](/configuration-authentication#langflow_secret_key)。
+
+## 撤销 API 密钥
+
+要撤销 API 密钥，请从您的 Langflow 设置中删除它：
+
+1. 在 Langflow UI 标题栏中，点击您的个人资料图标，然后选择**设置**。
+2. 点击 **Langflow API Keys**。
+3. 选择您要删除的密钥，然后点击 <Icon name="Trash2" aria-hidden="true"/> **Delete**。
+
+此操作会立即使密钥失效，并防止其再次被使用。
+
+## 向 Langflow 添加组件 API 密钥
+
+这些是外部服务（如 OpenAI）的凭据。它们可以通过 `.env` 文件或在 Langflow UI 中添加到 Langflow。
+
+在 UI 中设置的组件 API 密钥会覆盖在环境变量中设置的密钥。
+
+### 使用 .env 文件添加组件 API 密钥
+
+要向您的 `.env` 文件添加组件 API 密钥：
+
+```text
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-...
+GOOGLE_API_KEY=...
+```
+
+### 使用 Langflow UI 添加组件 API 密钥
+
+您可以在 Langflow 中将 Langflow 组件的 API 密钥存储为[全局变量](/configuration-global-variables)：
+
+1. 在 Langflow UI 标题栏中，点击您的个人资料图标，然后选择**设置**。
+2. 点击 **Global Variables**。
+3. 点击 **Add New**。
+4. 对于 **Type**，选择 **Credential**。
+5. 对于 **Name**，输入将存储 API 密钥的变量名称。
+6. 对于 **Value**，输入您要存储的 API 密钥。
+7. 对于 **Apply to fields**，您可以选择组件字段来自动填充此变量。
+
+    您可以通过在将受影响的组件添加到 flow 时手动输入不同的变量名称或值来覆盖自动设置的变量。
+
+    此外，您可以通过[使用 tweaks 运行 flow](/concepts-publish#input-schema) 来覆盖所有组件设置，tweaks 是您在运行时对组件设置所做的修改，仅适用于单次 flow 运行。
+
+8. 点击 **Save Variable**。

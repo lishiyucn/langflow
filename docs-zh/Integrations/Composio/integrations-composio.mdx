@@ -1,0 +1,112 @@
+---
+title: Composio
+slug: /integrations-composio
+---
+
+Langflow 中的 Composio 组件为您的 **智能体**组件提供 [Composio](https://app.composio.dev/) 工具。
+
+无需在流程中管理多个集成和组件，将 Composio 组件连接到 **智能体**组件，即可将所有 Composio 支持的 API 和操作用作智能体的工具。
+
+**Composio** bundle 中提供以下组件：
+
+* **Composio Tools**
+* **GitHub**
+* **Gmail**
+* **Google Calendar**
+* **Outlook**
+* **Slack**
+
+有关特定 Composio 功能的信息，请参阅 [Composio 文档](https://docs.composio.dev/introduction/intro/overview)。
+
+## Composio 组件的身份验证
+
+Composio 组件需要使用 Composio API 密钥向 Composio 进行身份验证。
+
+根据您使用的组件，您可能还需要额外的访问权限，例如 OpenAI API 密钥、Gmail 账户或 GitHub 账户。
+
+## 在流程中使用 Composio 组件
+
+1. 在 Langflow **工作区**中，添加一个 **智能体**组件。
+
+2. 在 **工作区**中，添加 **Composio Tools** 组件。
+
+3. 将 **智能体**组件的 **Tools** 端口连接到 **Composio Tools** 组件的 **Tools** 端口。
+
+4. 在 **Composio API Key** 字段中，输入您的 Composio API 密钥。
+
+5. 在 **Tool Name** 字段中，选择您希望智能体访问的工具。
+
+    在此示例中，选择 **Gmail** 工具，允许您的智能体使用 Composio 工具控制电子邮件账户。
+
+6. 在 **Actions** 字段中，选择您希望 **智能体**使用 **Gmail** 工具执行的操作。
+
+    **Gmail** 工具支持多种操作，同一工具内也支持多种操作。
+    在此示例中，选择 **GMAIL_CREATE_EMAIL_DRAFT**。
+    有关更多信息，请参阅 [Composio 文档](https://docs.composio.dev/patterns/tools/use-tools/use-specific-actions)。
+
+7. 将 **Chat Input** 和 **Chat Output** 组件添加到您的流程中，然后分别将它们连接到 **智能体**组件的 **Input** 和 **Response**。
+
+    ![带有 Composio Tools 组件的简单智能体流程](/img/composio/composio-create-flow.png)
+
+8. 在 **智能体**组件中，输入您的 OpenAI API 密钥或配置 **智能体**组件使用不同的 LLM。
+
+9. 要测试与 Composio 的连接，点击 **Playground**，然后询问 LLM 其可用的工具。
+智能体应该提供连接工具的列表，包括 **Gmail** 工具和 **智能体**组件中的内置工具。
+
+    ```text
+    用户：
+    你有哪些可用的工具？
+
+    AI：
+    我可以使用以下工具：
+
+    1. **GMAIL_CREATE_EMAIL_DRAFT**：此工具允许我使用 Gmail API 创建电子邮件草稿。我可以指定收件人的电子邮件地址、主题、正文内容以及正文内容是否为 HTML。
+
+    2. **CurrentDate-get_current_date**：此工具检索指定时区的当前日期和时间。
+    ```
+
+10. 要测试特定工具，让智能体执行操作，例如写一封草稿电子邮件：
+
+    ```text
+    创建一封主题为"来自 Composio 的问候"的草稿电子邮件
+    收件人："your.email@address.com"
+    正文内容："Hello from composio!"
+    ```
+
+    **Playground** 显示智能体选择使用特定工具的逻辑。
+    此示例响应已简化。
+
+    ```text
+    主题为"来自 Composio 的问候"、正文为"Hello from composio!"的草稿电子邮件已成功创建。
+    ```
+
+    ```json
+    {
+      "recipient_email": "your.email@address.com",
+      "subject": "来自 Composio 的问候",
+      "body": "Hello from composio!",
+      "is_html": false
+    }
+
+    {
+      "data": {
+        "response_data": {
+          "id": "r-237981011463568567",
+          "message": {
+            "id": "195dd80528171132",
+            "threadId": "195dd80528171132",
+            "labelIds": [
+              "DRAFT"
+            ]
+          }
+        }
+      },
+      "error": null,
+      "successfull": true,
+      "successful": true
+    }
+    ```
+
+11. 为了进一步确认，您可以前往您的 Gmail 账户并在草稿文件夹中找到该消息。
+
+12. 要添加更多 Composio 操作，向您的流程添加更多 Composio 组件，然后将它们连接到 **智能体**组件的 **Tools** 端口。

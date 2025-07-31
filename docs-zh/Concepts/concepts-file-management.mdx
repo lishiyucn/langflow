@@ -1,0 +1,102 @@
+---
+title: 管理文件
+slug: /concepts-file-management
+---
+
+import Icon from "@site/src/components/icon";
+
+每个 Langflow 服务器都有一个文件管理系统，您可以在其中存储要在流程中使用的文件。
+
+上传到 Langflow 文件管理的文件存储在您的 Langflow 服务器本地，并且对您的所有流程都可用。
+
+将文件上传到 Langflow 文件管理可以将您的文件保存在中心位置，并允许您在流程中重复使用文件，而无需重复手动上传。
+
+## 使用文件管理 UI
+
+您可以使用文件管理 UI 将文件从本地计算机上传到您自己的 Langflow 服务器。
+您也可以管理所有已上传到 Langflow 服务器的文件。
+
+1. 导航到 Langflow 文件管理：
+
+    * 在 Langflow UI 中，在 [**项目** 页面](/concepts-flows#projects) 上，单击项目列表下方的 **我的文件**。
+    * 从浏览器中，导航到您的 Langflow 服务器的 `/files` 端点，例如 `http://localhost:7860/files`。根据您的 Langflow 服务器需要修改基础 URL。
+    * 对于程序化文件管理，请使用 [Langflow API 文件端点](/api-files)。然而，以下步骤假设您使用文件管理 UI。
+
+2. 在 **我的文件** 页面上，单击 **上传**。
+
+3. 选择一个或多个要上传的文件。
+
+上传文件后，您可以在文件管理 UI 中重命名、下载、复制或删除文件：
+
+* 要删除文件，请将鼠标悬停在文件图标上，选择它，然后单击 <Icon name="Trash2" aria-hidden="true"/> **删除**。
+您可以在一次操作中删除多个文件。
+
+* 要下载文件，请将鼠标悬停在文件图标上，选择它，然后单击 <Icon name="Download" aria-hidden="true"/> **下载**。
+如果您在一次操作中下载多个文件，它们会一起保存在一个 zip 文件中。
+
+## 使用 Langflow API 上传和管理文件
+
+使用 Langflow API，您可以在 Langflow 文件管理中上传和管理文件，并且可以在运行时程序化地将文件发送到流程。
+
+有关更多信息和示例，请参阅 [文件端点](/api-files) 和 [创建可以接收文件的聊天机器人](/chat-with-files)。
+
+## 在流程中使用文件
+
+要在流程中使用 Langflow 文件管理系统中的文件，请向您的流程添加一个接受文件输入的组件，例如 **文件** 组件。
+
+例如，向您的流程添加一个 **文件** 组件，单击 **选择文件**，然后从 **我的文件** 列表中选择文件。
+
+此列表包含您服务器文件管理系统中的所有文件，但您只能选择 [**文件** 组件支持的文件类型](/components-data#file)。
+如果您需要另一种文件类型，您必须使用支持该文件类型的不同组件，或者您需要在上传之前将其转换为支持的类型。
+
+有关 **文件** 组件和其他数据加载组件的更多信息，请参阅 [数据组件](/components-data)。
+
+### 在运行时加载文件
+
+您可以在流程中使用预加载的文件，如果您的流程接受文件输入，您也可以在运行时加载文件。
+有关示例，请参阅 [创建可以接收文件的聊天机器人](/chat-with-files)。
+
+## 上传图像
+
+Langflow 支持以下格式的 base64 图像：
+
+* PNG
+* JPG/JPEG
+* GIF
+* BMP
+* WebP
+
+您可以将图像上传到 **Playground** 聊天界面，也可以使用 Langflow API 作为运行时输入。
+
+* 在 **Playground** 中，您可以将图像拖放到聊天输入区域，或者可以单击 **附加图像** 图标来选择要上传的图像。
+
+* 当您使用 `/api/v1/run/$FLOW_ID` 端点触发流程时，您可以使用 `files` 参数将 base64 编码的图像数据附加到请求载荷中：
+
+   ```bash
+   curl -X POST "http://$LANGFLOW_SERVER_ADDRESS/api/v1/run/$FLOW_ID" \
+   -H "Content-Type: application/json" \
+   -H "x-api-key: $LANGFLOW_API_KEY" \
+   -d '{
+      "session_id": "custom_session_123",
+      "input_value": "What is in this image?",
+      "input_type": "chat",
+      "output_type": "chat",
+      "files": ["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."]
+   }'
+   ```
+
+对于更专业的图像处理，请浏览第三方 [包](/components-bundle-components) 或 [创建您自己的组件](/components-custom-components)。
+
+## 处理视频文件
+
+对于视频，请参阅 Langflow **组件** 菜单中的 **Twelve Labs** 和 **YouTube** [包](/components-bundle-components)。
+
+## 设置最大文件大小
+
+默认情况下，最大文件大小为 100 MB。
+要修改此值，请更改 [`--max-file-size-upload` 环境变量](/environment-variables#LANGFLOW_MAX_FILE_SIZE_UPLOAD)。
+
+## 另请参阅
+
+* [数据组件](/components-data)
+* [处理组件](/components-processing)

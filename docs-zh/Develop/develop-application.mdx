@@ -1,0 +1,239 @@
+---
+title: 容器化 Langflow 应用程序
+slug: /develop-application
+---
+
+在可视化编辑器中设计流程只是构建使用 Langflow 的应用程序的第一步。
+
+一旦您有了一个功能性的流程，您就可以在更大的应用程序中使用该流程，例如网站或移动应用。
+由于 Langflow 既是 IDE 又是运行时，您可以使用 Langflow 在本地构建和测试流程，然后在生产环境中打包和提供流程。
+
+本指南介绍了使用 Langflow 进行应用程序开发，从项目设置到打包和部署。
+本文档不介绍如何编写完整的应用程序；它只描述如何在更大的应用程序上下文中包含 Langflow。
+
+## 项目结构
+
+以下示例描述了最小化 Langflow 应用程序的项目目录结构：
+
+```text
+LANGFLOW-APPLICATION/
+├── docker.env
+├── Dockerfile
+├── flows/
+│   ├── flow1.json
+│   └── flow2.json
+├── langflow-config-dir/
+├── README.md
+```
+
+此项目目录包含以下内容：
+
+* [`docker.env`](#docker-env)：此文件作为 `.env` 文件复制到 Docker 镜像的容器根目录中。
+* [`Dockerfile`](#dockerfile)：此文件控制您的 Langflow 镜像的构建方式。
+* [`/flows`](#flows)：此文件夹保存您要托管的流程，即您的应用程序使用的流程。
+* `/langflow-config-dir`：此文件夹在 Dockerfile 中被引用作为 Langflow 部署的配置文件、数据库和日志的位置。
+* `README.md`：这是您的应用程序文档的典型 README 文件。
+
+这是 Langflow 应用程序项目目录的最小化示例。
+您的应用程序可能有额外的文件和文件夹，例如用于自定义组件的 `/components` 文件夹，或用于额外依赖项的 `pyproject.toml` 文件。
+
+### 包管理
+
+基础 Langflow Docker 镜像包含 Langflow 核心依赖项，因为它使用 `langflowai/langflow:latest` 作为父镜像。
+
+如果您的应用程序需要额外的依赖项，请为额外的依赖项创建一个 [`pyproject.toml`](https://packaging.python.org/en/latest/guides/writing-pyproject-toml) 文件。
+有关更多信息，请参阅[安装自定义依赖项](/install-custom-dependencies)。
+
+要将具有额外依赖项的应用程序部署到 Docker，您必须将 `pyproject.toml` 和 `uv.lock` 文件复制到 Docker 镜像。
+为此，请将以下内容添加到您的 Langflow 应用程序的 Dockerfile 中：
+
+```text
+COPY pyproject.toml uv.lock /app/
+```
+
+### 环境变量 {#docker-env}
+
+`docker.env` 文件是加载到 Docker 镜像中的 `.env` 文件。
+它包含控制 Langflow 行为的环境变量，例如身份验证、数据库存储、API 密钥和服务器配置。
+例如：
+
+```text
+LANGFLOW_AUTO_LOGIN=true
+LANGFLOW_SAVE_DB_IN_CONFIG_DIR=true
+LANGFLOW_BASE_URL=http://0.0.0.0:7860
+OPENAI_API_KEY=sk-...
+```
+
+您包含的具体值取决于您的应用程序需求以及您希望如何配置 Langflow。
+有关更多信息，请参阅 [Langflow 环境变量](/environment-variables)和[全局变量](/configuration-global-variables)。
+
+您也可以在 Dockerfile 中设置环境变量。
+但是，如果您在 `docker.env` 和 Dockerfile 中都设置了环境变量，Langflow 会使用 `docker.env` 中设置的值。
+
+### 密钥
+
+为了简化，Langflow 文档中的示例可能会直接引用 API 密钥和其他敏感值。
+在您自己的应用程序中，您应始终遵循管理密钥的行业最佳实践，例如使用环境变量或密钥管理工具。
+
+有关生成身份验证密钥和在 Langflow 中管理密钥的信息，请参阅[身份验证](/configuration-authentication)。
+
+### 存储
+
+默认情况下，Langflow 使用 [SQLite](https://www.sqlite.org/) 数据库进行存储。
+如果您更喜欢使用 PostgreSQL，请参阅[配置外部 PostgreSQL 数据库](/configuration-custom-database)。
+
+有关存储（包括缓存和内存）的更多信息，请参阅[内存管理选项](/memory)。
+
+### 流程 {#flows}
+
+您的本地 Langflow 实例可能有用于不同应用程序的多个流程。
+当您将 Langflow 打包为应用程序的依赖项时，您只想包含您的应用程序使用的流程。
+
+1. [导出流程](/concepts-flows-import)，这些流程与您的应用程序相关。
+
+    如果您有链式流程（触发其他流程的流程），请确保您导出 _所有_ 必要的流程。
+
+2. 将导出的 Langflow JSON 文件添加到项目目录中的 `/flows` 文件夹。
+
+### 组件
+
+您在 Langflow 可视化编辑器中看到的核心组件和包会自动包含在基础 Langflow Docker 镜像中。
+
+如果您为应用程序创建了任何[自定义组件](/components-custom-components)，您必须在项目目录中包含这些组件：
+
+1. 在项目目录中创建一个 `/components` 文件夹。
+2. 将自定义组件文件添加到 `/components` 文件夹。
+3. 在 `docker.env` 中指定 `/components` 的路径。
+
+## Langflow Dockerfile {#dockerfile}
+
+The Dockerfile determines how your Langflow image is built, including the dependencies, flows, components, and configuration files.
+
+At minimum, you need to specify the base Langflow image, create the necessary folders in the container, copy folders and files to the container, and provide a startup command.
+
+```dockerfile
+# Use the latest version of the base Langflow image
+FROM langflowai/langflow:latest
+
+# Create folders and set the working directory in the container
+RUN mkdir /app/flows
+RUN mkdir /app/langflow-config-dir
+WORKDIR /app
+
+# Copy flows, langflow-config-dir, and docker.env to the container
+COPY flows /app/flows
+COPY langflow-config-dir /app/langflow-config-dir
+COPY docker.env /app/.env
+
+# Optional: Copy custom components to the container
+COPY components /app/components
+
+# Optional: Use custom dependencies
+COPY pyproject.toml uv.lock /app/
+
+# Set environment variables if not set in docker.env
+ENV PYTHONPATH=/app
+ENV LANGFLOW_LOAD_FLOWS_PATH=/app/flows
+ENV LANGFLOW_CONFIG_DIR=/app/langflow-config-dir
+ENV LANGFLOW_COMPONENTS_PATH=/app/components
+ENV LANGFLOW_LOG_ENV=container
+
+# Command to run the Langflow server on port 7860
+EXPOSE 7860
+CMD ["langflow", "run", "--backend-only", "--env-file","/app/.env","--host", "0.0.0.0", "--port", "7860"]
+```
+
+The environment variables set directly in this Dockerfile specify resource paths for Langflow.
+If these variables are also set in `docker.env`, the values in `docker.env` override the values set in the Dockerfile.
+
+In this example, `ENV LANGFLOW_LOG_ENV=container` sets the logging behavior for serialized JSON to `stdout` to track the application's behavior in a containerized environment. For more information, see [Logging](/logging).
+
+### Backend-only mode
+
+The `--backend-only` flag in `CMD` starts Langflow in backend-only mode, which provides programmatic access only.
+This is recommended when running Langflow as a dependency of an application where you don't need access to the Langflow UI.
+
+If you want to serve the visual editor _and_ the Langflow backend, omit `--backend-only`.
+
+For more information, see [Deploy Langflow on Docker](/deployment-docker).
+
+## Test your Langflow Docker image
+
+Build and run your Langflow Docker image to test it.
+
+This example runs the container locally.
+For information about publishing your image on Docker Hub and running a Langflow container remotely, see [Deploy to Docker Hub and Kubernetes](#deploy-docker).
+
+1. Build the Docker image:
+
+    ```bash
+    docker build -t langflow-pokedex:1.2.0 .
+    ```
+
+2. Run the Docker container to start your Langflow server:
+
+    ```bash
+    docker run -p 7860:7860 langflow-pokedex:1.2.0
+    ```
+
+3. To confirm that the container is serving your flows as expected, use the Langflow API to run a flow:
+
+    1. Open one of the JSON files in your application's `/flows` folder, and then find the flow's `id` in the  [additional metadata and project information](/concepts-flows-import#additional-metadata-and-project-information).
+
+        There are many `id` values; make sure you get the ID for the entire flow, not the ID for an individual component.
+        If your flow is complex, try searching for the flow's name, which is typically near the flow's `id`.
+
+        ```json
+        "name": "Basic Prompting",
+        "description": "Perform basic prompting with an OpenAI model.",
+        "id": "e4167236-938f-4aca-845b-21de3f399858",
+        ```
+
+    2. Send a POST request to the [`/v1/run/$FLOW_ID`](/api-flows-run#run-flow) endpoint using the flow ID from the previous step .
+
+        The following example runs a simple LLM chat flow that responds to a chat input string.
+        If necessary, modify the payload for your flow.
+        For example, if your flow doesn't have a **Chat input** component, you must modify the payload to provide the expected input for your flow.
+
+        ```bash
+        curl --request POST \
+          --url 'http://localhost:7860/api/v1/run/e4167236-938f-4aca-845b-21de3f399858?stream=true' \
+          --header 'Content-Type: application/json' \
+          --data '{
+            "input_value": "Tell me about Charizard.",
+            "output_type": "chat",
+            "input_type": "chat",
+            "session_id": "charizard_test_request"
+        }'
+        ```
+        
+        <details>
+        <summary>About this example</summary>
+
+        This command runs the Pokédex template flow.
+        It provides chat input about a specific Pokémon, uses an optional custom `session_id`, and enables response streaming with `?stream=true`.
+
+        The default [session ID](/session-id) is the flow ID.
+        Custom session IDs can help isolate unique conversation threads to keep the LLM's context clean, and they can help identify specific conversations in flow logs to make debugging easier.
+
+        This command uses response streaming because the Pokédex flow can return a large amount of text.
+        To use batching, set `?stream=false`.
+
+        </details>
+
+      3. Verify that the request succeeds and the response is valid, depending on the specific flow you ran.
+
+          This confirms that your Langflow Docker image is correctly configured and this flow is accessible through the Langflow API server that is hosted on the container.
+          When you build and test your entire application stack, your front-end application can use Langflow API requests to trigger the flows served by your Langflow container in the same way you manually tested the flow in the previous step.
+
+          This example triggered a flow by sending chat input to the `/v1/run/$FLOW_ID` endpoint.
+          For more examples of flow triggers, see [Trigger flows with webhooks](/webhook) and the tutorial to [Create a chatbot that can ingest files](/chat-with-files).
+
+## Deploy to Docker Hub and Kubernetes {#deploy-docker}
+
+When you're ready to share your application with the world, you need to serve Langflow in a production environment.
+For more information about deploying Langflow, see the following:
+
+* [Learn about Langflow deployments](/deployment-overview)
+* [Deploy Langflow on Docker](/deployment-docker)
+* [Deploy your application to Kubernetes](/deployment-kubernetes-prod)

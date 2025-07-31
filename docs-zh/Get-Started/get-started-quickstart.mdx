@@ -1,0 +1,557 @@
+---
+title: 快速开始
+slug: /get-started-quickstart
+---
+
+import Icon from "@site/src/components/icon";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+通过加载模板 flow、运行它，然后在 `/run` API 端点提供服务来开始使用 Langflow。
+
+## 先决条件
+
+- [安装并启动 Langflow](/get-started-installation)
+- 创建 [OpenAI API 密钥](https://platform.openai.com/api-keys)
+- 创建 [Langflow API 密钥](/configuration-api-keys)
+
+    <details>
+    <summary>创建 Langflow API 密钥</summary>
+
+    Langflow API 密钥是您可以与 Langflow 一起使用的用户特定 token。
+
+    要创建 Langflow API 密钥，请执行以下操作：
+
+    1. 在 Langflow 中，点击您的用户图标，然后选择**设置**。
+    2. 点击 **Langflow API Keys**，然后点击 <Icon name="Plus" aria-hidden="true"/> **Add New**。
+    3. 为您的密钥命名，然后点击 **Create API Key**。
+    4. 复制 API 密钥并安全存储。
+    5. 要在请求中使用您的 Langflow API 密钥，请在终端中设置 `LANGFLOW_API_KEY` 环境变量，然后在请求中包含 `x-api-key` 头部或查询参数。
+    例如：
+
+        ```bash
+        # Set variable
+        export LANGFLOW_API_KEY="sk..."
+
+        # Send request
+        curl --request POST \
+        --url 'http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID' \
+        --header 'Content-Type: application/json' \
+        --header 'x-api-key: LANGFLOW_API_KEY' \
+        --data '{
+          "output_type": "chat",
+          "input_type": "chat",
+          "input_value": "Hello"
+        }'
+        ```
+
+    </details>
+
+## 运行 Simple Agent 模板 flow
+
+1. 在 Langflow 中，点击 **New Flow**，然后选择 **Simple Agent** 模板。
+
+![Simple agent 启动 flow](/img/quickstart-simple-agent-flow.png)
+
+Simple Agent flow 由连接到 [Chat I/O 组件](/components-io)、[Calculator 组件](/components-helpers#calculator)和 [URL 组件](/components-data#url) 的 [Agent 组件](/agents)组成。当您运行此 flow 时，您通过 Chat Input 组件向 Agent 提交查询，Agent 使用 Calculator 和 URL 工具生成响应，然后通过 Chat Output 组件返回响应。
+
+许多组件都可以作为 Agent 的工具，包括 [Model Context Protocol (MCP) 服务器](/mcp-server)。Agent 根据给定查询的上下文决定调用哪些工具。
+
+2. 在 **Agent** 组件的设置中，在 **OpenAI API Key** 字段中，直接输入您的 OpenAI API 密钥，或点击 <Icon name="Globe" aria-hidden="true"/> **Globe** 来创建[全局变量](/configuration-global-variables)。
+
+    此指南使用 OpenAI 模型作为演示目的。如果您想使用不同的提供商，请更改 **Model Provider** 和 **Model Name** 字段，然后为您选择的提供商提供凭据。
+
+3. 要运行 flow，请点击 <Icon name="Play" aria-hidden="true"/> **Playground**。
+
+4. 要测试 Calculator 工具，请向 Agent 问一个简单的数学问题，例如 `I want to add 4 and 4.`
+为了帮助您测试和评估您的 flow，Playground 展示了 Agent 在分析提示、选择工具、然后使用工具生成响应时的推理过程。
+在这种情况下，数学问题使 Agent 选择 Calculator 工具并使用像 `evaluate_expression` 这样的操作。
+
+![Playground 与 Agent 工具](/img/quickstart-simple-agent-playground.png)
+
+5. 要测试 URL 工具，请向 Agent 询问当前事件。
+对于此请求，Agent 选择 URL 工具的 `fetch_content` 操作，然后返回当前新闻头条的摘要。
+
+6. 当您完成 flow 测试后，点击 <Icon name="X" aria-hidden="true"/>**Close**。
+
+:::tip 下一步
+现在您已经运行了第一个 flow，试试这些下一步：
+
+- 通过附加不同的工具或向 flow 添加更多[组件](/concepts-components)来编辑您的 **Simple Agent** flow。
+- 从头开始或通过修改其他模板 flow 来[构建您自己的 flow](/concepts-flows)。
+- 将 flow 集成到您的应用程序中，如[从外部应用程序运行您的 flow](#run-your-flows-from-external-applications) 中所解释的。
+:::
+
+## 从外部应用程序运行您的 flow
+
+Langflow 是一个 IDE，但它也是一个运行时，您可以通过 Python、JavaScript 或 HTTP 使用 [Langflow API](/api-reference-api-examples) 调用它。
+
+当您在本地启动 Langflow 时，您可以向本地 Langflow 服务器发送请求。
+对于生产应用程序，您需要[部署稳定的 Langflow 实例](/deployment-overview)来处理 API 调用。
+
+例如，您可以使用 `/run` 端点运行 flow 并获得结果。
+
+Langflow 提供代码片段来帮助您开始使用 Langflow API。
+
+1. 要打开 **API 访问面板**，在 **Playground** 中点击 **Share**，然后点击 **API access**。
+
+    API 访问面板中的默认代码使用 Langflow 服务器 `url`、`headers` 和请求数据的 `payload` 构造请求。
+    代码片段自动包含 flow 的 `LANGFLOW_SERVER_ADDRESS` 和 `FLOW_ID` 值，以及如果您在终端会话中将其设置为环境变量，则包含您的 `LANGFLOW_API_KEY` 的脚本。
+    如果您为不同的服务器或 flow 使用代码，请替换这些值。
+    默认的 Langflow 服务器地址是 `http://localhost:7860`。
+
+    <Tabs>
+    <TabItem value="Python" label="Python" default>
+
+    ```python
+    import requests
+
+    url = "http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID"  # The complete API endpoint URL for this flow
+
+    # Request payload configuration
+    payload = {
+        "output_type": "chat",
+        "input_type": "chat",
+        "input_value": "hello world!"
+    }
+
+    # Request headers
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key": "$LANGFLOW_API_KEY"
+    }
+
+    try:
+        # Send API request
+        response = requests.request("POST", url, json=payload, headers=headers)
+        response.raise_for_status()  # Raise exception for bad status codes
+
+        # Print response
+        print(response.text)
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error making API request: {e}")
+    except ValueError as e:
+        print(f"Error parsing response: {e}")
+    ```
+
+    </TabItem>
+    <TabItem value="JavaScript" label="JavaScript">
+
+    ```js
+    const payload = {
+        "output_type": "chat",
+        "input_type": "chat",
+        "input_value": "hello world!",
+        "session_id": "user_1"
+    };
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': 'LANGFLOW_API_KEY'
+        },
+        body: JSON.stringify(payload)
+    };
+
+    fetch('http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID', options)
+        .then(response => response.json())
+        .then(response => console.log(response))
+        .catch(err => console.error(err));
+    ```
+
+    </TabItem>
+    <TabItem value="curl" label="curl">
+
+    ```bash
+    curl --request POST \
+         --url 'http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID?stream=false' \
+         --header 'Content-Type: application/json' \
+         --header "x-api-key: LANGFLOW_API_KEY" \
+         --data '{
+          "output_type": "chat",
+          "input_type": "chat",
+          "input_value": "hello world!"
+          }'
+
+    # A 200 response confirms the call succeeded.
+    ```
+
+    </TabItem>
+    </Tabs>
+
+2. 复制片段，将其粘贴到脚本文件中，然后运行脚本发送请求。
+如果您使用 curl 片段，您可以直接在终端中运行命令。
+
+如果请求成功，响应包含关于 flow 运行的许多详细信息，包括会话 ID、输入、输出、组件、持续时间等。
+以下是运行 **Simple Agent** 模板 flow 的响应示例：
+
+<details>
+<summary>Result</summary>
+
+```json
+{
+  "session_id": "29deb764-af3f-4d7d-94a0-47491ed241d6",
+  "outputs": [
+    {
+      "inputs": {
+        "input_value": "hello world!"
+      },
+      "outputs": [
+        {
+          "results": {
+            "message": {
+              "text_key": "text",
+              "data": {
+                "timestamp": "2025-06-16 19:58:23 UTC",
+                "sender": "Machine",
+                "sender_name": "AI",
+                "session_id": "29deb764-af3f-4d7d-94a0-47491ed241d6",
+                "text": "Hello world! 🌍 How can I assist you today?",
+                "files": [],
+                "error": false,
+                "edit": false,
+                "properties": {
+                  "text_color": "",
+                  "background_color": "",
+                  "edited": false,
+                  "source": {
+                    "id": "Agent-ZOknz",
+                    "display_name": "Agent",
+                    "source": "gpt-4o-mini"
+                  },
+                  "icon": "bot",
+                  "allow_markdown": false,
+                  "positive_feedback": null,
+                  "state": "complete",
+                  "targets": []
+                },
+                "category": "message",
+                "content_blocks": [
+                  {
+                    "title": "Agent Steps",
+                    "contents": [
+                      {
+                        "type": "text",
+                        "duration": 2,
+                        "header": {
+                          "title": "Input",
+                          "icon": "MessageSquare"
+                        },
+                        "text": "**Input**: hello world!"
+                      },
+                      {
+                        "type": "text",
+                        "duration": 226,
+                        "header": {
+                          "title": "Output",
+                          "icon": "MessageSquare"
+                        },
+                        "text": "Hello world! 🌍 How can I assist you today?"
+                      }
+                    ],
+                    "allow_markdown": true,
+                    "media_url": null
+                  }
+                ],
+                "id": "f3d85d9a-261c-4325-b004-95a1bf5de7ca",
+                "flow_id": "29deb764-af3f-4d7d-94a0-47491ed241d6",
+                "duration": null
+              },
+              "default_value": "",
+              "text": "Hello world! 🌍 How can I assist you today?",
+              "sender": "Machine",
+              "sender_name": "AI",
+              "files": [],
+              "session_id": "29deb764-af3f-4d7d-94a0-47491ed241d6",
+              "timestamp": "2025-06-16T19:58:23+00:00",
+              "flow_id": "29deb764-af3f-4d7d-94a0-47491ed241d6",
+              "error": false,
+              "edit": false,
+              "properties": {
+                "text_color": "",
+                "background_color": "",
+                "edited": false,
+                "source": {
+                  "id": "Agent-ZOknz",
+                  "display_name": "Agent",
+                  "source": "gpt-4o-mini"
+                },
+                "icon": "bot",
+                "allow_markdown": false,
+                "positive_feedback": null,
+                "state": "complete",
+                "targets": []
+              },
+              "category": "message",
+              "content_blocks": [
+                {
+                  "title": "Agent Steps",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "duration": 2,
+                      "header": {
+                        "title": "Input",
+                        "icon": "MessageSquare"
+                      },
+                      "text": "**Input**: hello world!"
+                    },
+                    {
+                      "type": "text",
+                      "duration": 226,
+                      "header": {
+                        "title": "Output",
+                        "icon": "MessageSquare"
+                      },
+                      "text": "Hello world! 🌍 How can I assist you today?"
+                    }
+                  ],
+                  "allow_markdown": true,
+                  "media_url": null
+                }
+              ],
+              "duration": null
+            }
+          },
+          "artifacts": {
+            "message": "Hello world! 🌍 How can I assist you today?",
+            "sender": "Machine",
+            "sender_name": "AI",
+            "files": [],
+            "type": "object"
+          },
+          "outputs": {
+            "message": {
+              "message": "Hello world! 🌍 How can I assist you today?",
+              "type": "text"
+            }
+          },
+          "logs": {
+            "message": []
+          },
+          "messages": [
+            {
+              "message": "Hello world! 🌍 How can I assist you today?",
+              "sender": "Machine",
+              "sender_name": "AI",
+              "session_id": "29deb764-af3f-4d7d-94a0-47491ed241d6",
+              "stream_url": null,
+              "component_id": "ChatOutput-aF5lw",
+              "files": [],
+              "type": "text"
+            }
+          ],
+          "timedelta": null,
+          "duration": null,
+          "component_display_name": "Chat Output",
+          "component_id": "ChatOutput-aF5lw",
+          "used_frozen_result": false
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+在生产应用程序中，您可能希望选择此响应的部分内容返回给用户、存储在日志中等等。下一步骤演示了如何从 Langflow API 响应中提取数据以在您的应用程序中使用。
+
+### 从响应中提取数据
+
+以下示例基于 API 面板的示例代码，在您的终端中创建一个存储 Agent 上一个答案的问答聊天。
+
+1. 将您的 **Simple Agent** flow 的 `/run` 片段合并到以下脚本中。
+此脚本在您的终端中运行问答聊天，并存储 Agent 的上一个答案，以便您可以比较它们。
+
+    <Tabs>
+    <TabItem value="Python" label="Python" default>
+
+    ```python
+    import requests
+    import json
+
+    url = "http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID"
+
+    def ask_agent(question):
+        payload = {
+            "output_type": "chat",
+            "input_type": "chat",
+            "input_value": question,
+        }
+
+        headers = {
+        "Content-Type": "application/json",
+        "x-api-key": "LANGFLOW_API_KEY"
+        }
+
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+
+            # Get the response message
+            data = response.json()
+            message = data["outputs"][0]["outputs"][0]["outputs"]["message"]["message"]
+            return message
+
+        except Exception as e:
+            return f"Error: {str(e)}"
+
+    def extract_message(data):
+        try:
+            return data["outputs"][0]["outputs"][0]["outputs"]["message"]["message"]
+        except (KeyError, IndexError):
+            return None
+
+    # Store the previous answer from ask_agent response
+    previous_answer = None
+
+    # the terminal chat
+    while True:
+        # Get user input
+        print("\nAsk the agent anything, such as 'What is 15 * 7?' or 'What is the capital of France?')")
+        print("Type 'quit' to exit or 'compare' to see the previous answer")
+        user_question = input("Your question: ")
+
+        if user_question.lower() == 'quit':
+            break
+        elif user_question.lower() == 'compare':
+            if previous_answer:
+                print(f"\nPrevious answer was: {previous_answer}")
+            else:
+                print("\nNo previous answer to compare with!")
+            continue
+
+        # Get and display the answer
+        result = ask_agent(user_question)
+        print(f"\nAgent's answer: {result}")
+        # Store the answer for comparison
+        previous_answer = result
+    ```
+
+    </TabItem>
+    <TabItem value="JavaScript" label="JavaScript">
+
+    ```js
+    const readline = require('readline');
+
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    const url = 'http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID';
+
+    // Store the previous answer from askAgent response
+    let previousAnswer = null;
+
+    // the agent flow, with question as input_value
+    async function askAgent(question) {
+        const payload = {
+            "output_type": "chat",
+            "input_type": "chat",
+            "input_value": question
+        };
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': 'LANGFLOW_API_KEY'
+            },
+            body: JSON.stringify(payload)
+        };
+
+        try {
+            const response = await fetch(url, options);
+            const data = await response.json();
+
+            // Extract the message from the nested response
+            const message = data.outputs[0].outputs[0].outputs.message.message;
+            return message;
+        } catch (error) {
+            return `Error: ${error.message}`;
+        }
+    }
+
+    // the terminal chat
+    async function startChat() {
+        console.log("\nAsk the agent anything, such as 'What is 15 * 7?' or 'What is the capital of France?'");
+        console.log("Type 'quit' to exit or 'compare' to see the previous answer");
+
+        const askQuestion = () => {
+            rl.question('\nYour question: ', async (userQuestion) => {
+                if (userQuestion.toLowerCase() === 'quit') {
+                    rl.close();
+                    return;
+                }
+
+                if (userQuestion.toLowerCase() === 'compare') {
+                    if (previousAnswer) {
+                        console.log(`\nPrevious answer was: ${previousAnswer}`);
+                    } else {
+                        console.log("\nNo previous answer to compare with!");
+                    }
+                    askQuestion();
+                    return;
+                }
+
+                const result = await askAgent(userQuestion);
+                console.log(`\nAgent's answer: ${result}`);
+                previousAnswer = result;
+                askQuestion();
+            });
+        };
+
+        askQuestion();
+    }
+
+    startChat();
+    ```
+
+    </TabItem>
+    </Tabs>
+
+2. 要查看 Agent 的上一个答案，请输入 `compare`。要关闭终端聊天，请输入 `exit`。
+
+### 使用 tweaks 对 flow 运行应用临时覆盖
+
+您可以在请求中包含 tweaks 来临时修改 flow 参数。
+Tweaks 被添加到 API 请求中，并临时更改您 flow 中的组件参数。
+Tweaks 仅对单次运行覆盖 flow 组件的设置。
+它们不会修改底层 flow 配置或在运行之间持久化。
+
+Tweaks 被添加到 `/run` 端点的 `payload` 中。
+为了帮助格式化，您可以在复制代码片段之前在 Langflow 的 **Input Schema** 面板中定义 tweaks。
+
+1. 要打开 **Input Schema** 面板，从 **API access** 面板中点击 **Input Schema**。
+2. 在 **Input Schema** 面板中，选择您在下一次请求中要修改的参数。
+在 **Input Schema** 面板中启用参数并不**允许**修改列出的参数。它只是将它们添加到示例代码中。
+3. 例如，要将 LLM 提供商从 OpenAI 更改为 Groq，并在请求中包含您的 Groq API 密钥，请选择值 **Model Providers**、**Model** 和 **Groq API Key**。
+Langflow 根据您的输入参数更新代码片段中的 `tweaks` 对象，并包含默认值来指导您。
+在您的脚本中使用更新的代码片段来使用您的覆盖运行 flow。
+
+```json
+payload = {
+    "output_type": "chat",
+    "input_type": "chat",
+    "input_value": "hello world!",
+    "tweaks": {
+        "Agent-ZOknz": {
+            "agent_llm": "Groq",
+            "api_key": "GROQ_API_KEY",
+            "model_name": "llama-3.1-8b-instant"
+        }
+    }
+}
+```
+
+## 下一步
+
+* [使用 Langflow API 触发 flow](/concepts-publish)
+* [将 Langflow 用作 Model Context Protocol (MCP) 服务器](/mcp-server)
+* [容器化 Langflow 应用程序](/develop-application)
+* [文件管理](/concepts-file-management)
+* [凭据管理](/configuration-api-keys)

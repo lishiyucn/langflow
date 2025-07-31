@@ -1,0 +1,315 @@
+---
+title: Flow management endpoints
+slug: /api-flows
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+使用 `/flows` 端点来创建、读取、更新和删除 flow。
+
+如果您想要使用 Langflow API 运行 flow，请参阅 [Flow 触发端点](/api-flows-run)。
+
+## 创建 flow
+
+创建一个新的 flow。
+
+```bash
+curl -X POST \
+  "$LANGFLOW_URL/api/v1/flows/" \
+  -H "accept: application/json" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $LANGFLOW_API_KEY" \
+  -d '{
+  "name": "string2",
+  "description": "string",
+  "icon": "string",
+  "icon_bg_color": "#FF0000",
+  "gradient": "string",
+  "data": {},
+  "is_component": false,
+  "updated_at": "2024-12-30T15:48:01.519Z",
+  "webhook": false,
+  "endpoint_name": "string",
+  "tags": [
+    "string"
+  ]
+}'
+```
+
+<details>
+<summary>结果</summary>
+
+```json
+{
+  "name": "string2",
+  "description": "string",
+  "icon": "string",
+  "icon_bg_color": "#FF0000",
+  "gradient": "string",
+  "data": {},
+  "is_component": false,
+  "updated_at": "2025-02-04T21:07:36+00:00",
+  "webhook": false,
+  "endpoint_name": "string",
+  "tags": ["string"],
+  "locked": false,
+  "id": "e8d81c37-714b-49ae-ba82-e61141f020ee",
+  "user_id": "f58396d4-a387-4bb8-b749-f40825c3d9f3",
+  "project_id": "1415de42-8f01-4f36-bf34-539f23e47466"
+}
+```
+
+</details>
+
+## 创建多个 flow
+
+创建多个新的 flow，返回 flow 对象数组。
+
+```bash
+curl -X POST \
+  "$LANGFLOW_URL/api/v1/flows/batch/" \
+  -H "accept: application/json" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $LANGFLOW_API_KEY" \
+  -d '{
+  "flows": [
+    {
+      "name": "string",
+      "description": "string",
+      "icon": "string",
+      "icon_bg_color": "string",
+      "gradient": "string",
+      "data": {},
+      "is_component": false,
+      "updated_at": "2024-12-30T18:36:02.737Z",
+      "webhook": false,
+      "endpoint_name": "string",
+      "tags": [
+        "string"
+      ],
+      "locked": false,
+      "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "project_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    },
+    {
+      "name": "string",
+      "description": "string",
+      "icon": "string",
+      "icon_bg_color": "string",
+      "gradient": "string",
+      "data": {},
+      "is_component": false,
+      "updated_at": "2024-12-30T18:36:02.737Z",
+      "webhook": false,
+      "endpoint_name": "string",
+      "tags": [
+        "string"
+      ],
+      "locked": false,
+      "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "project_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ]
+}'
+```
+
+## 读取 flow
+
+根据 ID 检索特定的 flow。
+
+```bash
+curl -X GET \
+  "$LANGFLOW_URL/api/v1/flows/$FLOW_ID" \
+  -H "accept: application/json" \
+  -H "x-api-key: $LANGFLOW_API_KEY"
+```
+
+<details>
+<summary>结果</summary>
+
+```json
+{
+  "name": "Basic Prompting",
+  "description": "Perform basic prompting with an OpenAI model.",
+  "icon": "Braces",
+  "icon_bg_color": null,
+  "gradient": "2",
+  "data": {
+    "nodes": [
+     ...
+    ]
+  }
+}
+```
+
+</details>
+
+## 读取多个 flow
+
+返回包含 flow 列表的 JSON 对象。
+
+使用分页检索所有 flow：
+
+```bash
+curl -X GET \
+  "$LANGFLOW_URL/api/v1/flows/?remove_example_flows=false&components_only=false&get_all=true&header_flows=false&page=1&size=50" \
+  -H "accept: application/json" \
+  -H "x-api-key: $LANGFLOW_API_KEY"
+```
+
+要从特定项目检索 flow，请使用 `project_id` 查询参数：
+
+```bash
+curl -X GET \
+  "$LANGFLOW_URL/api/v1/flows/?remove_example_flows=true&components_only=false&get_all=false&project_id=$PROJECT_ID&header_flows=false&page=1&size=1" \
+  -H "accept: application/json" \
+  -H "x-api-key: $LANGFLOW_API_KEY"
+```
+
+## 读取示例 flow
+
+检索示例 flow 列表：
+
+```bash
+curl -X GET \
+  "$LANGFLOW_URL/api/v1/flows/basic_examples/" \
+  -H "accept: application/json" \
+  -H "x-api-key: $LANGFLOW_API_KEY"
+```
+
+## 更新 flow
+
+根据 ID 更新现有的 flow。
+
+此示例将 `endpoint_name` 的值从随机 UUID 更改为 `my_new_endpoint_name`。
+
+```bash
+curl -X PATCH \
+  "$LANGFLOW_URL/api/v1/flows/$FLOW_ID" \
+  -H "accept: application/json" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $LANGFLOW_API_KEY" \
+  -d '{
+  "name": "string",
+  "description": "string",
+  "data": {},
+  "project_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "endpoint_name": "my_new_endpoint_name",
+  "locked": true
+}'
+```
+
+<details>
+<summary>结果</summary>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "icon": "Braces",
+  "icon_bg_color": null,
+  "gradient": "2",
+  "data": {},
+  "is_component": false,
+  "updated_at": "2024-12-30T18:30:22+00:00",
+  "webhook": false,
+  "endpoint_name": "my_new_endpoint_name",
+  "tags": null,
+  "locked": true,
+  "id": "01ce083d-748b-4b8d-97b6-33adbb6a528a",
+  "user_id": "f58396d4-a387-4bb8-b749-f40825c3d9f3",
+  "project_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+}
+```
+
+</details>
+
+## 删除 flow
+
+根据 ID 删除特定的 flow。
+
+```bash
+curl -X DELETE \
+  "$LANGFLOW_URL/api/v1/flows/$FLOW_ID" \
+  -H "accept: application/json" \
+  -H "x-api-key: $LANGFLOW_API_KEY"
+```
+
+<details>
+<summary>结果</summary>
+
+```json
+{
+  "message": "Flow deleted successfully"
+}
+```
+
+</details>
+
+## 导出 flow
+
+将指定的 flow 导出为 ZIP 文件。
+
+此端点下载包含请求主体中列出的每个 flow ID 的 [Langflow JSON 文件](/concepts-flows-import#langflow-json-file-contents)的 ZIP 文件。
+
+```bash
+curl -X POST \
+  "$LANGFLOW_URL/api/v1/flows/download/" \
+  -H "accept: application/json" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $LANGFLOW_API_KEY" \
+  -d '[
+  "e1e40c77-0541-41a9-88ab-ddb3419398b5",
+  "92f9a4c5-cfc8-4656-ae63-1f0881163c28"
+]' \
+  --output langflow-flows.zip
+```
+
+<details>
+<summary>结果</summary>
+
+```text
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 76437    0 76353  100    84  4516k   5088 --:--:-- --:--:-- --:--:-- 4665k
+```
+
+</details>
+
+## 导入 flow
+
+通过上传 [Langflow 兼容的 JSON 文件](/concepts-flows-import#langflow-json-file-contents)导入 flow。
+
+要为 flow 指定目标项目，请包含查询参数 `project_id`。
+在上传 flow 之前，目标 `project_id` 必须已存在。调用 [/api/v1/projects/](/api-projects#read-projects) 端点获取可用项目列表。
+
+此示例将名为 `agent-with-astra-db-tool.json` 的本地文件上传到由 `PROJECT_ID` 变量指定的项目：
+
+```bash
+curl -X POST \
+  "$LANGFLOW_URL/api/v1/flows/upload/?project_id=$PROJECT_ID" \
+  -H "accept: application/json" \
+  -H "Content-Type: multipart/form-data" \
+  -H "x-api-key: $LANGFLOW_API_KEY" \
+  -F "file=@agent-with-astra-db-tool.json;type=application/json"
+```
+
+<details>
+<summary>结果</summary>
+
+```json
+[
+  {
+    "name": "agent-with-astra-db-tool",
+    "description": "",
+    "icon": null,
+    "icon_bg_color": null,
+    "gradient": null,
+    "data": {}
+  ...
+  }
+]
+```
+
+</details>

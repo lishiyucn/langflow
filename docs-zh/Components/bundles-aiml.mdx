@@ -1,0 +1,50 @@
+---
+title: AI/ML API
+slug: /bundles-aiml
+---
+
+import Icon from "@site/src/components/icon";
+
+[组件包](/components-bundle-components)包含支持 Langflow 与特定第三方集成的自定义组件。
+
+本页面描述了 **AI/ML** 组件包中可用的组件。
+
+## AI/ML API 文本生成
+
+该组件使用 AI/ML API 创建一个 `ChatOpenAI` 模型实例。
+输出仅为**语言模型** ([`LanguageModel`](/data-types#languagemodel))，您可以将其连接到其他 LLM 驱动的组件，例如**智能函数**组件。
+
+有关更多信息，请参阅 [AI/ML API Langflow 集成文档](https://docs.aimlapi.com/integrations/langflow)和[**语言模型**组件](/components-models)。
+
+### AI/ML API 文本生成参数
+
+默认情况下，许多组件输入参数在可视化编辑器中是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制**来切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| max_tokens | Integer | 输入参数。要生成的最大 token 数。设置为 0 表示无限 token。范围：0-128000。 |
+| model_kwargs | Dictionary | 输入参数。模型的其他关键字参数。 |
+| model_name | String | 输入参数。要使用的 AIML 模型名称。选项在 `AIML_CHAT_MODELS` 中预定义。 |
+| aiml_api_base | String | 输入参数。AIML API 的基础 URL。默认为 `https://api.aimlapi.com`。 |
+| api_key | SecretString | 输入参数。用于模型的 AIML API 密钥。 |
+| temperature | Float | 输入参数。控制输出的随机性。默认值：`0.1`。 |
+
+## AI/ML API 嵌入模型
+
+**AI/ML API 嵌入模型**组件使用 [AI/ML API](https://docs.aimlapi.com/api-overview/embeddings) 生成嵌入。
+
+输出为 [`Embeddings`](/data-types#embeddings)。
+具体来说，是一个 `AIMLEmbeddingsImpl` 实例。
+
+有关在流程中使用嵌入模型组件的更多信息，请参阅[**嵌入模型**组件](/components-embedding-models)。
+
+### AI/ML API 嵌入模型参数
+
+默认情况下，一些 **AI/ML API** 组件输入参数在可视化编辑器中是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制**来切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| model_name | String | 输入参数。要使用的 AI/ML 嵌入模型的名称。 |
+| aiml_api_key | SecretString | 输入参数。与 AI/ML 服务进行身份验证所需的 API 密钥。 |

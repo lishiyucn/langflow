@@ -1,0 +1,27 @@
+---
+title: LangSmith
+slug: /integrations-langsmith
+---
+
+LangSmith 是 LangChain 提供的全生命周期 DevOps 服务，提供监控和可观测性功能。要与 Langflow 集成，请将您的 LangChain API 密钥和配置添加为 Langflow 环境变量，然后启动 Langflow。
+
+1. 从 [https://smith.langchain.com](https://smith.langchain.com/) 获取您的 LangChain API 密钥
+2. 将以下密钥添加到 Langflow .env 文件中。
+将 `LANGCHAIN_API_KEY` 和 `LANGSMITH_PROJECT_NAME` 替换为您的 LangChain API 密钥。
+
+```text
+LANGSMITH_TRACING=true
+LANGSMITH_ENDPOINT=https://api.smith.langchain.com/
+LANGSMITH_API_KEY=LANGCHAIN_API_KEY
+LANGSMITH_PROJECT=LANGSMITH_PROJECT_NAME
+```
+
+或者，在您的终端中导出环境变量：
+
+`export LANGSMITH_TRACING=true && export LANGSMITH_ENDPOINT="https://api.smith.langchain.com/" && export LANGSMITH_API_KEY="LANGCHAIN_API_KEY" && export LANGSMITH_PROJECT="LANGSMITH_PROJECT_NAME"`
+
+3. 使用 `langflow run --env-file .env` 重启 Langflow
+4. 在 Langflow 中运行一个项目。
+5. 查看 LangSmith 仪表板以进行监控和可观测性。
+
+![LangSmith dashboard](/img/langsmith-dashboard.png)

@@ -1,0 +1,176 @@
+---
+title: Langflow CLI
+slug: /configuration-cli
+---
+
+import Link from '@docusaurus/Link';
+
+# Langflow CLI
+
+Langflow 命令行界面（Langflow CLI）是管理和运行 Langflow 服务器的主要界面。
+
+## CLI 命令
+
+以下章节描述了可用的 CLI 命令及其选项，以及它们对应的 [环境变量](./environment-variables.mdx)。
+
+### langflow
+
+不带任何参数运行 CLI 会显示可用选项和命令的列表。
+
+```bash
+langflow [OPTIONS]
+# 或
+python -m langflow [OPTIONS]
+```
+
+#### 选项
+
+| 选项 | 默认值 | 值 | 描述 |
+|--------|---------|--------|-------------|
+| <Link id="install-completion"/>`--install-completion` | *不适用* | *不适用* | 为当前 shell 安装自动补全。 |
+| <Link id="show-completion"/>`--show-completion` | *不适用* | *不适用* | 显示自动补全配置文件的位置（如果已安装）。 |
+| <Link id="help"/>`--help` | *不适用* | *不适用* | 显示有关命令用法及其选项和参数的信息。 |
+
+### langflow api-key
+
+要使用 Langflow CLI 创建 API 密钥，`AUTO_LOGIN` 必须设置为 `TRUE`，或者您必须以超级用户身份登录。
+
+* 如果 `AUTO_LOGIN` 为 `FALSE`，您必须以超级用户身份登录。
+* 如果 `AUTO LOGIN` 为 `TRUE`，您已经以超级用户身份登录。
+
+有关更多信息，请参阅 [API 密钥](/configuration-api-keys)。
+
+```bash
+langflow api-key [OPTIONS]
+# 或
+uv run langflow api-key [OPTIONS]
+```
+
+#### 选项
+
+| 选项 | 默认值 | 值 | 描述 |
+|--------|---------|--------|-------------|
+| <Link id="install-completion"/>`--install-completion` | *不适用* | *不适用* | 为当前 shell 安装自动补全。 |
+| <Link id="show-completion"/>`--show-completion` | *不适用* | *不适用* | 显示自动补全配置文件的位置（如果已安装）。 |
+| <Link id="help"/>`--help` | *不适用* | *不适用* | 显示有关命令用法及其选项和参数的信息。 |
+
+### langflow copy-db
+
+将数据库文件复制到当前目录。
+将 Langflow 数据库文件 `langflow.db` 和 `langflow-pre.db`（如果存在）从缓存目录复制到当前目录。
+
+:::note
+当前目录是包含 `__main__.py` 的目录。
+您可以通过运行 `which langflow` 找到此目录。
+:::
+
+```bash
+langflow copy-db
+# 或
+python -m langflow copy-db
+```
+
+#### 选项
+
+| 选项 | 默认值 | 值 | 描述 |
+|--------|---------|--------|-------------|
+| <Link id="copy-db-help"/>`--help` | *不适用* | *不适用* | 显示有关命令用法及其选项和参数的信息。 |
+
+### langflow migration
+
+运行或测试数据库迁移。
+
+```bash
+langflow migration [OPTIONS]
+# 或
+python -m langflow migration [OPTIONS]
+```
+
+#### 选项
+
+| 选项 | 默认值 | 值 | 描述 |
+|--------|---------|--------|-------------|
+| <Link id="migration-test"/>`--test` | `true` | 布尔值 | 在测试模式下运行迁移。使用 `--no-test` 禁用测试模式。 |
+| <Link id="migration-fix"/>`--fix` | `false` (`--no-fix`) | 布尔值 | 修复迁移。这是破坏性操作，所有受影响的数据将被删除。仅在您知道自己在做什么时使用此选项。 |
+| <Link id="migration-help"/>`--help` | *不适用* | *不适用* | 显示有关命令用法及其选项和参数的信息。 |
+
+### langflow run
+
+启动 Langflow 服务器。
+
+```bash
+langflow run [OPTIONS]
+# 或
+python -m langflow run [OPTIONS]
+```
+
+#### 选项
+
+| 选项 | 默认值 | 值 | 描述 |
+|--------|---------|--------|-------------|
+| <Link id="run-host"/>`--host` | `localhost` | 字符串 | Langflow 服务器将运行的主机。<br/>参见 [`LANGFLOW_HOST` 变量](./environment-variables.mdx#LANGFLOW_HOST)。 |
+| <Link id="run-workers"/>`--workers` | `1` | 整数 | 工作进程数。<br/>参见 [`LANGFLOW_WORKERS` 变量](./environment-variables.mdx#LANGFLOW_WORKERS)。 |
+| <Link id="run-worker-timeout"/>`--worker-timeout` | `300` | 整数 | 工作超时时间（以秒为单位）。<br/>参见 [`LANGFLOW_WORKER_TIMEOUT` 变量](./environment-variables.mdx#LANGFLOW_WORKER_TIMEOUT)。 |
+| <Link id="run-port"/>`--port` | `7860` | 整数 | Langflow 服务器将运行的端口。如果指定的端口正在使用中，服务器会自动选择一个空闲端口。<br/>参见 [`LANGFLOW_PORT` 变量](./environment-variables.mdx#LANGFLOW_PORT)。 |
+| <Link id="run-components-path"/>`--components-path` | `langflow/components` | 字符串 | 包含自定义组件的目录路径。<br/>参见 [`LANGFLOW_COMPONENTS_PATH` 变量](./environment-variables.mdx#LANGFLOW_COMPONENTS_PATH)。 |
+| <Link id="run-env-file"/>`--env-file` | 未设置 | 字符串 | 包含环境变量的 `.env` 文件路径。<br/>参见 [从 .env 文件导入环境变量](./environment-variables.mdx#configure-variables-env-file)。 |
+| <Link id="run-log-level"/>`--log-level` | `critical` | `debug`<br/>`info`<br/>`warning`<br/>`error`<br/>`critical` | 设置日志记录级别。<br/>参见 [`LANGFLOW_LOG_LEVEL` 变量](./environment-variables.mdx#LANGFLOW_LOG_LEVEL)。 |
+| <Link id="run-log-file"/>`--log-file` | `logs/langflow.log` | 字符串 | 设置 Langflow 日志文件的路径。<br/>参见 [`LANGFLOW_LOG_FILE` 变量](./environment-variables.mdx#LANGFLOW_LOG_FILE)。 |
+| <Link id="run-cache"/>`--cache` | `async` | `async`<br/>`redis`<br/>`memory`<br/>`disk` | 要使用的缓存类型。<br/>参见 [`LANGFLOW_CACHE_TYPE` 变量](./environment-variables.mdx#LANGFLOW_CACHE_TYPE)。 |
+| <Link id="run-frontend-path"/>`--frontend-path` | `./frontend` | 字符串 | 包含构建文件的前端目录路径。这仅用于开发目的。<br/>参见 [`LANGFLOW_FRONTEND_PATH` 变量](./environment-variables.mdx#LANGFLOW_FRONTEND_PATH)。 |
+| <Link id="run-open-browser"/>`--open-browser` | `true` | 布尔值 | 启动时打开系统网页浏览器。使用 `--no-open-browser` 禁用启动时打开系统网页浏览器。<br/> 参见 [`LANGFLOW_OPEN_BROWSER` 变量](./environment-variables.mdx#LANGFLOW_OPEN_BROWSER)。 |
+| <Link id="run-remove-api-keys"/>`--remove-api-keys` | `false` (`--no-remove-api-keys`) | 布尔值 | 从数据库中保存的项目中删除 API 密钥。<br/> 参见 [`LANGFLOW_REMOVE_API_KEYS` 变量](./environment-variables.mdx#LANGFLOW_REMOVE_API_KEYS)。 |
+| <Link id="run-backend-only"/>`--backend-only` | `false` (`--no-backend-only`) | 布尔值 | 仅运行 Langflow 的后端服务器（无前端）。<br/>参见 [`LANGFLOW_BACKEND_ONLY` 变量](./environment-variables.mdx#LANGFLOW_BACKEND_ONLY)。 |
+| <Link id="run-store"/>`--store` | `true` | 布尔值 | 启用 Langflow 商店功能。使用 `--no-store` 禁用 Langflow 商店功能。<br/>参见 [`LANGFLOW_STORE` 变量](./environment-variables.mdx#LANGFLOW_STORE)。 |
+| <Link id="run-auto-saving"/>`--auto-saving` | `true` | 布尔值 | 启用流程自动保存。使用 `--no-auto-saving` 禁用流程自动保存。<br/>参见 [`LANGFLOW_AUTO_SAVING` 变量](./environment-variables.mdx#LANGFLOW_AUTO_SAVING)。 |
+| <Link id="run-auto-saving-interval"/>`--auto-saving-interval` | `1000` | 整数 | 设置流程自动保存间隔（以毫秒为单位）。<br/>参见 [`LANGFLOW_AUTO_SAVING_INTERVAL` 变量](./environment-variables.mdx#LANGFLOW_AUTO_SAVING_INTERVAL)。 |
+| <Link id="run-health-check-max-retries"/>`--health-check-max-retries` | `5` | 整数 | 设置健康检查的最大重试次数。使用 `--no-health-check-max-retries` 禁用健康检查的最大重试次数。<br/>参见 [`LANGFLOW_HEALTH_CHECK_MAX_RETRIES` 变量](./environment-variables.mdx#LANGFLOW_HEALTH_CHECK_MAX_RETRIES)。 |
+| <Link id="run-max-file-size-upload"/>`--max-file-size-upload` | `100` | 整数 | 设置上传的最大文件大小（以兆字节为单位）。<br/>参见 [`LANGFLOW_MAX_FILE_SIZE_UPLOAD` 变量](./environment-variables.mdx#LANGFLOW_MAX_FILE_SIZE_UPLOAD)。 |
+| <Link id="run-ssl-cert-file-path"/>`--ssl-cert-file-path` | 未设置 | 字符串 | 本地系统上 SSL 证书文件的路径。 |
+| <Link id="run-ssl-key-file-path"/>`--ssl-key-file-path` | 未设置 | 字符串 | 本地系统上 SSL 密钥文件的路径。 |
+| <Link id="run-help"/>`--help` | *不适用* | *不适用* | 显示有关命令用法及其选项和参数的信息。 |
+
+### langflow superuser
+
+创建超级用户账户。
+
+```bash
+langflow superuser [OPTIONS]
+# 或
+python -m langflow superuser [OPTIONS]
+```
+
+#### 选项
+
+| 选项 | 默认值 | 值 | 描述 |
+|--------|---------|--------|-------------|
+| <Link id="superuser-username"/>`--username` | 必需 | 字符串 | 指定超级用户的名称。<br/>参见 [`LANGFLOW_SUPERUSER` 变量](./environment-variables.mdx#LANGFLOW_SUPERUSER)。 |
+| <Link id="superuser-password"/>`--password` | 必需 | 字符串 | 指定超级用户的密码。<br/>参见 [`LANGFLOW_SUPERUSER_PASSWORD` 变量](./environment-variables.mdx#LANGFLOW_SUPERUSER_PASSWORD)。 |
+
+## 优先级
+
+Langflow CLI 选项会覆盖相应 [环境变量](./environment-variables.mdx) 的值。
+
+例如，如果您将 `LANGFLOW_PORT=7860` 定义为环境变量，但您使用 `--port 7880` 运行 CLI，Langflow 会将端口设置为 **`7880`**，即通过 CLI 传递的值。
+
+## 赋值
+
+有两种方式可以为 CLI 选项赋值。
+您可以在选项标志和其值之间写一个空格：`--option value`。
+或者，您可以在选项标志和值之间使用等号（`=`）：`--option=value`。
+
+包含空格的值必须用引号包围：`--option 'Value with Spaces'` 或 `--option='Value with Spaces'`。
+
+### 布尔值 {#boolean}
+
+布尔选项用于打开或关闭某种行为，因此不接受参数。
+要激活布尔选项，请在命令行中输入它。
+例如：
+
+```bash
+langflow run --remove-api-keys
+```
+
+所有布尔选项都有对应的否定选项。
+例如，`--remove-api-keys` 的否定选项是 `--no-remove-api-keys`。
+这些选项让您可以否定可能已使用 [环境变量](./environment-variables.mdx) 设置的布尔选项。

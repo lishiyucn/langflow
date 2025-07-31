@@ -1,0 +1,197 @@
+---
+title: 输入/输出
+slug: /components-io
+---
+
+import Icon from "@site/src/components/icon";
+
+Langflow 的输入和输出组件定义了数据在您的 flow 中的进入和退出位置，但它们的功能并不相同。
+
+具体来说，**Chat Input/Output** 组件被设计用于促进对话交互，在对话中消息以累积方式交换。
+这些组件处理的数据包括消息文本以及附加的元数据，如发送者、会话 ID 和时间戳。
+
+相比之下，**Text Input/Output** 组件被设计用于简单字符串的输入和输出，不需要与聊天消息相关的附加上下文和元数据。
+这些组件处理的数据简化为基本的文本字符串。
+
+## Chat Input/Output {#chat-io}
+
+:::important
+**Chat Input/Output** 组件是在 **Playground** 中与您的 flow 聊天所必需的。
+有关更多信息，请参阅[在 Playground 中测试 flow](/concepts-playground)。
+:::
+
+**Chat Input/Output** 组件被设计用于处理 Langflow 中的对话交互。
+
+### Chat Input
+
+**Chat Input** 组件接受文本和文件输入，如聊天消息或文件。
+这些数据作为[`Message` 数据](/data-types)传递给其他组件，包含提供的输入以及相关的聊天元数据，如发送者、会话 ID、时间戳和附件。
+
+初始输入_不_应作为完整的 `Message` 对象提供，因为 **Chat Input** 组件会构建 `Message` 对象，然后将其传递给 flow 中的其他组件。
+
+#### Chat Input 参数
+
+**Chat Input** 组件的大多数输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 启用其他参数。
+
+有关生成的 `Message` 对象的信息，包括直接映射到 `Message` 属性的输入参数，请参阅 [`Message` 数据](/data-types#message)。
+
+| 名称 | 显示名称 | 信息 |
+|------|--------------|------|
+|input_value|Input Text| 输入参数。作为输入传递的消息文本字符串。 |
+|sender|Sender Type| 输入参数。将发送者标识为 `User` 或 `Language Model`。|
+|sender_name|Sender Name| 输入参数。发送者的姓名。如果未指定，默认为 `User` 或 `Language Model`。 |
+|session_id|Session ID| 输入参数。聊天会话的唯一标识符。如果为空，则使用当前会话 ID 参数。|
+|files|Files| 输入参数。与消息一起发送的文件。|
+|background_color|Background Color| 输入参数。图标的背景颜色。|
+|chat_icon|Icon| 输入参数。消息的图标。|
+|should_store_message|Store Messages| 输入参数。是否将消息存储在聊天历史记录中。|
+|text_color|Text Color| 输入参数。名称的文本颜色。|
+|message|Message|输出参数。具有所有指定属性的结果聊天`Message`对象。|
+
+<details>
+<summary>Chat Input 的消息方法</summary>
+
+`ChatInput`类提供了一个异步方法，根据输入参数创建和存储`Message`对象。
+`Message`对象在`ChatInput`类的`message_response`方法中使用`Message.create()`工厂方法创建。
+
+```python
+message = await Message.create(
+    text=self.input_value,
+    sender=self.sender,
+    sender_name=self.sender_name,
+    session_id=self.session_id,
+    files=self.files,
+    properties={
+        "background_color": background_color,
+        "text_color": text_color,
+        "icon": icon,
+    },
+)
+```
+
+</details>
+
+### Chat Output
+
+**Chat Output** 组件从其他组件接收`Message`、`Data`或`DataFrame`数据，如果需要则将其转换为`Message`数据，然后作为聊天消息发出最终输出。
+有关这些数据类型的信息，请参阅 [使用 Langflow 数据类型](/data-types)。
+
+在 **Playground** 中，聊天输出仅限于与聊天界面相关的 `Message` 对象部分，如文本响应、发送者姓名和文件附件。
+要查看与聊天消息关联的元数据，请检查 **Playground** 中的消息日志。
+
+使用 Langflow API 时，API 响应包括 **Chat Output** `Message` 对象以及来自 flow 运行的其他响应数据。
+Langflow API 响应可能非常冗长，因此您的应用程序必须包含代码来从响应中提取相关数据以返回给用户。
+有关示例，请参阅 [Langflow 快速入门](/get-started-quickstart)。
+
+#### Chat Output 参数
+
+**Chat Output** 组件的大多数输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 启用它们。
+
+有关生成的 `Message` 对象的信息，包括直接映射到 `Message` 属性的输入参数，请参阅 [`Message` 数据](/data-types#message)。
+
+| 名称 | 显示名称 | 信息 |
+|------|--------------|------|
+|input_value|Inputs| 输入参数。作为输出传递的消息文本字符串。 |
+|should_store_message|Store Messages| 输入参数。是否将消息存储在聊天历史记录中。|
+|sender|Sender Type| 输入参数。将发送者标识为 `User` 或 `Language Model`。|
+|sender_name|Sender Name| 输入参数。发送者的姓名。如果未指定，默认为 `User` 或 `Language Model`。 |
+|session_id|Session ID| 输入参数。聊天会话的唯一标识符。如果为空，则使用当前会话 ID 参数。|
+|data_template|Data Template| 输入参数。将 [`Data` 输入](/data-types#data) 转换为 `text` 的模板。如果为空，则动态设置为 `Data` 对象的 `text` 键。|
+|background_color|Background Color| 输入参数。图标的背景颜色。|
+|chat_icon|Icon| 输入参数。消息的图标。|
+|text_color|Text Color| 输入参数。名称的文本颜色。|
+|clean_data|Basic Clean Data| 输入参数。启用时，[`DataFrame` 输入](/data-types#dataframe) 在转换为文本时会被清理。清理会删除空行、单元格中的空行和多个换行符。|
+|message|Message|输出参数。具有所有指定属性的结果聊天`Message`对象。|
+
+### 在 flow 中使用 Chat Input/Output 组件
+
+要在 flow 中使用 **Chat Input** 和 **Chat Output** 组件，请将它们连接到接受或发出 [`Message` 数据](/data-types#message) 的组件。
+
+例如，以下 flow 将 **Chat Input** 和 **Chat Output** 连接到 **Language Model** 组件，创建一个简单的基于 LLM 的聊天 flow。
+
+![聊天输入和输出组件连接到 OpenAI 模型](/img/component-chat-io.png)
+
+:::tip
+有关 flow 中 **Chat Input/Output** 组件的详细示例，请参阅以下内容：
+
+* [Langflow 快速入门](/get-started-quickstart)：创建和运行基本代理 flow。
+* [**Basic prompting** 模板](/basic-prompting)：创建基于 LLM 的聊天 flow，接受聊天输入以及为 LLM 提供附加说明的提示。许多其他 Langflow 模板也使用 **Chat Input/Output** 组件。
+* [将应用程序连接到代理](/agent-tutorial)：探索围绕代理 flow 和提示的更高级概念，包括从外部应用程序触发代理 flow。
+:::
+
+### 使用 Langflow API 发送聊天输入
+
+您可以使用 Langflow API 通过向 **Chat Input** 组件发送输入来运行 flow：
+
+```bash
+curl --request POST \
+  --url "http://$LANGFLOW_SERVER_ADDRESS/api/v1/run/$FLOW_ID" \
+  --header "Content-Type: application/json" \
+  --header "x-api-key: $LANGFLOW_API_KEY" \
+  --data '{
+  "input_value": "What's the recommended way to install Docker on Mac M1?",
+  "output_type": "chat",
+  "input_type": "chat"
+}'
+```
+
+使用 Langflow API 触发 flow 时，负载必须包含 **Chat Input** 组件输入参数的值，如 `input_value`。
+
+不需要在请求中指定所有参数。
+例如，如果省略 `session_id`，则使用 flow 的默认会话 ID。
+如果您想使用自定义会话 ID，请在请求中包含 `session_id`：
+
+```bash
+curl --request POST \
+  --url "http://$LANGFLOW_SERVER_ADDRESS/api/v1/run/$FLOW_ID" \
+  --header "Content-Type: application/json" \
+  --header "x-api-key: $LANGFLOW_API_KEY" \
+  --data '{
+  "input_value": "Whats the recommended way to install Docker on Mac M1",
+  "session_id": "$USER_ID",
+  "output_type": "chat",
+  "input_type": "chat"
+}'
+```
+
+有关更多信息，请参阅 [使用 Langflow API 触发 flow](/concepts-publish)。
+
+## Text Input/Output {#text-io}
+
+:::important
+**Text Input/Output** 组件在 **Playground** 中不受支持。
+因为数据未格式化为聊天消息，所以数据不会出现在 **Playground** 中，您无法在 **Playground** 中与您的 flow 聊天。
+
+如果您想在 **Playground** 中与 flow 聊天，必须使用 [**Chat Input/Output** 组件](#chat-io)。
+:::
+
+**Text Input/Output** 组件专为接收或发出简单文本字符串的 flow 而设计。
+这些组件不支持完整的对话交互。
+
+将类似聊天的元数据传递给 **Text Input/Output** 组件不会改变组件的行为；结果仍然是简单的文本字符串。
+
+### Text Input
+
+**Text Input** 组件接受文本字符串输入，该输入作为 [`Message` 数据](/data-types) 传递给其他组件，仅包含提供的文本字符串。
+
+初始输入_不_应作为完整的 `Message` 对象提供，因为 **Text Input** 组件会构建 `Message` 对象，然后将其传递给 flow 中的其他组件。
+
+#### Text Input 参数
+
+| 名称 | 显示名称 | 信息 |
+|------|--------------|------|
+|input_value|Text|输入参数。作为组件输入提供的文本。可以直接输入或作为来自其他组件的 `Message` 数据传递。|
+|text|Text|输出参数。在 `text` 属性中包含输入文本的结果 `Message` 对象。|
+
+### Text Output
+
+**Text Output** 组件从其他组件接收 [`Message` 数据](/data-types#message)，在简化的 `Message` 对象中仅发出 `text` 属性。
+
+#### Text Output 参数
+
+| 名称 | 显示名称 | 信息 |
+|------|--------------|------|
+|input_value|Text|输入参数。要接收并作为字符串输出的文本。可以直接输入或作为来自其他组件的 `Message` 数据传递。|
+|text|Text|输出参数。在 `text` 属性中包含输出文本的结果 `Message` 对象。|

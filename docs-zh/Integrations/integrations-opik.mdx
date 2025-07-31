@@ -1,0 +1,54 @@
+---
+title: Opik
+slug: /integrations-opik
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+[Opik](https://www.comet.com/site/products/opik/) 是一个开源平台，专为评估、测试和监控大型语言模型（LLM）应用程序而设计。由 Comet 开发，旨在促进基于 LLM 应用程序的更直观协作、测试和监控。
+
+您可以配置 Langflow 来收集关于流程执行的[跟踪](https://www.comet.com/docs/opik/tracing/log_traces)数据，并自动将数据发送到 Opik。
+
+## 前提条件
+
+- 一个[开源 Opik 服务器或 Opik Cloud 账户](https://www.comet.com/docs/opik/faq#what-is-the-difference-between-opik-cloud-and-the-open-source-opik-platform-)
+- 一个[运行中的 Langflow 服务器](/get-started-installation)，其中包含您想要跟踪的[流程](/concepts-flows)
+
+:::tip
+如果您需要一个流程来测试 Opik 集成，请参阅 [Langflow 快速入门](/get-started-quickstart)。
+:::
+
+## 将 Opik 与 Langflow 集成
+
+1. 如果您使用 Opik Cloud，请获取一个 [Opik API 密钥](https://www.comet.com/docs/opik/faq#where-can-i-find-my-opik-api-key-)。
+
+    开源 Opik 服务器不需要 API 密钥。
+
+2. 在运行 Langflow 的同一环境中调用 `opik configure` CLI 来保存您的 Opik 配置：
+
+    ```bash
+    opik configure
+    ```
+
+    对于自托管的 Opik，您也可以使用以下 Opik CLI 命令：
+
+    ```bash
+    opik configure --use_local
+    ```
+
+    有关更多信息，请参阅 [Opik SDK 配置文档](https://www.comet.com/docs/opik/tracing/sdk_configuration)。
+
+3. 在设置环境变量的同一终端或环境中启动 Langflow：
+
+    ```bash
+    uv run langflow run
+    ```
+
+4. 在 Langflow 中，运行一个流程以产生供 Opik 跟踪的活动。
+
+5. 导航到您的 Opik 项目仪表板并查看收集的跟踪数据。
+
+## 禁用 Opik 集成
+
+要禁用 Opik 集成，请删除您使用 `opik configure` 设置的环境变量，然后重启 Langflow。

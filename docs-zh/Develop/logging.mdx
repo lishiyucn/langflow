@@ -1,0 +1,95 @@
+---
+title: 日志
+slug: /logging
+---
+
+import Icon from "@site/src/components/icon";
+
+本页面提供有关 Langflow 日志的信息，包括单个流程的日志和 Langflow 应用程序本身的日志。
+
+Langflow 使用 `loguru` 库进行日志记录。
+
+默认日志文件名为 `langflow.log`。
+Langflow 也为流程生成日志文件。
+
+## 日志存储
+
+默认日志文件存储位置取决于您的操作系统：
+
+- **macOS Desktop**:`/Users/<username>/.langflow/cache`
+- **Windows Desktop**:`C:\Users\<username>\AppData\Roaming\com.Langflow\cache`
+- **OSS macOS/Windows/Linux/WSL (`uv pip install`)**: `<path_to_venv>/lib/python3.12/site-packages/langflow/cache`
+- **OSS macOS/Windows/Linux/WSL (`git clone`)**: `<path_to_clone>/src/backend/base/langflow/cache`
+
+要自定义日志存储，请参阅 [配置日志选项](#configure-log-options)。
+
+## 配置日志选项
+
+使用 [Langflow 环境变量](/environment-variables) 在您的 Langflow `.env` 文件中配置日志选项，然后使用 `uv run langflow run --env-file .env` 启动 Langflow。
+
+以下环境变量可用于配置日志记录：
+
+* `LANGFLOW_LOG_LEVEL`: 设置日志级别为 `DEBUG`、`ERROR`（默认）、`INFO`、`WARNING` 和 `CRITICAL` 中的一个。例如，`LANGFLOW_LOG_LEVEL=DEBUG`。
+
+* `LANGFLOW_LOG_FILE`: 如果您想使用非默认位置，可设置日志文件存储位置。
+例如，`LANGFLOW_LOG_FILE=path/to/logfile.log`。
+
+* `LANGFLOW_LOG_ENV`: 控制日志输出和格式化。
+
+    * `LANGFLOW_LOG_ENV=container`: 将序列化的 JSON 输出到 stdout。
+    * `LANGFLOW_LOG_ENV=container_csv`: 将 CSV 格式的纯文本输出到 stdout。
+    * `LANGFLOW_LOG_ENV=default` 或未设置: 使用 [RichHandler](https://rich.readthedocs.io/en/stable/reference/logging.html) 输出美化的输出。
+
+* `LANGFLOW_LOG_ROTATION` 控制日志文件何时轮转，可以基于时间或文件大小。默认情况下，日志每 1 天轮转一次。
+
+    * 基于时间的轮转："1 day"、"12 hours"、"1 week"
+    * 基于大小的轮转："10 MB"、"1 GB"
+    * 禁用轮转："None"（日志文件将不受限制地增长）
+
+在 [Langflow 存储库](https://github.com/langflow-ai/langflow/blob/main/.env.example) 中提供了完整的示例 `.env` 文件。
+
+## 流程和组件日志
+
+运行流程后，您可以检查每个组件和流程运行的日志。
+例如，您可以检查由 [输入和输出组件](/components-io) 接收和生成的 `Message` 对象。
+
+### 查看流程日志
+
+在可视化编辑器中，单击 **日志** 来查看整个流程的日志：
+
+![日志面板](/img/logs.png)
+
+然后，单击 **输入** 和 **输出** 列中的单元格来检查 `Message` 对象。
+例如，以下 `Message` 数据可能是 **聊天输入** 组件的输出：
+
+```text
+    "messages": [
+    {
+        "message": "What's the recommended way to install Docker on Mac M1?",
+        "sender": "User",
+        "sender_name": "User",
+        "session_id": "Session Apr 21, 17:37:04",
+        "stream_url": null,
+        "component_id": "ChatInput-4WKag",
+        "files": [],
+        "type": "text"
+    }
+    ],
+```
+
+对于输入/输出组件，原始输入可能不会以 `Message` 对象的形式结构化。
+例如，**语言模型** 组件可能将原始文本响应传递给 **聊天输出** 组件，然后将其转换为 `Message` 对象。
+
+您可以在 Langflow 安装的日志存储位置找到流程的 `.log` 文件。
+有关文件路径，请参阅 [日志存储](#log-storage)。
+
+### 查看聊天日志
+
+在 **Playground** 中，您可以检查每个聊天会话的聊天历史。
+有关更多信息，请参阅 [查看聊天历史](/concepts-playground#view-chat-history)。
+
+### 查看单个组件的输出
+
+在调试流程输出的格式或内容问题时，检查每个组件的输出可以帮助确定数据在哪里丢失或格式错误。
+
+要查看单个组件在最近一次运行中产生的输出，请在可视化编辑器中单击 <Icon name="TextSearch" aria-hidden="true"/> **检查输出**。

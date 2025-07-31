@@ -1,0 +1,247 @@
+---
+title: 辅助组件
+slug: /components-helpers
+---
+
+import Icon from "@site/src/components/icon";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+辅助组件提供实用功能，帮助管理数据并在流程中执行简单任务。
+
+## Calculator
+
+Calculator组件对数学表达式执行基本算术运算。
+它支持加法、减法、乘法、除法和指数运算。
+
+有关在流程中使用此组件的示例，请参见[Python interpreter](/components-processing#python-interpreter)组件。
+
+### Calculator参数
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| expression | String | 输入参数。要评估的算术表达式，例如`4*4*(33/22)+12-20`。 |
+| result | Data | 输出参数。作为包含评估表达式的[`Data`对象](/data-types)的计算结果。 |
+
+## Current Date
+
+Current Date组件返回选定时区的当前日期和时间。此组件提供了在Langflow管道中获取特定时区日期和时间信息的灵活方式。
+
+### Current Date参数
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| timezone | String | 输入参数。当前日期和时间的时区。 |
+| current_date | String | 输出参数。选定时区的结果当前日期和时间。 |
+
+## Message History
+
+**Message History**组件提供组合的聊天历史和消息存储功能。
+它可以从[Langflow存储](/memory)_或_专用聊天记忆数据库（如Mem0或Redis）存储和检索聊天消息。
+
+它取代了遗留的**Chat History**和**Message Store**组件。
+
+:::important
+**Language Model**和**Agent**组件具有内置的聊天记忆功能，默认启用并使用Langflow存储。
+
+这种内置的聊天记忆功能对大多数用例都足够了。
+
+只有在需要在聊天上下文之外访问聊天记忆时才使用**Message History**组件，例如检索和分析最近存储的记忆的情感分析流程，或者你想将记忆存储在特定数据库中，与Langflow存储分开。
+
+有关更多信息，请参见[Store chat memory](/memory#store-chat-memory)。
+:::
+
+### 在流程中使用Message History组件
+
+**Message History**组件有两种模式，具体取决于你想在流程中使用它的位置：
+
+* **Retrieve模式**：组件从你的Langflow数据库或外部记忆中检索聊天消息。
+* **Store模式**：组件在你的Langflow数据库或外部记忆中存储聊天消息。
+
+这意味着如果你想同时存储和检索聊天消息，你需要在流程中使用多个**Message History**组件。
+
+<Tabs>
+<TabItem value="langflow" label="使用Langflow存储" default>
+
+以下步骤解释了如何创建一个基于聊天的流程，该流程使用**Message History**组件从你的Langflow安装数据库中存储和检索聊天记忆：
+
+1. 创建或编辑你想要使用聊天记忆的流程。
+
+2. 在流程开始时，添加一个**Message History**组件，然后将其设置为**Retrieve**模式。
+
+3. 可选：在**Message History**[组件的标题菜单](/concepts-components#component-menus)中，点击<Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**以启用记忆排序、过滤和限制的参数。
+
+3. 添加一个[**Prompt Template**组件](/components-prompts)，向**Template**字段添加`{memory}`变量，然后将**Message History**输出连接到**memory**输入。
+
+    **Prompt Template**组件向LLM提供指令和上下文，独立于通过**Chat Input**组件传递的聊天消息。
+    **Prompt Template**组件中的变量动态向**Prompt Template**组件添加字段，以便你的流程可以从其他组件、Langflow全局变量或固定输入接收这些值的定义。
+
+    在这种情况下，`{memory}`变量由检索的聊天记忆填充，然后传递给**Language Model**或**Agent**组件以向LLM提供额外的上下文。
+
+4. 将**Prompt Template**组件的输出连接到**Language Model**组件的**System Message**输入。
+
+    此示例使用**Language Model**组件作为中央聊天驱动程序，但你也可以使用**Agent**组件。
+
+5. 添加**Chat Input**组件，然后将其连接到**Language Model**组件的**Input**输入。
+
+6. 将**Language Model**组件的输出连接到**Chat Output**组件。
+
+7. 在流程末尾，添加另一个**Message History**组件，然后将其设置为**Store**模式。
+
+    根据需要在第二个**Message History**组件中配置任何其他参数，考虑到这个特定组件将存储聊天消息而不是检索它们。
+
+8. 将**Chat Output**组件的输出连接到**Message History**组件的**Message**输入。
+
+    LLM的每个响应都从**Language Model**组件输出到**Chat Output**组件，然后由最终的**Message History**组件存储在聊天记忆中。
+
+</TabItem>
+<TabItem value="external" label="使用外部聊天记忆">
+
+要从专用的外部聊天记忆数据库存储和检索聊天记忆，请使用**Message History**组件_和_提供商特定的聊天记忆组件。
+
+可用的提供商特定聊天记忆组件包括[**Cassandra Chat Memory**组件](/bundles-datastax#cassandra-chat-memory)、[**Mem0 Chat Memory**](/bundles-mem0)和[**Redis Chat Memory**组件](/bundles-redis)。
+有关所有提供商特定聊天记忆组件，请参见[Bundles](/components-bundle-components)。
+
+以下步骤解释了如何创建从Redis聊天记忆存储和检索聊天记忆的流程：
+
+1. 创建或编辑你想要使用聊天记忆的流程。
+
+2. 在流程开始时，添加**Message History**和**Redis Chat Memory**组件：
+
+   1. 配置**Redis Chat Memory**组件以连接到你的Redis数据库。有关更多信息，请参见[Redis文档](https://redis.io/docs/latest/)。
+   2. 将**Message History**组件设置为**Retrieve**模式。
+   3. 在**Message History**[组件的标题菜单](/concepts-components#component-menus)中，点击<Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**，启用**External Memory**，然后点击**Close**。
+
+      在**Controls**中，你还可以启用记忆排序、过滤和限制的参数。
+
+   4. 将**Redis Chat Memory**组件的输出连接到**Message History**组件的**External Memory**输入。
+
+3. 添加一个[**Prompt Template**组件](/components-prompts)，向**Template**字段添加`{memory}`变量，然后将**Message History**输出连接到**memory**输入。
+
+    **Prompt Template**组件向LLM提供指令和上下文，独立于通过**Chat Input**组件传递的聊天消息。
+    **Prompt Template**组件中的变量动态向**Prompt Template**组件添加字段，以便你的流程可以从其他组件、Langflow全局变量或固定输入接收这些值的定义。
+
+    在这种情况下，`{memory}`变量由检索的聊天记忆填充，然后传递给**Language Model**或**Agent**组件以向LLM提供额外的上下文。
+
+4. 将**Prompt Template**组件的输出连接到**Language Model**组件的**System Message**输入。
+
+    此示例使用**Language Model**组件作为中央聊天驱动程序，但你也可以使用**Agent**组件。
+
+5. 添加**Chat Input**组件，然后将其连接到**Language Model**组件的**Input**输入。
+
+6. 将**Language Model**组件的输出连接到**Chat Output**组件。
+
+7. 在流程末尾，添加另一对**Message History**和**Redis Chat Memory**组件：
+
+   1. 配置**Redis Chat Memory**组件以连接到你的Redis数据库。
+   2. 将**Message History**组件设置为**Store**模式。
+   3. 在**Message History**[组件的标题菜单](/concepts-components#component-menus)中，点击<Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**，启用**External Memory**，然后点击**Close**。
+
+       根据需要在此组件中配置任何其他参数，考虑到这个特定组件将存储聊天消息而不是检索它们。
+
+   4. 将**Redis Chat Memory**组件连接到**Message History**组件的**External Memory**输入。
+
+8. 将**Chat Output**组件的输出连接到**Message History**组件的**Message**输入。
+
+    LLM的每个响应都从**Language Model**组件输出到**Chat Output**组件，然后通过将其传递给最终的**Message History**和**Redis Chat Memory**组件存储在聊天记忆中。
+
+![具有Message History和Redis Chat Memory组件的流程](/img/component-message-history-external-memory.png)
+
+</TabItem>
+</Tabs>
+
+### Message History参数
+
+许多**Message History**组件输入参数在视觉编辑器中默认隐藏。
+你可以通过[组件标题菜单](/concepts-components#component-menus)中的<Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| memory | Memory | 输入参数。从外部记忆检索消息。如果为空，则使用Langflow表。 |
+| sender | String | 输入参数。按发送者类型过滤。 |
+| sender_name | String | 输入参数。按发送者名称过滤。 |
+| n_messages | Integer | 输入参数。要检索的消息数量。 |
+| session_id | String | 输入参数。要存储或检索的聊天记忆的[会话ID](/session-id)。如果省略或为空，则使用流程运行的当前会话ID。如果你需要为运行相同流程的不同用户或应用程序隔离聊天记忆，请使用自定义会话ID。 |
+| order | String | 输入参数。消息的顺序。 |
+| template | String | 输入参数。用于格式化数据的模板。它可以包含键`{text}`、`{sender}`或消息数据中的任何其他键。 |
+| messages | Message | 输出参数。作为`Message`对象的检索记忆，包括包含检索的聊天消息文本的`messages_text`。这是用于将记忆_作为聊天消息_传递给另一个组件的典型输出格式。 |
+| dataframe | DataFrame | 输出参数。包含消息数据的`DataFrame`。适用于需要以表格格式而不是聊天消息检索记忆的情况。 |
+
+## 遗留辅助组件
+
+以下组件是遗留组件。
+你可以在流程中使用这些组件，但它们不再维护，可能在未来版本中被移除。
+建议你尽快用推荐的替代方案替换遗留组件。
+
+* **Chat History**：由[**Message History**组件](#message-history)替换
+* **Message Store**：由[**Message History**组件](#message-history)替换
+
+<details>
+<summary>Create List</summary>
+
+此组件动态创建具有指定字段数的记录。
+
+它接受以下参数：
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| n_fields | Integer | 输入参数。要添加到记录的字段数。 |
+| text_key | String | 输入参数。用作文本的键。 |
+| list | List | 输出参数。具有指定字段数的动态创建列表。 |
+
+</details>
+
+<details>
+<summary>ID Generator</summary>
+
+此组件生成唯一ID。
+
+它接受以下参数：
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| unique_id | String | 输入参数。生成的唯一ID。 |
+| id | String | 输出参数。生成的唯一ID。 |
+
+</details>
+
+<details>
+<summary>Output Parser</summary>
+
+用[**Structured Output**组件](/components-processing#structured-output)和[**Parser**组件](/components-processing#parser)替换遗留的**Output Parser**组件。
+你需要的组件取决于数据类型和解析任务的复杂性。
+
+**Output Parser**组件使用LangChain的`CommaSeparatedListOutputParser`将语言模型的输出转换为逗号分隔值(CSV)格式，例如`["item1", "item2", "item3"]`。
+**Structured Output**组件是此组件的良好替代方案，因为它还格式化LLM响应，支持自定义模式和更复杂的解析。
+
+解析组件只提供格式化指令和解析功能。
+_它们不包含提示。_
+你必须将解析器连接到**Prompt Template**组件以创建LLM可以使用的提示。
+
+1. 打开具有**Chat Input**、**Language Model**和**Chat Output**组件的流程。
+
+2. 向你的流程添加**Output Parser**和**Prompt Template**组件。
+
+3. 在**Prompt Template**组件的**Template**中定义你的LLM提示，包括所有指令和预加载的上下文。
+确保包含`{format_instructions}`变量，你将在其中注入来自**Output Parser**组件的格式化指令。
+例如：
+
+    ```
+    You are a helpful assistant that provides lists of information.
+
+    {format_instructions}
+    ```
+
+    模板中的变量动态向**Prompt Template**组件添加字段，以便你的流程可以从其他组件、Langflow全局变量或固定输入接收这些值的定义。
+
+4. 将**Output Parser**组件的输出连接到**Prompt Template**组件的**format instructions**输入。
+
+**Output Parser**组件接受以下参数：
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| parser_type | String | 输入参数。将解析器类型设置为"CSV"。 |
+| format_instructions | String | 输出参数。传递给提示模板以包含LLM响应的格式化指令。 |
+| output_parser | Parser | 输出参数。可用于解析LLM响应的构造输出解析器。 |
+
+</details>

@@ -1,0 +1,77 @@
+---
+title: 使用可视化编辑器
+slug: /concepts-overview
+---
+
+import Icon from "@site/src/components/icon";
+
+您使用 Langflow 的可视化编辑器来创建、测试和共享 flow，这些是应用程序工作流的功能表示。
+Flow 由代表您应用程序工作流中各个步骤的组件组成。
+
+Langflow 的拖放界面允许您在不编写大量代码的情况下创建复杂的 AI 工作流。
+您可以连接不同的资源，包括提示、大语言模型 (LLM)、数据源、Agent、MCP 服务器以及其他工具和集成。
+
+:::tip
+要在几分钟内尝试构建和运行 flow，请参阅 [Langflow 快速开始](/get-started-quickstart)。
+:::
+
+## 工作区
+
+在构建 [flow](/concepts-flows) 时，您主要与**工作区**交互。
+这是您添加[组件](/concepts-components)、配置它们并将它们连接在一起的地方。
+
+![空的 Langflow 工作区](/img/workspace.png)
+
+从**工作区**，您还可以访问 [**Playground**](#playground)、[**Share** 菜单](#share-menu)和 [**日志**](/concepts-flows#flow-storage-and-logs)。
+
+### 工作区手势和交互
+
+- 要水平和垂直平移，请点击并拖动工作区的空白区域。
+
+- 要以可视化方式重新排列组件，请点击并拖动组件。
+
+    要更改组件之间的程序关系，您必须操作组件_边缘_或_端口_。有关更多信息，请参阅[组件概述](/concepts-components)。
+
+- 要锁定组件的可视位置，请点击 <Icon name="LockOpen" aria-hidden="true"/> **Lock**。
+
+- 要缩放，请使用以下任一选项：
+   - 在鼠标或触控板上向上或向下滚动。
+   - 点击 <Icon name="ZoomIn" aria-hidden="true"/> **Zoom In** 或 <Icon name="ZoomOut" aria-hidden="true"/> **Zoom Out**。
+   - 点击 <Icon name="Maximize" aria-hidden="true"/> **Fit To Zoom** 来缩放缩放级别以显示整个 flow。
+
+- 要为非功能性笔记和评论添加文本框，请点击 <Icon name="StickyNote" aria-hidden="true"/> **Add Note**。
+
+## Playground
+
+如果您的 flow 有 **Chat Input** 组件，您可以使用 **Playground** 来运行您的 flow、与您的 flow 聊天、查看输入和输出，并修改 LLM 的记忆来实时调整 flow 的响应。
+
+要亲自尝试，请使用 [**Basic Prompting** 模板](/basic-prompting)创建 flow，然后在**工作区**中编辑 flow 时点击 <Icon name="Play" aria-hidden="true"/> **Playground**。
+
+![Playground 窗口](/img/playground.png)
+
+如果您的 flow 中有 **Agent** 组件，**Playground** 会显示其工具调用和输出，以便您可以监控 Agent 的工具使用并理解其响应背后的推理。
+要在 **Playground** 中尝试 Agent flow，请使用 [**Simple Agent** 模板](/simple-agent)。
+
+![带有 Agent 响应的 Playground 窗口](/img/playground-with-agent.png)
+
+有关更多信息，请参阅 [Playground](/concepts-playground)。
+
+## 共享 {#share-menu}
+
+**Share** 菜单为将您的 flow 集成到外部应用程序中提供以下选项：
+
+* [**API 访问**](/concepts-publish#api-access)：使用自动生成的 Python、JavaScript 和 curl 代码片段将您的 flow 集成到您的应用程序中。
+* [**导出**](/concepts-flows-import#export-a-flow)：将您的 flow 作为 JSON 文件导出到您的本地计算机。
+* [**MCP 服务器**](/mcp-server)：将您的 flow 作为 MCP 兼容客户端的工具公开。
+* [**嵌入到站点**](/concepts-publish#embedded-chat-widget)：将您的 flow 嵌入 HTML、React 或 Angular 应用程序中。
+* [**可共享 Playground**](/concepts-playground#share-a-flows-playground)：与其他用户共享您的 **Playground** 界面。
+
+    这特别用于共享 **Playground** 体验；它不用于在生产应用程序中运行 flow。
+
+    **可共享 Playground** 不适用于 Langflow Desktop。
+
+## 参阅
+
+* [在 Langflow 中管理文件](/concepts-file-management)
+* [全局变量](/configuration-global-variables)
+* [Langflow API 密钥](configuration-api-keys)

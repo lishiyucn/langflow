@@ -1,0 +1,73 @@
+---
+title: Herramientas
+slug: /components-tools
+---
+
+En la versión 1.5 de Langflow, la categoría **Tools** fue deprecada.
+
+Todos los componentes que estaban en esta categoría fueron reemplazados por otros componentes o movidos a otras categorías en el menú **Components**.
+
+:::important
+Muchos componentes que estaban en la categoría **Tools** son componentes heredados.
+Puedes usar estos componentes en tus flujos, pero ya no se mantienen y pueden ser eliminados en una versión futura.
+
+Se recomienda que reemplaces todos los componentes heredados con los componentes de reemplazo descritos en esta página.
+:::
+
+## Componente Calculator Tool
+
+El componente **Calculator Tool** es un componente heredado.
+Reemplaza este componente con el [componente **Calculator**](/components-helpers#calculator) en la categoría **Helpers**.
+
+## Componente MCP Connection
+
+Este componente fue movido a la categoría **Agents** y renombrado al [componente **MCP Tools**](/components-agents#mcp-connection)
+
+## Herramientas Python
+
+Los componentes **Python REPL** y **Python Code Structured** son componentes heredados.
+Reemplaza estos componentes con el [componente **Python Interpreter**](/components-processing#python-interpreter) en la categoría **Processing**.
+
+## Herramientas de búsqueda y solicitud de API
+
+Muchos componentes de herramientas realizaban llamadas básicas de API a archivos públicos o API de búsqueda.
+Todos estos componentes en la categoría **Tools** son componentes heredados.
+
+Tienes dos opciones para reemplazar estos componentes:
+
+* Usa los [componentes de datos](/components-data) genéricos para búsquedas y llamadas de API, como los componentes [**Web Search**](/components-data#web-search) y [**News Search**](/components-data#news-search).
+
+* Usa los componentes de búsqueda y API específicos del proveedor en la categoría **Bundles**:
+    * [Bundle **arXiv**](/bundles-arxiv)
+    * [Bundle **Bing**](/bundles-bing)
+    * [Bundle **DataStax**](/bundles-datastax)
+    * [Bundle **DuckDuckGo**](/bundles-duckduckgo)
+    * [Bundle **Exa**](/bundles-exa)
+    * [Bundle **Glean**](/bundles-glean)
+    * [Bundle **Google**](/bundles-google)
+    * [Bundle **Icosa Computing**](/bundles-icosacomputing)
+    * [Bundle **LangChain**](/bundles-langchain)
+    * [Bundle **SearchApi**](/bundles-searchapi)
+    * Bundle **SerpApi**
+    * Bundle **Tavily**
+    * [Bundle **Wikipedia**](/bundles-wikipedia)
+    * Bundle **Yahoo! Search**
+
+<details>
+<summary>SearXNG Search Tool</summary>
+
+El componente **SearXNG Search Tool** es un componente heredado.
+Reemplaza este componente con un [componente de datos](/components-data) o el [bundle](/components-bundle-components) de otro proveedor de metabúsqueda.
+
+Este componente crea una herramienta para buscar usando SearXNG, un motor de metabúsqueda.
+Acepta los siguientes parámetros:
+
+| Nombre | Tipo | Descripción |
+|------|------|-------------|
+| url | String | Parámetro de entrada. La URL de la instancia SearXNG. |
+| max_results | Integer | Parámetro de entrada. El número máximo de resultados a devolver. |
+| categories | List[String] | Parámetro de entrada. Las categorías en las que buscar. |
+| language | String | Parámetro de entrada. El idioma para los resultados de búsqueda. |
+| result_tool | Tool | Parámetro de salida. Una herramienta de búsqueda SearXNG para usar en LangChain. |
+
+</details>

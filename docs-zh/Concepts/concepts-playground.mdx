@@ -1,0 +1,163 @@
+---
+title: 在 Playground 中测试 flow
+slug: /concepts-playground
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Icon from "@site/src/components/icon";
+
+Langflow 的 **Playground** 是一个动态界面，您可以用它来实时测试基于 LLM 的 flow。
+
+您可以测试 flow 对不同输入的响应、审查和修改记忆，并监控 flow 输出和逻辑。
+例如，您可以确保 Agent flow 使用适当的工具来响应不同的输入。
+
+**Playground** 允许您快速迭代 flow 的逻辑和行为，使原型设计和完善应用程序变得更容易。
+
+## 在 Playground 中运行 flow
+
+要在 **Playground** 中运行 flow，请打开 flow，然后点击 <Icon name="Play" aria-hidden="true"/> **Playground**。
+然后，如果您的 flow 有 [**Chat Input** 组件](/components-io)，请输入提示或[使用语音模式](/concepts-voice-mode)来触发 flow 并启动聊天会话。
+
+:::tip
+如果 **Playground** 中没有消息输入字段，请确保您的 flow 有一个 **Chat Input** 组件，该组件直接或间接连接到 **Language Model** 或 **Agent** 组件的 **Input** 端口。
+
+因为 **Playground** 是为使用 LLM 进行查询和响应格式的 flow（如聊天机器人和 Agent）而设计的，因此 flow 必须具有 **Chat Input**、**Language Model**/**Agent** 和 **Chat Output** 组件才能被 **Playground** 的聊天界面完全支持。
+
+对于需要其他类型输入的 flow（如 webhook 事件、文件上传或文本输入），您可以[使用 Langflow API 触发 flow](/api-flows-run)，然后打开 **Playground** 来审查 flow 运行的 LLM 活动（如果适用）。
+:::
+
+![Playground window](/img/playground.png)
+
+<details>
+<summary>Playground mechanics</summary>
+
+When you run a flow in the **Playground**, Langflow calls the `/build/$FLOW_ID/flow` endpoint in [chat.py](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/api/v1/chat.py#L143). This call retrieves the flow data, builds a graph, and executes the graph. As each component (or node) is executed, the `build_vertex` function calls `build_and_run`, which may call the individual components' `def_build` method, if it exists. If a component doesn't have a `def_build` function, the build still returns a component.
+
+The `build` function allows components to execute logic at runtime. For example, the [**Recursive Character Text Splitter** component](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/components/langchain_utilities/recursive_character.py) is a child of the `LCTextSplitterComponent` class. When text needs to be processed, the parent class's `build` method is called, which creates a `RecursiveCharacterTextSplitter` object and uses it to split the text according to the defined parameters. The split text is then passed on to the next component. This all occurs when the component is built.
+
+</details>
+
+### 审查 Agent 逻辑
+
+如果您的 flow 有 **Agent** 组件，**Playground** 会打印 Agent 使用的工具和每个工具的输出。
+这帮助您监控 Agent 的工具使用并理解 Agent 响应背后的逻辑。
+例如，以下 Agent 使用了连接的 `fetch_content` 工具来执行 Web 搜索：
+
+![Playground window with agent response](/img/playground-with-agent.png)
+
+### 查看聊天历史 {#view-chat-history}
+
+在 **Playground** 中，您可以查看 flow 每个聊天会话的消息日志，包括时间戳、内容和发送者。
+
+在 **Playground** 侧边栏中，找到您要审查的聊天会话，点击 <Icon name="Ellipsis" aria-hidden="true"/> **Options**，然后选择 **Message Logs**。
+
+![Playground logs](/img/messages-logs.png)
+
+消息日志将每个聊天消息的 [`Message` 数据](/data-types#message)分解。
+点击消息日志中的任何单元格来查看该单元格的完整内容。
+
+### 在 Playground 中修改记忆
+
+为了帮助调试和测试您的 flow，您可以在[消息日志](#view-chat-history)中编辑或删除单个消息。
+例如，您可能希望删除在测试不再是 flow 组成部分的组件时发送的消息。
+
+您也可以从侧边栏删除整个聊天会话：点击 <Icon name="Ellipsis" aria-hidden="true"/> **Options**，然后选择 **Delete**。
+
+如果您继续聊天会话或在多个聊天会话中保存记忆，修改记忆会影响聊天机器人响应的行为。
+
+**编辑消息日志会编辑 Langflow 的内部 `messages` 表，这是默认的聊天记忆存储。**
+有关在 Langflow 中管理会话和聊天记忆的更多信息，请参阅[使用自定义会话 ID](#session-ids) 和 [记忆管理选项](/memory)。
+
+## 设置自定义会话 ID {#session-ids}
+
+聊天会话通过会话 ID (`session_id`) 进行标识。
+
+默认的会话 ID 是 flow ID，这意味着 flow 的所有聊天消息都存储在相同的会话 ID 下，作为一个巨大的聊天会话。
+
+如果您需要在多个 flow 运行中保存聊天上下文或在调试 flow 时区分聊天会话，您可以设置自定义 `session_id`。
+
+自定义会话 ID 在多种情况下都很有用：
+
+* 在一个 flow 有多个聊天会话的情况下分离聊天会话，比如可以同时进行多个用户交互的聊天机器人。
+* 在跨多个 flow 运行继续聊天会话或将上下文从一个 flow 传递到另一个 flow 时保存记忆。
+* 在同一 flow 内区分来自多个用户的活动。
+* 在调试和测试 flow 时标识您自己的聊天会话。
+
+您可以在可视化编辑器中和程序化地设置自定义会话 ID。
+
+<Tabs>
+<TabItem value="visual" label="Visual editor" default>
+
+在您的[输入和输出组件](/components-io)中，使用 **Session ID** 字段：
+
+1. 点击您要设置自定义会话 ID 的组件。
+2. 在[组件的标题菜单](/concepts-components#component-menus)中，点击 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**。
+3. 启用 **Session ID**。
+4. 点击 **Close**。
+5. 输入自定义会话 ID。
+如果字段为空，flow 使用默认会话 ID。
+6. 打开 **Playground** 在您的自定义会话 ID 下开始聊天。
+
+当您想要开始新的聊天会话或使用不同的会话 ID 继续之前的聊天会话时，请确保更改 **Session ID**。
+
+</TabItem>
+<TabItem value="api" label="Langflow API">
+
+当您使用 Langflow API 触发 flow 时，在请求载荷中包含 `session_id` 参数。
+例如：
+
+```bash
+curl -X POST "http://$LANGFLOW_SERVER_ADDRESS/api/v1/run/$FLOW_ID" \
+-H "Content-Type: application/json" \
+-H "x-api-key: $LANGFLOW_API_KEY" \
+-d '{
+    "session_id": "CUSTOM_SESSION_ID",
+    "input_value": "message",
+    "input_type": "chat",
+    "output_type": "chat"
+}'
+```
+
+此命令使用指定的 `session_id` 开始新的聊天会话，或如果存在，则检索具有该 ID 的现有会话。
+
+</TabItem>
+</Tabs>
+
+:::tip
+在生产环境中，考虑对会话 ID 使用变量而不是硬编码值。
+
+例如，如果您希望为已身份验证的用户保存上下文，用户 ID 可能是会话 ID 的有用变量。
+或者，如果您希望每个聊天都是唯一的，您可能希望为每个会话 ID 自动生成 UUID。
+:::
+
+有关更多信息，请参阅[使用会话 ID 管理组件之间的通信](/session-id)。
+
+## 共享 flow 的 Playground
+
+:::important
+**可共享 Playground** 仅用于测试目的。
+**Playground** 不用于在应用程序中嵌入 flow。有关在应用程序或网站中运行 flow 的信息，请参阅[使用 Langflow API 触发 flow](/concepts-publish)。
+
+**可共享 Playground** 在 Langflow Desktop 中不可用。
+:::
+
+**可共享 Playground** 选项在 `/public_flow/$FLOW_ID` 端点为单个 flow 公开 **Playground**。
+
+在您[部署公共 Langflow 服务器](/deployment-overview)后，您可以与其他用户共享此公共 URL，以允许他们仅访问指定 flow 的 **Playground**。
+用户可以与 flow 的聊天输入和输出交互，并查看结果，而无需安装 Langflow 或生成 Langflow API 密钥。
+
+要与其他用户共享 flow 的 **Playground**，请执行以下操作：
+
+1. 在 Langflow 中，打开您要共享的 flow。
+2. 从**工作区**中点击 **Share**，然后启用 **Shareable Playground**。
+3. 再次点击 **Shareable Playground** 打开 **Playground** 窗口。
+此窗口的 URL 是 flow 的 **可共享 Playground** 地址，例如 `https://3f7c-73-64-93-151.ngrok-free.app/playground/d764c4b8-5cec-4c0f-9de0-4b419b11901a`。
+4. 将 URL 发送给其他用户，以便他们访问 flow 的 **Playground**。
+
+## 参阅
+
+- [上传图像](/concepts-file-management#upload-images)
+- [使用语音模式](/concepts-voice-mode)
+- [使用 Langflow API 触发 flow](/concepts-publish)
+- [会话 ID](/session-id)

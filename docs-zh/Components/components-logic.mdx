@@ -1,0 +1,266 @@
+---
+title: 逻辑组件
+slug: /components-logic
+---
+
+import Icon from "@site/src/components/icon";
+
+Langflow的逻辑组件提供路由、条件处理和流程管理功能。
+
+## If-Else (条件路由器) {#if-else}
+
+**If-Else**组件是一个通过比较两个字符串来路由消息的条件路由器。
+它通过使用指定的运算符比较两个文本输入来评估条件，然后根据评估结果将消息路由到`true_result`或`false_result`。
+
+运算符基于运算符和匹配文本（`match_text`）在输入（`input_text`）中查找单个字符串，但它也可以通过匹配正则表达式来搜索多个单词。
+可用的运算符包括：
+
+- **equals**：精确匹配比较
+- **not equals**：精确匹配的逆操作
+- **contains**：检查`match_text`是否在`input_text`中找到
+- **starts with**：检查`input_text`是否以`match_text`开头
+- **ends with**：检查`input_text`是否以`match_text`结尾
+- **regex**：在区分大小写的模式上匹配
+
+默认情况下，除**regex**外，所有运算符都不区分大小写。
+**regex**始终区分大小写，你可以在[If-Else参数](#if-else-parameters)中为所有其他运算符启用区分大小写。
+
+### 在流程中使用If-Else组件
+
+以下示例使用**If-Else**组件通过正则表达式匹配检查传入的聊天消息，然后根据匹配是否评估为true或false输出不同的响应。
+
+![连接到两个OpenAI组件的条件路由器](/img/component-conditional-router.png)
+
+1. 向你的流程添加**If-Else**组件，然后按以下方式配置：
+
+    * **Text Input**：将**Text Input**端口连接到**Chat Input**组件。
+
+    * **Match Text**：输入`.*(urgent|warning|caution).*`，以便组件在传入输入中查找这些值。正则表达式匹配区分大小写，因此如果你需要查找`warning`的所有排列，输入`warning|Warning|WARNING`。
+
+    * **Operator**：选择**regex**。
+
+    * **Case True**：在[组件标题菜单](/concepts-components#component-menus)中，点击<Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**，启用**Case True**参数，点击**Close**，然后在字段中输入`New Message Detected`。
+
+        当匹配条件评估为true时，**Case True**消息从**True**输出端口发送。
+
+        没有为**Case False**设置消息，因此当条件评估为false时，组件不会发出消息。
+
+3. 根据你希望在结果为**True**时发生的情况，向你的流程添加组件来执行该逻辑：
+
+    1. 向你的流程添加**Language Model**、**Prompt Template**和**Chat Output**组件。
+
+    2. 在**Language Model**组件中，输入你的OpenAI API密钥或选择不同的提供商和模型。
+
+    3. 将**If-Else**组件的**True**输出端口连接到**Language Model**组件的**Input**端口。
+
+    4. 在**Prompt Template**组件中，输入一个提示以在`true`条件事件中指导模型，例如`发送一条消息，表示收到了新的警告、注意或紧急消息`。
+
+    5. 将**Prompt Template**组件连接到**Language Model**组件的**System Message**端口。
+
+    6. 将**Language Model**组件的输出连接到**Chat Output**组件。
+
+4. 对**False**结果重复相同的过程，使用另一组**Language Model**、**Prompt Template**和**Chat Output**组件。
+
+    将**If-Else**组件的**False**输出端口连接到第二个**Language Model**组件的**Input**端口。
+
+    确保配置第二个**Prompt Template**组件以在`false`条件事件中指导模型，例如`发送一条消息，表示收到了新的低优先级消息`。
+
+5. 要测试流程，打开**Playground**，然后向流程发送一些包含和不包含你的正则表达式字符串的消息。
+聊天输出应该根据正则表达式评估反映你的提示中的指令。
+
+    ```text
+    User: A new user was created.
+
+    AI: A new low-priority message was received.
+
+    User: Sign-in warning: new user locked out.
+
+    AI: A new warning, caution, or urgent message was received. Please review it at your earliest convenience.
+    ```
+
+### If-Else参数
+
+一些**If-Else**组件输入参数在视觉编辑器中默认隐藏。
+你可以通过[组件标题菜单](/concepts-components#component-menus)中的<Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**切换参数。
+
+| 名称 | 类型 | 描述 |
+|----------------|----------|-------------------------------------------------------------------|
+| input_text     | String   | 输入参数。操作的主要文本输入。 |
+| match_text     | String   | 输入参数。要比较的文本。 |
+| operator       | Dropdown | 输入参数。用于比较文本的运算符。选项包括`equals`、`not equals`、`contains`、`starts with`、`ends with`和`regex`。默认为`equals`。 |
+| case_sensitive | Boolean  | 输入参数。设置为true时，比较区分大小写。默认为false。此设置不适用于regex比较。 |
+| message        | Message  | 输入参数。通过任一路由传递的消息。 |
+| max_iterations | Integer  | 输入参数。条件路由器允许的最大迭代次数。默认为10。 |
+| default_route  | Dropdown | 输入参数。达到最大迭代次数时采取的路由。选项包括`true_result`或`false_result`。默认为`false_result`。 |
+| true_result  | Message | 输出参数。条件为true时生成的输出。 |
+| false_result | Message | 输出参数。条件为false时生成的输出。 |
+
+## Loop
+
+**Loop**组件遍历输入列表，将单个项目传递给连接在**Item**输出端口的其他组件，直到没有更多项目要处理。然后，**Loop**组件将所有循环的聚合结果传递给连接到**Done**端口的组件。
+
+**Loop**组件就像你的流程中的一个微型流程。
+以下是循环过程的分解：
+
+1. 通过**Loop**组件的**Inputs**端口接受[`Data`](/data-types#data)或[`DataFrame`](/data-types#dataframe)对象的列表，例如CSV文件。
+
+2. 将输入分割为单个项目。例如，CSV文件按行分解。
+
+    具体来说，**Loop**组件重复通过`Data`或`DataFrame`对象中的`text`键提取项目，直到没有更多项目要提取。
+    每个`item`输出都是`Data`对象。
+
+3. 通过将它们传递到**Item**输出端口来迭代每个`item`。
+
+    此端口连接到对每个项目执行操作的一个或多个组件。
+    **Item**循环中的最终组件连接回**Loop**组件的**Looping**端口以处理下一个项目。
+
+    只有一个组件连接到**Item**端口，但你可以根据需要将数据传递给任意数量的组件，只要链中的最后一个组件连接回**Looping**端口。
+
+4. 处理所有项目后，结果聚合为单个`Data`对象，从**Loop**组件的**Done**端口传递到流程中的下一个组件。
+
+在简化代码方面，**Loop**组件的工作方式如下：
+
+```python
+for i in input:             # 接收输入数据作为列表
+    process_item(i)         # 通过连接在Item端口的组件处理每个项目
+    if has_more_items():
+        continue            # 循环回到Looping端口处理下一个项目
+    else:
+        break               # 没有更多项目时退出循环
+
+done = aggregate_results()  # 编译所有返回的项目
+
+print(done)                 # 从Done端口发送聚合结果到另一个组件
+```
+
+<details>
+<summary>Loop示例</summary>
+
+在以下示例中，**Loop**组件遍历CSV文件，直到没有更多行要处理。
+在这种情况下，**Item**端口将每行传递给**Type Convert**组件以将行转换为`Message`对象，将`Message`传递给**Structured Output**组件以处理为结构化数据，然后传递回**Loop**组件的**Looping**端口。
+处理所有行后，**Loop**组件通过连接到**Done**端口的**Chroma DB**组件将聚合的结构化数据列表加载到Chroma DB数据库中。
+
+![Loop CSV parser](/img/component-loop-csv.png)
+
+:::tip
+有关**Loop**组件的更多示例，请尝试Langflow中的**Research Translation Loop**模板，或按照此视频教程创建带有循环和代理RAG的流程：[Mastering the Loop Component & Agentic RAG in Langflow](https://www.youtube.com/watch?v=9Wx7WODSKTo)。
+:::
+
+</details>
+
+## Notify and Listen
+
+**Notify**和**Listen**组件一起使用。
+
+**Notify**组件从当前流程的上下文构建通知，包括特定的数据内容和状态标识符。
+
+生成的通知发送到**Listen**组件。
+然后通知数据可以传递给流程中的其他组件，例如**If-Else**组件。
+
+## Run flow
+
+**Run Flow**组件将另一个Langflow流程作为当前流程的子进程运行。
+
+你可以使用此组件将流程链接在一起，有条件地运行流程，并将流程附加到[**Agent**组件](/components-agents)作为[智能体工具](/agents-tools)以根据需要运行。
+
+当与智能体一起使用时，智能体用于注册工具的`name`和`description`元数据会自动创建。
+
+当你为**Run Flow**组件选择流程时，它使用目标流程的图结构在**Run Flow**组件上动态生成输入和输出字段。
+
+### Run Flow参数
+
+一些**Run Flow**组件输入参数在视觉编辑器中默认隐藏。
+你可以通过[组件标题菜单](/concepts-components#component-menus)中的<Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**切换参数。
+
+| 名称              | 类型     | 描述                                                    |
+|-------------------|----------|----------------------------------------------------------------|
+| flow_name_selected| Dropdown | 输入参数。要运行的流程名称。                  |
+| session_id        | String   | 输入参数。流程运行的会话ID，如果你想为子流程传递自定义会话ID。 |
+| flow_tweak_data   | Dict     | 输入参数。用于自定义流程行为的调整字典。可用的调整取决于选定的流程。 |
+| dynamic inputs    | Various  | 输入参数。根据选定的流程生成其他输入。 |
+| run_outputs  | A `List` of types (`Data`, `Message`, or `DataFrame`)  | 输出参数。从运行流程生成的所有输出。  |
+
+## 遗留逻辑组件
+
+以下逻辑组件是遗留组件。
+你仍然可以在流程中使用它们，但它们不再受支持，可能在未来版本中被移除。
+
+尽快用建议的替代方案替换这些组件。
+标记为已弃用和遗留的组件应立即替换。
+
+<details>
+<summary>Condition/Data Conditional Router</summary>
+
+作为此遗留组件的替代方案，请参见[**If-Else**组件](#if-else)。
+
+**Condition**组件基于应用于指定键的条件路由`Data`对象，包括布尔验证。
+它支持`true_output`和`false_output`，用于根据条件评估路由结果。
+
+此组件在需要复杂数据结构条件路由的工作流中很有用，支持基于数据内容的动态决策。
+
+它可以处理单个`Data`对象或`Data`对象列表。
+处理`Data`对象列表时会发生以下操作：
+
+- 列表中的每个对象都单独评估。
+- 满足条件的对象进入`true_output`。
+- 不满足条件的对象进入`false_output`。
+- 如果所有对象都进入一个输出，另一个输出为空。
+
+**Condition**组件接受以下参数：
+
+| 名称          | 类型     | 描述                                 |
+|---------------|----------|---------------------------------------------|
+| data_input    | Data     | 输入参数。要处理的Data对象或Data对象列表。此输入可以处理单个项目和列表。 |
+| key_name      | String   | 输入参数。要检查的Data对象中的键名。     |
+| operator      | Dropdown | 输入参数。要应用的运算符。选项：`equals`、`not equals`、`contains`、`starts with`、`ends with`、`boolean validator`。默认：`equals`。 |
+| compare_value | String   | 输入参数。要比较的值。当运算符为`boolean validator`时不显示/使用。 |
+
+`operator`选项具有以下行为：
+
+- `equals`：键的值和compare_value之间的精确匹配比较。
+- `not equals`：精确匹配的逆操作。
+- `contains`：检查compare_value是否在键的值中找到。
+- `starts with`：检查键的值是否以compare_value开头。
+- `ends with`：检查键的值是否以compare_value结尾。
+- `boolean validator`：将键的值视为布尔值。以下值被认为是true：
+  - 布尔值`true`。
+  - 字符串：`true`、`1`、`yes`、`y`、`on`（不区分大小写）
+  - 任何其他值使用Python的`bool()`函数转换
+
+</details>
+
+<details>
+<summary>Pass</summary>
+
+作为此遗留组件的替代方案，使用[**If-Else**组件](#if-else)来传递不修改的消息。
+
+**Pass**组件转发输入消息而不修改。
+
+它接受以下参数：
+
+| 名称 | 显示名称 | 信息 |
+|------|--------------|------|
+| input_message | Input Message | 输入参数。要转发的消息。 |
+| ignored_message | Ignored Message | 输入参数。被忽略的第二条消息。用作连续性的解决方法。 |
+| output_message | Output Message | 输出参数。来自输入的转发消息。 |
+
+</details>
+
+<details>
+<summary>Flow As Tool (已弃用)</summary>
+
+此组件从运行已加载流程的函数构造工具。
+
+它在Langflow版本1.1.2中被弃用，并被[**Run Flow**组件](#run-flow)替换。
+
+</details>
+
+<details>
+<summary>Sub Flow (已弃用)</summary>
+
+此组件将整个流程作为组件集成到更大的工作流中。
+它基于选定的流程动态生成输入，并使用提供的参数执行流程。
+
+它在Langflow版本1.1.2中被弃用，并被[**Run Flow**组件](#run-flow)替换。
+
+</details>

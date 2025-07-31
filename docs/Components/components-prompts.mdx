@@ -1,0 +1,64 @@
+---
+title: Plantilla de Prompt
+slug: /components-prompts
+---
+
+Usa el componente central **Prompt Template** para crear un _prompt_ que proporcione instrucciones y contexto a un LLM o agente, separado de otras entradas como mensajes de chat y cargas de archivos.
+
+Los prompts son entradas estructuradas que usan lenguaje natural, valores fijos y variables dinámicas para proporcionar contexto base para el LLM.
+Por ejemplo:
+
+* Definir una estructura consistente para consultas de usuario, haciendo más fácil para el LLM entender y responder apropiadamente.
+* Definir un formato de salida específico para el LLM, como JSON o texto estructurado.
+* Definir un rol para el LLM, como `Eres un asistente útil` o `Eres un experto en microbiología`.
+* Permitir que el LLM haga referencia a la memoria de chat.
+
+El componente **Prompt Template** también puede dar salida de instrucciones variables a otros componentes más adelante en el flujo.
+
+## Parámetros del Prompt Template
+
+| Nombre   | Nombre Mostrado | Descripción                                                        |
+|----------|----------------|-------------------------------------------------------------------|
+| template | Template       | Parámetro de entrada. Crear una plantilla de prompt con variables dinámicas (`{NOMBRE_VARIABLE}`). |
+| prompt   | Prompt Message | Parámetro de salida. El mensaje de prompt construido devuelto por el método `build_prompt`. |
+
+## Definir variables en prompts
+
+Las variables en un componente **Prompt Template** agregan campos dinámicamente al componente **Prompt Template** para que tu flujo pueda recibir definiciones para esos valores de otros componentes, variables globales de Langflow, o entrada fija.
+
+Por ejemplo, con el componente [**Message History**](/components-helpers#message-history), puedes usar una variable `{memory}` para pasar historial de chat al prompt.
+
+Los siguientes pasos demuestran cómo agregar variables a un componente **Prompt Template**:
+
+1. Crea un flujo basado en la [plantilla **Basic prompting**](/basic-prompting).
+
+    Esta plantilla ya tiene un componente **Prompt Template**, pero la plantilla solo contiene instrucciones en lenguaje natural: `Responde al usuario como si fueras un experto en GenAI, entusiasmado por ayudarlos a comenzar a construir algo fresco.`
+
+    Este prompt define un rol para las interacciones de chat del LLM, pero no incluye variables que te ayuden a crear prompts que se adapten dinámicamente a contextos cambiantes, como diferentes usuarios y entornos.
+
+2. Haz clic en el componente **Prompt Template**, y luego agrega algunas variables al campo **Temple**.
+
+    Las variables se declaran envolviendo el nombre de la variable en llaves, como `{nombre_variable}`.
+    Por ejemplo, la siguiente plantilla crea variables `context` y `user_question`:
+
+    ```text
+    Dado el contexto
+    {context}
+    Responde la pregunta
+    {user_question}
+    ```
+
+4. Haz clic en **Check & Save** para guardar la plantilla.
+
+    Después de agregar las variables a la plantilla, se agregan nuevos campos al componente **Prompt Template** para cada variable.
+
+5. Proporciona entrada para los campos de variables:
+
+   * Conecta los campos a otros componentes para pasar la salida de esos componentes a las variables.
+   * Usa variables globales de Langflow.
+   * Ingresa valores fijos directamente en los campos.
+
+## Ver también
+
+* [LangChain Prompt Hub](/bundles-langchain#prompt-hub)
+* [Componentes de procesamiento](/components-processing)

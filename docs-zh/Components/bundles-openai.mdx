@@ -1,0 +1,82 @@
+---
+title: OpenAI
+slug: /bundles-openai
+---
+
+import Icon from "@site/src/components/icon";
+
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
+
+本页面描述 **OpenAI** bundle 中可用的组件。
+
+有关 OpenAI 组件使用的 OpenAI 功能的更多信息，请参阅 [OpenAI 文档](https://platform.openai.com/docs/overview)。
+
+## OpenAI 文本生成
+
+**OpenAI** 组件使用 [OpenAI 的语言模型](https://platform.openai.com/docs/models)生成文本。
+
+它提供对核心 **Language Model** 组件中可用的相同 OpenAI 模型的访问，但 **OpenAI** 组件提供了用于自定义 OpenAI API 请求的额外参数。
+
+它可以输出 **Model Response** ([`Message`](/data-types#message)) 或 **Language Model** ([`LanguageModel`](/data-types#languagemodel))。
+
+当您想要使用特定的 OpenAI 模型配置作为其他 LLM 驱动组件（如 **Language Model** 或 **Smart Function** 组件）的 LLM 时，请使用 **Language Model** 输出。
+
+有关更多信息，请参阅 [**Language Model** 组件](/components-models)。
+
+### OpenAI 文本生成参数
+
+**OpenAI** 组件的许多输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| api_key | SecretString | 输入参数。您的 OpenAI API 密钥。 |
+| model | String | 输入参数。要使用的 OpenAI 模型名称。选项包括 "gpt-3.5-turbo" 和 "gpt-4"。 |
+| max_tokens | Integer | 输入参数。要生成的最大 token 数量。设置为 0 表示无限制 token。 |
+| temperature | Float | 输入参数。控制输出中的随机性。范围：[0.0, 1.0]。默认值：0.7。 |
+| top_p | Float | 输入参数。控制核心采样。范围：[0.0, 1.0]。默认值：1.0。 |
+| frequency_penalty | Float | 输入参数。控制频率惩罚。范围：[0.0, 2.0]。默认值：0.0。 |
+| presence_penalty | Float | 输入参数。控制存在惩罚。范围：[0.0, 2.0]。默认值：0.0。 |
+
+## OpenAI Embeddings
+
+**OpenAI Embeddings** 组件使用 [OpenAI 嵌入模型](https://platform.openai.com/docs/guides/embeddings)生成嵌入。
+
+它提供对核心 **Embedding Model** 组件中可用的相同 OpenAI 模型的访问，但 **OpenAI Embeddings** 组件提供了用于自定义 OpenAI 嵌入 API 请求的额外参数。
+
+有关在 flow 中使用嵌入模型组件的更多信息，请参阅 [**Embedding Model** 组件](/components-embedding-models)。
+
+### OpenAI Embeddings 参数
+
+**OpenAI Embeddings** 组件的许多输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| OpenAI API Key | String | 输入参数。用于访问 OpenAI API 的 API 密钥。 |
+| Default Headers | Dict | 输入参数。HTTP 请求的默认头信息。 |
+| Default Query | NestedDict | 输入参数。HTTP 请求的默认查询参数。 |
+| Allowed Special | List | 输入参数。允许处理的特殊令牌。默认值：`[]`。 |
+| Disallowed Special | List | 输入参数。不允许处理的特殊令牌。默认值：`["all"]`。 |
+| Chunk Size | Integer | 输入参数。处理的块大小。默认值：`1000`。 |
+| Client | Any | 输入参数。用于发出请求的 HTTP 客户端。 |
+| Deployment | String | 输入参数。模型的部署名称。默认值：`text-embedding-3-small`。 |
+| Embedding Context Length | Integer | 输入参数。嵌入上下文的长度。默认值：`8191`。 |
+| Max Retries | Integer | 输入参数。失败请求的最大重试次数。默认值：`6`。 |
+| Model | String | 输入参数。要使用的模型名称。默认值：`text-embedding-3-small`。 |
+| Model Kwargs | NestedDict | 输入参数。模型的其他关键字参数。 |
+| OpenAI API Base | String | 输入参数。OpenAI API 的基础 URL。 |
+| OpenAI API Type | String | 输入参数。OpenAI API 的类型。 |
+| OpenAI API Version | String | 输入参数。OpenAI API 的版本。 |
+| OpenAI Organization | String | 输入参数。与 API 密钥关联的组织。 |
+| OpenAI Proxy | String | 输入参数。请求的代理服务器。 |
+| Request Timeout | Float | 输入参数。HTTP 请求的超时时间。 |
+| Show Progress Bar | Boolean | 输入参数。是否显示处理进度条。默认值：`False`。 |
+| Skip Empty | Boolean | 输入参数。是否跳过空输入。默认值：`False`。 |
+| TikToken Enable | Boolean | 输入参数。是否启用 TikToken。默认值：`True`。 |
+| TikToken Model Name | String | 输入参数。TikToken 模型的名称。 |
+
+## See also
+
+* [**Agent** component](/components-agents)
+* [LangChain **OpenAI Tools Agent** component](/bundles-langchain#openai-tools-agent)

@@ -1,0 +1,302 @@
+---
+title: 将 Langflow 用作 MCP 服务器
+slug: /mcp-server
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Icon from "@site/src/components/icon";
+
+Langflow 集成了 [模型上下文协议 (MCP)](https://modelcontextprotocol.io/introduction)，既可以作为 MCP 服务器，也可以作为 MCP 客户端。
+
+本页面描述如何将 Langflow 用作 MCP 服务器。
+
+有关将 Langflow 用作 MCP 客户端的信息，请参阅 [将 Langflow 用作 MCP 客户端](/mcp-client)。
+
+作为 MCP 服务器，Langflow 将您的流程暴露为 [MCP 客户端](https://modelcontextprotocol.io/clients) 可以用来执行操作的 [工具](https://modelcontextprotocol.io/docs/concepts/tools)。
+
+## 先决条件
+
+* 一个至少包含一个流程的 [Langflow 项目](/concepts-flows#projects)。
+
+* 在您的计算机上安装任何 LTS 版本的 [Node.js](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)，以便使用 MCP Inspector 来 [测试和调试流程](#test-and-debug-flows)。
+
+* 如果您希望 [部署公共 Langflow 服务器](/deployment-public-server)，需要 [安装 ngrok](https://ngrok.com/docs/getting-started/#1-install-ngrok) 和 [ngrok authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)。
+
+## 选择和配置要暴露为 MCP 工具的流程 {#select-flows-to-serve}
+
+:::important MCP 流程要求
+流程必须包含 [**聊天输出**](/components-io#chat-output) 组件才能被 MCP 客户端用作工具。
+:::
+
+每个 [Langflow 项目](/concepts-flows#projects) 都有一个 MCP 服务器，将项目的流程暴露为 MCP 客户端可以用来生成响应的工具。
+
+默认情况下，项目中的所有流程都作为工具在项目的 MCP 服务器上暴露。
+
+以下步骤解释如何限制暴露的流程，并可选地为代理使用重命名流程：
+
+1. 从 Langflow 仪表板中，选择包含您要作为工具提供的流程的项目，然后单击 **MCP 服务器** 选项卡。
+或者，您可以通过选择 **分享 > MCP 服务器** 从任何流程内快速访问 **MCP 服务器** 选项卡。
+
+    **自动安装** 和 **JSON** 选项卡显示连接 MCP 客户端到项目 MCP 服务器的选项。
+
+    **流程/工具** 部分列出当前作为工具提供的流程。
+
+    ![MCP 服务器项目页面](/img/mcp-server.png)
+
+2. 单击 <Icon name="Settings2" aria-hidden="true"/> **编辑工具**。
+
+3. 在 **MCP 服务器工具** 窗口中，选择您要暴露为工具的流程。
+
+    ![MCP 服务器工具](/img/mcp-server-tools.png)
+
+4. 建议：编辑 **工具名称** 和 **工具描述**，以帮助 MCP 客户端确定您的流程提供哪些操作以及何时使用这些操作：
+
+    - **工具名称**：输入一个名称，明确说明当代理将流程用作工具时流程的作用。
+
+    - **工具描述**：输入准确描述流程执行的具体操作的描述。
+
+    <details>
+    <summary>为代理使用命名和描述您的流程</summary>
+
+    MCP 客户端使用 **工具名称** 和 **工具描述** 来确定使用哪个操作。
+
+    像 [Cursor](https://www.cursor.com/) 这样的 MCP 客户端将您的 Langflow 项目视为一个单一的 MCP 服务器，其中所有已启用的流程都列为工具。
+
+    如果流程的名称或描述不清楚，这可能会让代理感到困惑。
+    例如，流程的默认名称是流程 ID，如 `adbbf8c7-0a34-493b-90ea-5e8b42f78b66`。
+    这没有向代理提供任何关于流程类型或其目的的信息。
+
+    要为您的流程提供更多上下文，请确保在配置 Langflow 项目的 MCP 服务器时清楚地命名和描述您的流程。
+
+    将名称和描述视为函数名称和代码注释是很有帮助的，使用清晰的表述来描述您的流程解决的问题。
+
+    例如，假设您有一个 [文档问答流程](/document-qa)，使用 LLM 进行关于简历的聊天，您给流程以下名称和描述：
+
+    - **工具名称**： `document_qa_for_resume`
+
+    - **工具描述**： `用于分析 Emily 简历的流程。`
+
+    将您的 Langflow MCP 服务器连接到 Cursor 后，您可以向 Cursor 询问关于简历的问题，例如 `Emily 有什么工作经验？`。
+    使用您的工具名称和描述提供的上下文，代理可以决定使用 `document_qa_for_resume` MCP 工具来创建关于 Emily 简历的响应。
+    如有必要，代理会在生成响应之前请求使用流程工具的权限。
+
+    如果您询问不同的简历，例如 `Alex 有什么工作经验？`，代理可以决定 `document_qa_for_resume` 与此请求不相关，因为工具描述指定该流程用于 Emily 的简历。
+    在这种情况下，代理可能使用另一个可用的工具，或者它可以告知您它无法获取 Alex 的信息。
+    例如：
+
+    ```
+    我注意到您在询问 Alex 的工作经验。
+    根据可用的工具，我可以看到有一个用于分析简历的文档问答流程。
+    然而，描述提到它适用于 "Emily 的简历" 而不是 Alex 的。我无法获取 Alex 的简历或工作经验信息。
+    ```
+    </details>
+
+5. 关闭 **MCP 服务器工具** 窗口以保存您的更改。
+
+{/* The anchor on this section (connect-clients-to-use-the-servers-actions) is currently a link target in the Langflow UI. Do not change. */}
+## 将客户端连接到 Langflow 的 MCP 服务器 {#connect-clients-to-use-the-servers-actions}
+
+以下过程描述如何将 [Cursor](https://www.cursor.com/) 连接到您的 Langflow 项目的 MCP 服务器以将您的流程用作工具。
+然而，您可以按照类似的步骤连接任何 [MCP 兼容客户端](https://modelcontextprotocol.io/clients)。
+
+<Tabs>
+<TabItem value="auto" label="Auto install" default>
+
+:::important
+自动安装仅在您的 HTTP 客户端和 Langflow 服务器在同一本地机器上时才有效。
+如果不是这种情况，请使用 **JSON** 选项卡中的代码配置客户端。
+:::
+
+1. 安装 [Cursor](https://docs.cursor.com/get-started/installation)。
+2. 在 Langflow 仪表板中，选择包含您要提供的流程的项目，然后单击 **MCP 服务器** 选项卡。
+3. 要自动安装您当前的 Langflow 项目作为 MCP 服务器，请单击 <Icon name="Plus" aria-hidden="True"/> **添加**。
+
+安装程序将服务器的配置文件添加到 Cursor 的 `mcp.json` 配置文件中。
+
+</TabItem>
+<TabItem value="JSON" label="JSON">
+
+1. 安装 [Cursor](https://docs.cursor.com/get-started/installation)。
+2. 在 Cursor 中，转到 **Cursor 设置 > MCP**，然后单击 **添加新的全局 MCP 服务器**。
+这将打开 Cursor 的全局 MCP 配置文件 `mcp.json`。
+3. 在 Langflow 仪表板中，选择包含您要提供的流程的项目，然后单击 **MCP 服务器** 选项卡。
+4. 从 **JSON** 选项卡复制代码模板，然后将其粘贴到 Cursor 中的 `mcp.json` 中。
+例如：
+
+    ```json
+    {
+      "mcpServers": {
+        "PROJECT_NAME": {
+          "command": "uvx",
+          "args": [
+            "mcp-proxy",
+            "http://LANGFLOW_SERVER_ADDRESS/api/v1/mcp/project/PROJECT_ID/sse"
+          ]
+        }
+      }
+    }
+    ```
+
+    **MCP 服务器** 选项卡自动包含正确的 `PROJECT_NAME`、`LANGFLOW_SERVER_ADDRESS` 和 `PROJECT_ID` 值。
+    默认的 Langflow 服务器地址是 `http://localhost:7860`。
+
+    如果您已 [部署公共 Langflow 服务器](/deployment-public-server)，地址会自动包含在其中。
+
+    :::important
+    如果您的 Langflow 服务器 [需要身份验证](/configuration-authentication)（[`LANGFLOW_AUTO_LOGIN`](/environment-variables#LANGFLOW_AUTO_LOGIN) 设置为 `false`），您必须在配置中包含您的 Langflow API 密钥。
+    有关更多信息，请参阅 [MCP 服务器身份验证和环境变量](#authentication)。
+    :::
+
+5. 在 Cursor 中保存并关闭 `mcp.json` 文件。
+新添加的 MCP 服务器将显示在 **MCP 服务器** 部分中。
+
+</TabItem>
+</Tabs>
+
+Cursor 现在已连接到您项目的 MCP 服务器，您的流程已注册为工具。
+Cursor 根据您的查询确定何时使用工具，并在必要时请求权限。
+有关更多信息，请参阅 [Cursor 的 MCP 文档](https://docs.cursor.com/context/model-context-protocol)。
+
+### MCP 服务器身份验证和环境变量 {#authentication}
+
+如果您的 Langflow 服务器 [需要身份验证](/configuration-authentication)（[`LANGFLOW_AUTO_LOGIN`](/environment-variables#LANGFLOW_AUTO_LOGIN) 设置为 `false`），那么您必须在 MCP 客户端配置中提供 [Langflow API 密钥](/configuration-api-keys)。
+当是这种情况时，您项目的 **MCP 服务器** 选项卡中的代码模板会自动包含 `--header` 和 `x-api-key` 参数：
+
+```json
+{
+  "mcpServers": {
+    "PROJECT_NAME": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy",
+        "--headers",
+        "x-api-key",
+        "YOUR_API_KEY",
+        "http://LANGFLOW_SERVER_ADDRESS/api/v1/mcp/project/PROJECT_ID/sse"
+      ]
+    }
+  }
+}
+```
+
+单击 <Icon name="key" aria-hidden="true"/> **生成 API 密钥** 以自动将新的 Langflow API 密钥插入代码模板。
+或者，您可以用现有的 Langflow API 密钥替换 `YOUR_API_KEY`。
+
+![MCP 服务器选项卡显示生成 API 密钥按钮](/img/mcp-server-api-key.png)
+
+要在 MCP 服务器命令中包含环境变量，请像这样包含它们：
+
+```json
+{
+  "mcpServers": {
+    "PROJECT_NAME": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy",
+        "http://LANGFLOW_SERVER_ADDRESS/api/v1/mcp/project/PROJECT_ID/sse"
+      ],
+      "env": {
+        "KEY": "VALUE"
+      }
+    }
+  }
+}
+```
+
+用您要包含的环境变量名称和值替换 `KEY` 和 `VALUE`。
+
+{/* The anchor on this section (deploy-your-server-externally) is currently a link target in the Langflow UI. Do not change. */}
+### 在外部部署您的 MCP 服务器 {#deploy-your-server-externally}
+
+要使用 ngrok 在外部部署您的 MCP 服务器，请参阅 [部署公共 Langflow 服务器](/deployment-public-server)。
+
+## 使用 MCP Inspector 测试和调试流程 {#test-and-debug-flows}
+
+[MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) 是用于测试和调试 MCP 服务器的常用工具。
+您可以使用 MCP Inspector 监控您的流程并了解 MCP 服务器如何使用它们：
+
+1. 安装 MCP Inspector：
+
+    ```bash
+    npx @modelcontextprotocol/inspector
+    ```
+
+    有关配置 MCP Inspector 的更多信息，包括指定代理端口，请参阅 [MCP Inspector GitHub 项目](https://github.com/modelcontextprotocol/inspector)。
+
+2. 打开 Web 浏览器并导航到 MCP Inspector UI。
+默认地址是 `http://localhost:6274`。
+
+3. 在 MCP Inspector UI 中，输入您的 Langflow 项目 MCP 服务器的连接详细信息：
+
+    - **传输类型**：选择 **SSE**。
+    - **URL**：输入 Langflow MCP 服务器的 `sse` 端点。例如：`http://localhost:7860/api/v1/mcp/project/d359cbd4-6fa2-4002-9d53-fa05c645319c/sse`
+
+    如果您已 [为 MCP 服务器配置了身份验证](#authentication)，请填写以下附加字段：
+    - **传输类型**：选择 **STDIO**。
+    - **命令**：`uvx`
+    - **参数**：输入以下参数列表，用空格分隔。用您的 Langflow MCP 服务器的值替换 `YOUR_API_KEY`、`LANGFLOW_SERVER_ADDRESS` 和 `PROJECT_ID` 的值。例如：
+    ```bash
+    mcp-proxy --headers x-api-key YOUR_API_KEY http://LANGFLOW_SERVER_ADDRESS/api/v1/mcp/project/PROJECT_ID/sse
+    ```
+
+4. 单击 **连接**。
+
+    如果连接成功，您应该在 **工具** 选项卡中看到您项目的流程。
+    从这个选项卡，您可以监控您的流程如何被 MCP 注册为工具，以及使用自定义输入值测试工具。
+
+5. 要退出 MCP Inspector，请在启动它的同一个终端窗口中按 <kbd>Control+C</kbd>。
+
+## MCP 服务器故障排除
+
+如果 Claude for Desktop 没有正确使用您服务器的工具，您可能需要在 `claude_desktop_config.json` 配置文件中明确定义本地 `uvx` 或 `npx` 可执行文件的路径。
+
+1. 要查找您的 UVX 路径，请运行 `which uvx`。
+
+    要查找您的 NPX 路径，请运行 `which npx`。
+
+2. 复制该路径，然后在您的 `claude_desktop_config.json` 文件中替换 `PATH_TO_UVX` 或 `PATH_TO_NPX`。
+
+    <Tabs>
+    <TabItem value="uvx" label="uvx" default>
+
+    ```json
+    {
+      "mcpServers": {
+        "PROJECT_NAME": {
+          "command": "PATH_TO_UVX",
+          "args": [
+            "mcp-proxy",
+            "http://LANGFLOW_SERVER_ADDRESS/api/v1/mcp/project/PROJECT_ID/sse"
+          ]
+        }
+      }
+    }
+    ```
+
+    </TabItem>
+    <TabItem value="npx" label="npx">
+
+    ```json
+    {
+      "mcpServers": {
+        "PROJECT_NAME": {
+          "command": "PATH_TO_NPX",
+          "args": [
+            "-y",
+            "supergateway",
+            "--sse",
+            "http://LANGFLOW_SERVER_ADDRESS/api/v1/mcp/project/PROJECT_ID/sse"
+          ]
+        }
+      }
+    }
+    ```
+
+    </TabItem>
+    </Tabs>
+
+## 另请参阅
+
+- [将 Langflow 用作 MCP 客户端](/mcp-client)
+- [使用 DataStax Astra DB MCP 服务器](/mcp-component-astra)

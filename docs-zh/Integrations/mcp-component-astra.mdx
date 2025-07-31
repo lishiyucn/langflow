@@ -1,0 +1,74 @@
+---
+title: 将 Astra DB MCP 服务器连接到 Langflow
+slug: /mcp-component-astra
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Icon from "@site/src/components/icon";
+
+使用 [MCP 工具组件](/mcp-client) 将 Langflow 连接到 [Datastax Astra DB MCP 服务器](https://github.com/datastax/astra-db-mcp)。
+
+1. 安装 [Node.js](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 的 LTS 版本。
+
+2. 创建一个 [OpenAI](https://platform.openai.com/) API 密钥。
+
+3. 如果您还没有，请创建一个 [Astra DB Serverless (向量) 数据库](https://docs.datastax.com/en/astra-db-serverless/databases/create-database.html#create-vector-database)。
+
+4. 获取您数据库的 Astra DB API 端点和具有 **数据库管理员** 角色的 Astra 应用程序令牌。有关更多信息，请参阅 [为数据库生成应用程序令牌](https://docs.datastax.com/en/astra-db-serverless/administration/manage-application-tokens.html#database-token)。
+
+5. 要跟随本指南，请基于 [**简单代理** 模板](/simple-agent) 创建一个流程。
+
+    您也可以使用现有流程或创建空白流程。
+
+6. 删除 **URL** 工具，然后用 [**MCP 工具** 组件](/mcp-client) 替换它。
+
+7. 按如下配置 **MCP 工具** 组件：
+
+    1. 选择 **Stdio** 模式。
+    2. 在 **MCP 服务器** 字段中，添加以下代码以连接到 Astra DB MCP 服务器：
+
+        ```bash
+        npx -y @datastax/astra-db-mcp
+        ```
+
+    3. 在 **Env** 字段中，使用您 Astra 数据库的值为 `ASTRA_DB_APPLICATION_TOKEN` 和 `ASTRA_DB_API_ENDPOINT` 添加变量。
+
+        :::important
+        您的 Langflow `.env` 文件中声明的环境变量可以在 MCP 服务器命令中引用，但您不能引用在 Langflow 中声明的全局变量。
+
+        如果您要为 `ASTRA_DB_APPLICATION_TOKEN` 和 `ASTRA_DB_API_ENDPOINT` 使用变量，请将它们添加到 Langflow 的 `.env` 文件中，然后重新启动 Langflow。
+        有关更多信息，请参阅 [全局变量](/configuration-global-variables)。
+        :::
+
+        单独添加每个变量。
+        要添加另一个变量字段，请单击 <Icon name="Plus" aria-hidden="true"/> **添加更多**。
+
+        ```bash
+        ASTRA_DB_APPLICATION_TOKEN=AstraCS:...
+        ```
+
+        ```bash
+        ASTRA_DB_API_ENDPOINT=https://...-us-east-2.apps.astra.datastax.com
+        ```
+
+8. 在 **代理** 组件中，添加您的 **OpenAI API 密钥**。
+
+    默认模型是 OpenAI 模型。
+    如果您要使用不同的模型，请相应地编辑 **模型提供商**、**模型名称** 和 **API 密钥** 字段。
+
+    ![简单代理流程，URL 工具被 MCP 工具组件替换，MCP 工具组件启动 Astra DB MCP 服务器](/img/component-mcp-astra-db.png)
+
+9. 打开 **Playground**，然后向代理提问：`有哪些集合可用？`
+
+    由于 Langflow 通过 MCP 服务器连接到您的 Astra DB 数据库，代理会选择正确的工具并连接到您的数据库以检索答案。
+    例如：
+
+    ```text
+    您数据库中可用的集合有：
+    collection_002
+    hardware_requirements
+    load_collection
+    nvidia_collection
+    software_requirements
+    ```

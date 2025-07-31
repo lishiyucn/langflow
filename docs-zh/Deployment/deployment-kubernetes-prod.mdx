@@ -1,0 +1,191 @@
+---
+title: 在 Kubernetes 上部署 Langflow 生产环境
+slug: /deployment-kubernetes-prod
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+[Langflow Runtime](https://github.com/langflow-ai/langflow-helm-charts/blob/main/charts/langflow-runtime) chart 专为在生产环境中部署应用程序而定制。它专注于稳定性、性能、隔离和安全性，以确保应用程序可靠高效地运行。
+
+:::important
+默认情况下，[Langflow runtime Helm chart](https://github.com/langflow-ai/langflow-helm-charts/blob/main/charts/langflow-runtime/values.yaml#L46) 启用 `readOnlyRootFilesystem: true` 作为安全最佳实践。此设置可防止在运行时修改容器的根文件系统，这是生产环境中推荐的安全措施。
+
+禁用 `readOnlyRootFilesystem` 会降低部署的安全性。只有在您了解安全影响并已实施其他安全措施时才禁用此设置。
+
+有关更多信息，请参阅 [Kubernetes 文档](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)。
+:::
+
+### 前提条件
+
+- 一个 [Kubernetes](https://kubernetes.io/docs/setup/) 服务器
+- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+- [Helm](https://helm.sh/docs/intro/install/)
+
+### 安装 Langflow runtime Helm chart
+
+1. 将仓库添加到 Helm。
+
+```shell
+helm repo add langflow https://langflow-ai.github.io/langflow-helm-charts
+helm repo update
+```
+
+2. 在 `langflow` 命名空间中使用默认选项安装 Langflow 应用程序。
+
+如果您已创建了[带有打包流程的自定义镜像](/deployment-docker#package-your-flow-as-a-docker-image)，您可以通过使用 `--set` 标志覆盖默认的 [values.yaml](https://github.com/langflow-ai/langflow-helm-charts/blob/main/charts/langflow-runtime/values.yaml) 文件来部署 Langflow。
+
+* 使用带有捆绑流程的自定义镜像：
+```shell
+helm install my-langflow-app langflow/langflow-runtime -n langflow --create-namespace --set image.repository=myuser/langflow-hello-world --set image.tag=1.0.0
+```
+
+* 或者，安装 chart 并使用 `--set` 标志从 URL 下载流程：
+```shell
+helm install my-langflow-app-with-flow langflow/langflow-runtime \
+  -n langflow \
+  --create-namespace \
+  --set 'downloadFlows.flows[0].url=https://raw.githubusercontent.com/langflow-ai/langflow/dev/tests/data/basic_example.json'
+```
+
+:::important
+如果您使用的 shell 需要转义方括号，您可能需要在此命令中转义方括号：
+```shell
+helm install my-langflow-app-with-flow langflow/langflow-runtime \
+  -n langflow \
+  --create-namespace \
+  --set 'downloadFlows.flows\[0\].url=https://raw.githubusercontent.com/langflow-ai/langflow/dev/tests/data/basic_example.json'
+```
+:::
+
+3. 检查 Pod 的状态。
+```shell
+kubectl get pods -n langflow
+```
+
+### 访问 Langflow runtime
+
+1. 获取您的服务名称。
+```shell
+kubectl get svc -n langflow
+```
+
+服务名称是您的发布名称后跟 `-langflow-runtime`。例如，如果您使用了 `helm install my-langflow-app-with-flow`，则服务名称是 `my-langflow-app-with-flow-langflow-runtime`。
+
+2. 启用端口转发以从本地机器访问 Langflow：
+
+```shell
+kubectl port-forward -n langflow svc/my-langflow-app-with-flow-langflow-runtime 7860:7860
+```
+
+3. 确认您可以在 `http://localhost:7860/api/v1/flows/` 访问 API 并查看流程列表。
+```shell
+curl -v http://localhost:7860/api/v1/flows/
+```
+
+4. 执行打包的流程。
+
+以下命令从流程列表中获取第一个流程 ID 并运行该流程。
+
+```shell
+# Get flow ID
+id=$(curl -s "http://localhost:7860/api/v1/flows/" | jq -r '.[0].id')
+
+# Run flow
+curl -X POST \
+    "http://localhost:7860/api/v1/run/$id?stream=false" \
+    -H 'Content-Type: application/json' \
+    -d '{
+      "input_value": "Hello!",
+      "output_type": "chat",
+      "input_type": "chat"
+    }'
+```
+
+### 配置密钥
+
+要注入密钥和 Langflow 全局变量，请使用 [values.yaml](https://github.com/langflow-ai/langflow-helm-charts/blob/main/charts/langflow-runtime/values.yaml) 文件中的 `secrets` 和 `env` 部分。
+
+例如，[示例流程 JSON](https://raw.githubusercontent.com/langflow-ai/langflow-helm-charts/refs/heads/main/examples/flows/basic-prompting-hello-world.json) 使用一个作为密钥的全局变量。当您将流程导出为 JSON 时，建议不要包含密钥。
+
+相反，在 Langflow runtime 中导入流程时，您可以通过以下方式之一设置全局变量：
+
+<Tabs>
+<TabItem value="values" label="values.yaml">
+
+```yaml
+env:
+  - name: openai_key_var
+    valueFrom:
+      secretKeyRef:
+        name: openai-key
+        key: openai-key
+```
+
+或直接在 values 文件中（不建议用于密钥值）：
+
+```yaml
+env:
+  - name: openai_key_var
+    value: "sk-...."
+```
+
+</TabItem>
+<TabItem value="helm" label="Helm 命令">
+
+1. 创建密钥：
+```shell
+kubectl create secret generic openai-credentials \
+  --namespace langflow \
+  --from-literal=OPENAI_API_KEY=sk...
+```
+
+2. 验证密钥存在。结果是加密的。
+```shell
+kubectl get secrets -n langflow openai-credentials
+```
+
+3. 升级 Helm 发布以使用密钥。
+```shell
+helm upgrade my-langflow-app-image langflow/langflow-runtime -n langflow \
+  --reuse-values \
+  --set "extraEnv[0].name=OPENAI_API_KEY" \
+  --set "extraEnv[0].valueFrom.secretKeyRef.name=openai-credentials" \
+  --set "extraEnv[0].valueFrom.secretKeyRef.key=OPENAI_API_KEY"
+```
+
+</TabItem>
+</Tabs>
+
+### 配置日志级别
+
+在 [values.yaml](https://github.com/langflow-ai/langflow-helm-charts/blob/main/charts/langflow-runtime/values.yaml) 文件中设置日志级别和其他 Langflow 配置。
+
+```yaml
+env:
+  - name: LANGFLOW_LOG_LEVEL
+    value: "INFO"
+```
+
+### 配置扩展
+
+要扩展 Langflow 应用程序的副本数量，请在 [values.yaml](https://github.com/langflow-ai/langflow-helm-charts/blob/main/charts/langflow-runtime/values.yaml) 文件中更改 `replicaCount` 值。
+
+```yaml
+replicaCount: 3
+```
+
+要通过增加 Pod 的资源来垂直扩展应用程序，请在 [values.yaml](https://github.com/langflow-ai/langflow-helm-charts/blob/main/charts/langflow-runtime/values.yaml) 文件中更改 `resources` 值。
+
+```yaml
+resources:
+  requests:
+    memory: "2Gi"
+    cpu: "1000m"
+```
+
+有关在 AWS EKS、Google GKE 或 Azure AKS 上部署 Langflow 的更多信息，请参阅 [Langflow Helm Charts 仓库](https://github.com/langflow-ai/langflow-helm-charts)。
+
+
+
+

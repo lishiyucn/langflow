@@ -1,0 +1,198 @@
+---
+title: 安装 Langflow
+slug: /get-started-installation
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Langflow 可以通过多种方式安装：
+
+* [**Langflow Desktop（推荐）**](#install-and-run-langflow-desktop)：下载并安装独立的桌面应用程序，以获得最简单的设置体验。
+此选项包括依赖管理和简化的升级。
+
+* [**Docker**](#install-and-run-langflow-docker)：拉取并运行 Langflow Docker 镜像，启动 Langflow 容器并在隔离环境中运行 Langflow。
+
+* [**Python 包**](#install-and-run-the-langflow-oss-python-package)：安装并运行 Langflow OSS Python 包。
+此选项提供对环境、依赖和版本控制的更多控制。
+
+* [**从源码安装**](/contributing-how-to-contribute#install-langflow-from-source)：如果您想为 Langflow 代码库或文档做贡献，请使用此选项。
+
+## 安装并运行 Langflow Desktop
+
+Langflow Desktop 是 Langflow 的桌面版本，简化了依赖管理和升级。
+但是，Langflow Desktop 不提供某些功能，例如**可共享 Playground**。
+
+<Tabs>
+<TabItem value="macos" label="macOS">
+
+1. 导航到 [Langflow Desktop](https://www.langflow.org/desktop)。
+2. 点击 **Download Langflow**，输入您的联系信息，然后点击 **Download**。
+3. 挂载并安装 Langflow 应用程序。
+4. 安装完成后，打开 Langflow 应用程序，然后通过[快速开始](/get-started-quickstart)创建您的第一个 flow。
+
+</TabItem>
+<TabItem value="Windows" label="Windows">
+
+1. 导航到 [Langflow Desktop](https://www.langflow.org/desktop)。
+2. 点击 **Download Langflow**，输入您的联系信息，然后点击 **Download**。
+3. 打开**文件资源管理器**，然后导航到**下载**。
+4. 双击下载的 `.msi` 文件，然后使用安装向导安装 Langflow Desktop。
+
+    :::important
+    Langflow Desktop 的 Windows 安装需要 C++ 编译器，您的系统可能没有。如果您收到 `C++ Build Tools Required!` 错误，请按照屏幕提示安装 Microsoft C++ Build Tools，或者[安装 Microsoft Visual Studio](https://visualstudio.microsoft.com/downloads/)。
+    :::
+
+5. 安装完成后，打开 Langflow 应用程序，然后通过[快速开始](/get-started-quickstart)创建您的第一个 flow。
+
+</TabItem>
+</Tabs>
+
+有关升级信息，请参阅[发布说明](/release-notes)。
+
+要在 Langflow Desktop 中管理依赖，请参阅[在 Langflow Desktop 中安装自定义依赖](/install-custom-dependencies#langflow-desktop)。
+
+## 使用 Docker 安装并运行 Langflow {#install-and-run-langflow-docker}
+
+您可以使用 Langflow Docker 镜像启动 Langflow 容器。
+有关更多信息，请参阅[在 Docker 上部署 Langflow](/deployment-docker)。
+
+1. 安装并启动 [Docker](https://docs.docker.com/)。
+
+2. 拉取最新的 [Langflow Docker 镜像](https://hub.docker.com/r/langflowai/langflow)并启动它：
+
+    ```bash
+    docker run -p 7860:7860 langflowai/langflow:latest
+    ```
+
+3. 要访问 Langflow，请导航到 `http://localhost:7860/`。
+
+4. 通过[快速开始](/get-started-quickstart)创建您的第一个 flow。
+
+## 安装并运行 Langflow OSS Python 包
+
+1. 确保您具有所需的依赖和基础设施：
+
+    - [Python](https://www.python.org/downloads/release/python-3100/)
+       - macOS 和 Linux：版本 3.10 至 3.13
+       - Windows：版本 3.10 至 3.12
+    - [uv](https://docs.astral.sh/uv/getting-started/installation/)
+    - 足够的基础设施：
+       - 最低：双核 CPU 和 2 GB RAM
+       - 推荐：多核 CPU 和至少 4 GB RAM
+
+2. 使用 [uv](https://docs.astral.sh/uv/pip/environments) 创建虚拟环境。
+
+    <details>
+    <summary>需要虚拟环境帮助吗？</summary>
+
+    虚拟环境确保 Langflow 安装在一个隔离的、全新的环境中。
+    要创建新的虚拟环境，请执行以下操作。
+
+        <Tabs>
+        <TabItem value="linux-macos" label="Linux or macOS" default>
+
+        1. 导航到您希望创建虚拟环境的位置，然后使用 `uv` 创建它：
+
+            ```shell
+            uv venv VENV_NAME
+            ```
+
+            将 `VENV_NAME` 替换为您虚拟环境的名称。
+
+        2. 启动虚拟环境：
+
+            ```shell
+            source VENV_NAME/bin/activate
+            ```
+
+            您的 shell 提示符会变更，显示您当前正在虚拟环境中工作：
+
+            ```text
+            (VENV_NAME) ➜  langflow git:(main) ✗
+            ```
+
+        3. 要停用虚拟环境并返回常规 shell，请输入 `deactivate`。
+
+            激活时，虚拟环境会临时修改您的 `PATH` 变量，以优先使用虚拟环境内安装的包。
+            为了避免与其他项目发生冲突，在完成工作后停用虚拟环境是一个好主意。
+
+            要删除虚拟环境，请输入 `rm -rf VENV_NAME`。
+            这会完全删除虚拟环境目录及其内容。
+
+        </TabItem>
+        <TabItem value="Windows" label="Windows">
+
+        1. 导航到您希望创建虚拟环境的位置，然后使用 `uv` 创建它。
+
+            ```shell
+            uv venv VENV_NAME
+            ```
+
+            将 `VENV_NAME` 替换为您虚拟环境的名称。
+
+        2. 启动虚拟环境：
+
+            ```shell
+            VENV_NAME\Scripts\activate
+            ```
+
+            您的 shell 提示符会变更，显示您当前正在虚拟环境中工作：
+
+            ```text
+            (VENV_NAME) PS C:/users/username/langflow-dir>
+            ```
+
+        3. 要停用虚拟环境并返回常规 shell，请输入 `deactivate`。
+
+            激活时，虚拟环境会临时修改您的 `PATH` 变量，以优先使用虚拟环境内安装的包。
+            为了避免与其他项目发生冲突，在完成工作后停用虚拟环境是一个好主意。
+
+            要删除虚拟环境，请输入 `Remove-Item VENV_NAME`。
+            这会完全删除虚拟环境目录及其内容。
+
+        </TabItem>
+        </Tabs>
+
+    </details>
+
+3. 在您的虚拟环境中，安装 Langflow：
+
+    ```bash
+    uv pip install langflow
+    ```
+
+    要安装特定版本的 Langflow 包，请在命令中添加所需版本，例如 `uv pip install langflow==1.4.22`。
+
+    <details>
+    <summary>重新安装或升级 Langflow</summary>
+
+    要重新安装 Langflow 及其所有依赖，请运行 `uv pip install langflow --force-reinstall`。
+
+    要将 Langflow 升级到最新版本，请运行 `uv pip install langflow -U`。
+    但是，Langflow 团队建议在升级 Langflow 之前先备份您的现有安装。
+    有关更多信息，请参阅[准备升级](/release-notes#prepare-to-upgrade)。
+
+    </details>
+
+4. 启动 Langflow：
+
+    ```bash
+    uv run langflow run
+    ```
+
+    Langflow 启动可能需要几分钟时间。
+
+5. 要确认本地 Langflow 实例正在运行，请导航到默认的 Langflow URL `http://127.0.0.1:7860`。
+
+6. 通过[快速开始](/get-started-quickstart)创建您的第一个 flow。
+
+有关升级信息，请参阅[发布说明](/release-notes)。
+
+有关可选依赖组和支持自定义依赖以扩展 Langflow OSS 功能的信息，请参阅[安装自定义依赖](/install-custom-dependencies)。
+
+## 下一步
+
+* [快速开始](/get-started-quickstart)：在几分钟内构建并运行您的第一个 flow。
+* [构建 flow](/concepts-flows)：学习构建 flow。
+* [排除 Langflow 故障](/troubleshoot)：获得常见 Langflow 安装和启动问题的帮助。

@@ -1,0 +1,179 @@
+---
+title: 将应用程序连接到 Agent
+slug: /agent-tutorial
+---
+
+import Icon from "@site/src/components/icon";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+本教程展示如何将 JavaScript 应用程序连接到 Langflow [Agent](/agents)。
+
+在连接 Agent 后，您的应用程序可以使用任何连接的工具来检索更有上下文和及时的数据，而无需更改任何应用程序代码。工具由 Agent 的内部 LLM 选择来解决问题和回答问题。
+
+## 先决条件
+
+- [正在运行的 Langflow 实例](/get-started-installation)
+- [Langflow API 密钥](/configuration-api-keys)
+- [OpenAI API 密钥](https://platform.openai.com/api-keys)
+- [已安装 Langflow JavaScript 客户端](/typescript-client)
+
+本教程使用 OpenAI LLM。如果您想使用不同的提供商，您需要该提供商的有效凭据。
+
+## 创建 Agent flow
+
+以下步骤修改 [**Simple agent** 模板](/simple-agent)，将 [**Directory**](/components-data#directory) 和 [**Web search**](/components-data#web-search) 组件作为 **Agent** 组件的工具连接。
+**Directory** 组件从本地机器上的目标目录加载指定类型的所有文件，**Web search** 组件执行 DuckDuckGo 搜索。
+当作为工具连接到 **Agent** 组件时，Agent 可以选择在处理请求时使用这些组件。
+
+1. 在 Langflow 中，点击 **New Flow**，然后选择 **Simple agent** 模板。
+2. 移除 **URL** 和 **Calculator** 工具，然后将 [**Directory**](/components-data#directory) 和 [**Web search**](/components-data#web-search) 组件拖入您的工作区。
+3. 在 **Directory** 组件的 **Path** 字段中，输入您想要供 **Agent** 组件使用的目录路径和文件类型。
+
+    在本教程中，Agent 需要访问客户购买记录，因此目录名是 `customer_orders`，文件类型是 `.csv`。在本教程的后面，Agent 将被提示在客户数据中查找 `email` 值。
+
+    您可以调整教程以适应您的数据，或者，为了跟随教程，您可以下载 [`customer-orders.csv`](/files/customer_orders/customer_orders.csv) 并将其保存在本地机器上的 `customer_orders` 文件夹中。
+4. 在 **Directory** 和 **Web search** 组件的[组件标题菜单](/concepts-components#component-menus)中，启用 **Tool Mode**，以便您可以将组件与 Agent 一起使用。
+
+5. 对于两个工具组件，将 **Toolset** 端口连接到 Agent 组件的 **Tools** 端口。
+6. 在 **Agent** 组件中，输入您的 OpenAI API 密钥。
+
+    If you want to use a different provider or model, edit the **Model Provider**, **Model Name**, and **API Key** fields accordingly.
+
+7. To test the flow, click <Icon name="Play" aria-hidden="true" /> **Playground**, and then ask the LLM a question, such as `Recommend 3 used items for carol.davis@example.com, based on previous orders.`
+
+    Given the example prompt, the LLM would respond with recommendations and web links for items based on previous orders in `customer_orders.csv`.
+
+    The **Playground** prints the agent's chain of thought as it selects tools to use and interacts with functionality provided by those tools.
+    For example, the agent can use the **Directory** component's `as_dataframe` tool to retrieve a [DataFrame](/data-types#dataframe), and the **Web search** component's `perform_search` tool to find links to related items.
+
+## Add a Prompt Template component to the flow
+
+In this example, the application sends a customer's email address to the Langflow agent. The agent compares the customer's previous orders within the Directory component, searches the web for used versions of those items, and returns three results.
+
+1. To include the email address as a value in your flow, add a [**Prompt Template**](/components-prompts) component to your flow between the **Chat Input** and **Agent**.
+2. In the **Prompt Template** component's **Template** field, enter `Recommend 3 used items for {email}, based on previous orders.`
+Adding the `{email}` value in curly braces creates a new input in the **Prompt Template** component, and the component connected to the `{email}` port is supplying the value for that variable.
+This creates a point for the user's email to enter the flow from your request.
+If you aren't using the `customer_orders.csv` example file, modify the input to search for a value in your dataset.
+
+    At this point your flow has six components. The **Chat Input** is connected to the **Prompt Template** component's **email** port. Then, the **Prompt Template** output is connected to the **Agent** component's **System Message** port. The **Directory** and **Web Search** components are connected to the **Agent** component's **Tools** port. Finally, the **Agent** component's output is connected to the **Chat Output** component, which returns the final response to the application.
+
+    ![An agent component connected to web search and directory components](/img/tutorial-agent-with-directory.png)
+
+## Send requests to your flow from a JavaScript application
+
+With your flow operational, connect it to a JavaScript application to use the agent's responses.
+
+1. To construct a JavaScript application to connect to your flow, gather the following information:
+
+    * `LANGFLOW_SERVER_ADDRESS`: Your Langflow server's domain. The default value is `127.0.0.1:7860`. You can get this value from the code snippets on your flow's [**API access** pane](/concepts-publish#api-access).
+    * `FLOW_ID`: Your flow's UUID or custom endpoint name. You can get this value from the code snippets on your flow's [**API access** pane](/concepts-publish#api-access).
+    * `LANGFLOW_API_KEY`: A valid Langflow API key. To create an API key, see [API keys](/configuration-api-keys).
+
+2. Copy the following script into a JavaScript file, and then replace the placeholders with the information you gathered in the previous step.
+If you're using the `customer_orders.csv` example file, you can run this example as-is with the example email address in the code sample.
+If not, modify the `const email = "isabella.rodriguez@example.com"` to search for a value in your dataset.
+
+    ```js
+    import { LangflowClient } from "@datastax/langflow-client";
+
+    const LANGFLOW_SERVER_ADDRESS = 'LANGFLOW_SERVER_ADDRESS';
+    const FLOW_ID = 'FLOW_ID';
+    const LANGFLOW_API_KEY = 'LANGFLOW_API_KEY';
+    const email = "isabella.rodriguez@example.com";
+
+    async function runAgentFlow(): Promise<void> {
+        try {
+            // Initialize the Langflow client
+            const client = new LangflowClient({
+                baseUrl: LANGFLOW_SERVER_ADDRESS,
+                apiKey: LANGFLOW_API_KEY
+            });
+
+            console.log(`Connecting to Langflow server at: ${LANGFLOW_SERVER_ADDRESS} `);
+            console.log(`Flow ID: ${FLOW_ID}`);
+            console.log(`Email: ${email}`);
+
+            // Get the flow instance
+            const flow = client.flow(FLOW_ID);
+
+            // Run the flow with the email as input
+            console.log('\nSending request to agent...');
+            const response = await flow.run(email, {
+                session_id: email // Use email as session ID for context
+            });
+
+            console.log('\n=== Response from Langflow ===');
+            console.log('Session ID:', response.sessionId);
+
+            // Extract URLs from the chat message
+            const chatMessage = response.chatOutputText();
+            console.log('\n=== URLs from Chat Message ===');
+            const messageUrls = chatMessage.match(/https?:\/\/[^\s"')\]]+/g) || [];
+            const cleanMessageUrls = [...new Set(messageUrls)].map(url => url.trim());
+            console.log('URLs from message:');
+            cleanMessageUrls.slice(0, 3).forEach(url => console.log(url));
+
+        } catch (error) {
+            console.error('Error running flow:', error);
+
+            // Provide error messages
+            if (error instanceof Error) {
+                if (error.message.includes('fetch')) {
+                    console.error('\nMake sure your Langflow server is running and accessible at:', LANGFLOW_SERVER_ADDRESS);
+                }
+                if (error.message.includes('401') || error.message.includes('403')) {
+                    console.error('\nCheck your API key configuration');
+                }
+                if (error.message.includes('404')) {
+                    console.error('\nCheck your Flow ID - make sure it exists and is correct');
+                }
+            }
+        }
+    }
+
+    // Run the function
+    console.log('Starting Langflow Agent...\n');
+    runAgentFlow().catch(console.error);
+    ```
+
+3.  Save and run the script to send the request and test the flow.
+
+    Your application receives three URLs for recommended used items based on a customer's previous orders in your local CSV, all without changing any code.
+
+    <details>
+    <summary>Result</summary>
+
+    The following is an example response from this tutorial's flow. Due to the nature of LLMs and variations in your inputs, your response might be different.
+
+    ```
+    Starting Langflow Agent...
+
+    Connecting to Langflow server at: http://localhost:7860
+    Flow ID: local-db-search
+    Email: isabella.rodriguez@example.com
+
+    Sending request to agent...
+
+    === Response from Langflow ===
+    Session ID: isabella.rodriguez@example.com
+
+    URLs found:
+    https://www.facebook.com/marketplace/258164108225783/electronics/
+    https://www.facebook.com/marketplace/458332108944152/furniture/
+    https://www.facebook.com/marketplace/613732137493719/kitchen-cabinets/
+    ```
+
+    </details>
+
+4.  To quickly check traffic to your flow, open the **Playground**.
+    New sessions are named after the user's email address.
+    Keeping sessions distinct helps the agent maintain context. For more on session IDs, see [Session ID](/session-id).
+
+## Next steps
+
+For more information on building or extending this tutorial, see the following:
+
+* [Model Context Protocol (MCP) servers](/mcp-server)
+* [Langflow deployment overview](/deployment-overview)

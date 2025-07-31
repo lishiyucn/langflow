@@ -1,0 +1,80 @@
+---
+title: 什么是 Langflow？
+slug: /about-langflow
+---
+
+Langflow 是一个基于 Python 的开源、可定制框架，用于构建 AI 应用程序。
+它支持 Agent 和 Model Context Protocol (MCP) 等重要的 AI 功能，并且不要求您使用特定的大语言模型 (LLM) 或向量存储。
+
+可视化编辑器简化了应用程序工作流的原型设计，使开发者能够快速将想法转化为强大的现实解决方案。
+
+:::tip 立即尝试
+在几分钟内构建并运行您的第一个 flow：[安装 Langflow](/get-started-installation)，然后试试[快速开始](/get-started-quickstart)。
+:::
+
+## 应用程序开发和原型设计
+
+Langflow 可以帮助您开发各种各样的 AI 应用程序，例如[聊天机器人](/memory-chatbot)、[文档分析系统](/document-qa)、[内容生成器](/blog-writer)和[Agent 应用程序](/simple-agent)。
+
+### 几分钟内创建 flow
+
+Langflow 的主要目的是创建和服务 flow，这些是应用程序工作流的功能表示。
+
+要[构建 flow](/concepts-flows)，您需要连接和配置组件节点。每个组件都是工作流中的单个步骤。
+
+使用 Langflow 的[可视化编辑器](/concepts-overview)，您可以拖放组件来快速构建和测试功能性的 AI 应用程序工作流。
+例如，您可以为电商商店构建一个聊天机器人 flow，该机器人使用 LLM 和产品数据存储来允许客户询问有关商店产品的问题。
+
+![工作区内的基本提示 flow](/img/workspace-basic-prompting.png)
+
+### 实时测试 flow
+
+您可以使用[Playground](/concepts-playground)来测试 flow，而无需构建整个应用程序堆栈。
+您可以与您的 flow 交互，并获得关于 flow 逻辑和响应生成的实时反馈。
+
+您还可以运行单独的组件来独立测试依赖关系。
+
+### 运行和服务 flow
+
+您可以将您的 flow 用作更正式应用程序开发的原型，或者您可以使用 Langflow API 将您的 flow 嵌入到您的应用程序代码中。
+
+对于更广泛的项目，您可以将 Langflow 构建为依赖项，或部署 Langflow 服务器以通过公共互联网服务 flow。
+
+有关更多信息，请参阅以下内容：
+
+* [使用 Langflow API 触发 flow](/concepts-publish)
+* [容器化 Langflow 应用程序](/develop-application)
+
+## 无穷的修改和集成
+
+Langflow 提供支持 AI 应用程序所需的许多服务、工具和功能的[组件](/concepts-components)。
+
+一些组件是通用的，例如输入、输出和数据存储。
+其他组件是专门的，例如 Agent、语言模型和嵌入提供者。
+
+所有组件都提供可以设置为固定值或变量值的参数。您还可以使用 tweaks 在运行时临时覆盖 flow 设置。
+
+### Agent 和 MCP 支持
+
+除了使用 Langflow 构建 Agent flow 之外，您还可以利用 Langflow 内置的 Agent 和 MCP 功能：
+
+* [使用 Langflow Agent](/agents)
+* [将组件和 flow 用作 Agent 工具](/agents-tools)
+* [将 Langflow 用作 MCP 服务器](/mcp-server)
+* [将 Langflow 用作 MCP 客户端](/mcp-client)
+
+### 可扩展性
+
+除了核心组件之外，Langflow 还支持自定义组件。
+
+您可以使用其他人开发的自定义组件，也可以开发自己的自定义组件供个人使用或与其他 Langflow 用户共享。
+
+有关更多信息，请参阅以下内容：
+
+* [为 Langflow 做贡献](/contributing-how-to-contribute)
+* [创建自定义 Python 组件](/components-custom-components)
+
+## 下一步
+
+* [安装 Langflow](/get-started-installation)
+* [快速开始](/get-started-quickstart)

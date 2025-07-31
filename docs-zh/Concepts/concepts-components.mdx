@@ -1,0 +1,251 @@
+---
+title: 组件概述
+slug: /concepts-components
+---
+
+import Icon from "@site/src/components/icon";
+
+组件是您 flow 的构建块。
+像应用程序中的类一样，每个组件都是为特定的用例或集成而设计的。
+
+:::tip
+Langflow 为**工作区**提供键盘快捷键。
+
+在 Langflow 标题栏中，点击您的个人资料图标，选择**设置**，然后点击**快捷键**来查看可用的快捷键。
+:::
+
+## 向 flow 添加组件 {#component-menus}
+
+要向 flow 添加组件，请将组件从**组件**菜单拖动到[工作区](/concepts-overview)。
+
+**组件**菜单按组件类型组织，某些组件默认是隐藏的：
+
+* **Beta 组件**：这些是 Langflow 的核心组件。它们按目的分组，例如**输入**或**数据**。请注意，这些组件处于 beta 版本，不适用于生产工作负载。
+* **旧版组件**：您仍然可以使用这些组件，但它们不再受到支持。旧版组件默认是隐藏的；点击 <Icon name="SlidersHorizontal" aria-hidden="true" /> **组件设置**来显示旧版组件。
+* **包**：这些组件支持特定的集成，它们按提供商分组。
+
+### 配置组件
+
+在向 flow 添加组件后，配置组件的参数并将其连接到 flow 中的其他组件。
+
+每个组件都有与组件目的相关的输入、输出、参数和控制。
+默认情况下，组件仅显示必需和常用选项。
+要访问其他设置和控制（包括元誾置），请使用组件的标题菜单。
+
+要访问组件的标题菜单，请在**工作区**中点击组件。
+
+![Agent component](/img/agent-component.png)
+
+有几个选项可以直接在标题菜单上使用。
+例如：
+
+- **代码**：通过直接编辑组件的 Python 代码来修改组件设置。
+- **控制**：调整所有组件参数，包括默认隐藏的可选设置。
+- **工具模式**：在将组件与 **Agent** 组件结合时启用此选项。
+
+对于其他所有选项，包括**删除**和**复制**控制，请点击 <Icon name="Ellipsis" aria-hidden="true" /> **Show More**。
+
+### 重命名组件
+
+要修改组件的名称或描述，请在**工作区**中点击组件，然后点击 <Icon name="PencilLine" aria-hidden="true"/> **Edit**。
+组件描述支持 Markdown 语法。
+
+### 运行组件
+
+要运行单个组件，请点击 <Icon name="Play" aria-label="Play button" /> **Run component**。
+**Last Run** 值表示组件运行成功。
+
+运行单个组件与运行整个 flow 不同。在单个组件运行中，会调用 `build_vertex` 函数，该函数仅使用通过 UI 提供的直接输入（`inputs_dict` 参数）构建和运行单个组件。`VertexBuildResult` 数据被传递给 `build_and_run` 方法，该方法调用组件的 `build` 方法并运行它。与运行整个 flow 不同，运行单个组件不会自动执行其上游依赖。
+
+### Inspect component output and logs
+
+To view the output and logs for a single component, click <Icon name="TextSearch" aria-hidden="true" /> **Inspect**.
+
+### Freeze a component
+
+:::important
+Freezing a component also freezes all components upstream of the selected component.
+:::
+
+Use the freeze option if you expect consistent output from a component _and all upstream components_, and you only need to run those components once.
+
+Freezing a component prevents that component and all upstream components from re-running, and it preserves the last output state for those components.
+Any future flow runs use the preserved output.
+
+To freeze a component, click the component in the **Workspace** to expose the component's header menu, click <Icon name="Ellipsis" aria-hidden="true" /> **Show More**, and then select **Freeze**.
+
+## 组件端口
+
+在每个组件的边框周围，有像 <Icon name="Circle" size="16" aria-label="Indigo message port" style={{ color: '#4f46e5', fill: '#4f46e5' }}/> 这样的圆形端口图标。
+这些表示组件_连接点_或_端口_。
+
+端口可以接受输入或产生特定数据类型的输出。
+您可以从端口所附加的字段或从[端口的颜色](#port-colors)推断数据类型。
+例如，**System Message** 字段接受[消息数据](/data-types#message)，如蓝色端口图标所示：<Icon name="Circle" size="16" aria-label="Indigo message port" style={{ color: '#4f46e5', fill: '#4f46e5' }} />。
+
+![Prompt component with multiple inputs](/img/prompt-component.png)
+
+在构建 flow 时，将输出端口连接到相同类型（颜色）的输入端口，以在两个组件之间传输该类型的数据。
+有关每种数据类型的程序表示信息，请参阅 [Langflow 数据类型](/data-types)。
+
+:::tip
+* 悬停在端口上可以查看该端口的连接详细信息。
+
+* 点击端口可以按兼容组件过滤**组件**菜单。
+
+* 如果两个组件具有不兼容的数据类型，您可以使用像 [**Type Convert** 组件](/components-processing#type-convert) 这样的处理组件来在组件之间转换数据。
+:::
+
+### Dynamic ports
+
+Some components have ports that are dynamically added or removed.
+For example, the **Prompt** component accepts inputs within curly braces, and new ports are opened when a value within curly braces is detected in the **Template** field.
+
+![Prompt component with multiple inputs](/img/prompt-component-with-multiple-inputs.png)
+
+### Output type selection
+
+Some components include dropdown menus to select the type of output sent to the next component.
+
+For example, the **Language Model** component includes **Model Response** or **Language Model** outputs.
+The **Model Response** output sends a [Message](/data-types#message) output on to another Message port.
+The **Language Model** output can be connected to components like [Structured output](/components-processing#structured-output) to use the LLM to power the component's reasoning.
+
+In the component code, `group_outputs` is set to `False` by default, which forces the outputs into the same dropdown menu, and only allows one output to be selected.
+When `group_outputs=True`, outputs are displayed individually.
+
+![Output type selection in the Language Model component](/img/select-output.png)
+
+### Port colors
+
+Component port colors indicate the data type ingested or emitted by the port.
+For example, a **Message** port either accepts or emits `Message` data.
+
+The following table lists the component data types and their corresponding port colors:
+
+| Data type | Port color | Port icon example |
+|-----------|--------------|----------|
+| Data | Red | <Icon name="Circle" size="16" aria-label="Red data port" style={{ color: '#dc2626', fill: '#dc2626' }} /> |
+| DataFrame | Pink | <Icon name="Circle" size="16" aria-label="Pink dataframe port" style={{ color: '#ec4899', fill:'#ec4899' }} /> |
+| Embeddings | Emerald | <Icon name="Circle" size="16" aria-label="Emerald embeddings port" style={{ color: '#10b981', fill: '#10b981' }} /> |
+| LanguageModel | Fuchsia | <Icon name="Circle" size="16" aria-label="Fuchsia language model port" style={{ color: '#c026d3', fill: '#c026d3' }} /> |
+| Memory | Orange | <Icon name="Circle" size="16" aria-label="Orange memory port" style={{ color: '#f97316', fill: '#f97316' }} /> |
+| Message | Indigo | <Icon name="Circle" size="16" aria-label="Indigo message port" style={{ color: '#4f46e5', fill: '#4f46e5' }} /> |
+| Tool | Cyan | <Icon name="Circle" size="16" aria-label="Cyan tool port" style={{ color: '#06b6d4', fill: '#06b6d4' }} /> |
+| Unknown or multiple types | Gray | <Icon name="Circle" size="16" aria-label="Gray unknown port" style={{ color: '#9CA3AF', fill: '#9CA3AF' }} /> |
+
+## Component code
+
+You can edit components in the visual editor and in code. When editing a flow, select a component, and then click <Icon name="Code" aria-hidden="true"/> **Code** to see and edit the component's underlying Python code.
+
+All components have underlying code that determines how you configure them and what actions they can perform.
+In the context of creating and running flows, component code does the following:
+
+* Determines what configuration options to show in the Langflow UI.
+* Validates inputs based on the component's defined input types.
+* Processes data using the configured parameters, methods, and functions.
+* Passes results to the next component in the flow.
+
+All components inherit from a base `Component` class that defines the component's interface and behavior.
+For example, the [**Recursive Character Text Splitter** component](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/components/langchain_utilities/recursive_character.py) is a child of the [`LCTextSplitterComponent`](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/base/textsplitters/model.py) class.
+
+Each component's code includes definitions for inputs and outputs, which are represented in the **Workspace** as [component ports](/concepts-components#component-ports).
+For example, the `RecursiveCharacterTextSplitter` has four inputs. Each input definition specifies the input type, such as `IntInput`, as well as the encoded name, display name, description, and other parameters for that specific input.
+These values determine the component settings, such as display names and tooltips in the Langflow UI.
+
+```python
+    inputs = [
+        IntInput(
+            name="chunk_size",
+            display_name="Chunk Size",
+            info="The maximum length of each chunk.",
+            value=1000,
+        ),
+        IntInput(
+            name="chunk_overlap",
+            display_name="Chunk Overlap",
+            info="The amount of overlap between chunks.",
+            value=200,
+        ),
+        DataInput(
+            name="data_input",
+            display_name="Input",
+            info="The texts to split.",
+            input_types=["Document", "Data"],
+        ),
+        MessageTextInput(
+            name="separators",
+            display_name="Separators",
+            info='The characters to split on.\nIf left empty defaults to ["\\n\\n", "\\n", " ", ""].',
+            is_list=True,
+        ),
+    ]
+```
+
+Additionally, components have methods or functions that handle their functionality.
+For example, the `RecursiveCharacterTextSplitter` has two methods:
+
+```python
+    def get_data_input(self) -> Any:
+        return self.data_input
+
+    def build_text_splitter(self) -> TextSplitter:
+        if not self.separators:
+            separators: list[str] | None = None
+        else:
+            # check if the separators list has escaped characters
+            # if there are escaped characters, unescape them
+            separators = [unescape_string(x) for x in self.separators]
+
+        return RecursiveCharacterTextSplitter(
+            separators=separators,
+            chunk_size=self.chunk_size,
+            chunk_overlap=self.chunk_overlap,
+        )
+```
+
+The `get_data_input` method retrieves the text to be split from the component's input, which makes the data available to the class.
+The `build_text_splitter` method creates a `RecursiveCharacterTextSplitter` object by calling its parent class's `build` method. Then, the text is split with the created splitter and passed to the next component.
+
+## Component versions
+
+Component versions and states are stored in an internal Langflow database. When you add a component to a flow, you create a detached copy of the component based on the information in the Langflow database.
+These copies are detached from the primary Langflow database, and they don't synchronize with any updates that can occur when you upgrade your Langflow version.
+
+In other words, an individual instance of a component retains the version number and state from the moment you add it to a specific flow. For example, if a component is at version 1.0 when you add it to a flow, it remains at version 1.0 _in that flow_ unless you update it.
+
+### Update component versions
+
+When editing a flow in the **Workspace**, Langflow notifies you if a component's workspace version is behind the database version so you can update the component's workspace version:
+
+* **Update ready**: This notification means the component update contains no breaking changes.
+* **Update available**: This notification means the component update might contain breaking changes.
+
+    Breaking changes modify component inputs and outputs, causing the components to be disconnected and break the flow. After updating the component, you might need to edit the component settings or reconnect component ports.
+
+There are two ways to update components:
+
+* Click **Update** to update a single component. This is recommended for updates without breaking changes.
+* Click **Review** to view all available updates and create a snapshot before updating. This is recommended for updates with breaking changes.
+
+    To save a snapshot of your flow before updating the components, enable **Create backup flow before updating**. Backup flows are stored in the same project folder as the original flow with the suffix `(backup)`.
+
+    To update specific components, select the components you want to update, and then click **Update Components**.
+
+Components are updated to the latest available version, based on the version of Langflow you are running.
+
+## Group components
+
+Multiple components can be grouped into a single component for reuse. This is useful for organizing large flows by combining related components together, such as a RAG **Agent** component and an associated vector database component.
+
+1. Hold <kbd>Shift</kbd>, and then click and drag to highlight all components you want to merge. Components must be completely within the selection area to be merged.
+
+    Alternatively, to select components for merging one by one, hold <kbd>Ctrl</kbd> on Windows or <kbd>Cmd</kbd> on Mac, and then click each component to add them to the group.
+
+2. Release the mouse and keyboard, and then click **Group** to merge the components into a single, group component.
+
+Grouped components are configured and managed as a single component, including the component name, code, and settings.
+
+To ungroup the components, click the component in the **Workspace** to expose the component's header menu, click <Icon name="Ellipsis" aria-hidden="true" /> **Show More**, and then select **Ungroup**.
+
+If you want to reuse this grouping in other flows, click the component in the **Workspace** to expose the component's header menu, click <Icon name="Ellipsis" aria-hidden="true" /> **Show More**, and then select **Save** to save the component to the **Components** menu.

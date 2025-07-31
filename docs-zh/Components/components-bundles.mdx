@@ -1,0 +1,87 @@
+---
+title: 关于组件包
+slug: /components-bundle-components
+---
+
+import Icon from "@site/src/components/icon";
+
+组件包包含支持 Langflow 与特定第三方集成的自定义组件。
+组件包源于 Langflow 核心组件，因此您可以将它们添加到流程中，并以与核心组件相同的方式配置它们。
+
+## 组件包维护和文档
+
+许多打包组件由 Langflow 代码库的第三方贡献者开发。
+
+一些提供商为其组件包贡献文档，而另一些则在其自己的文档中记录其组件包。
+有些组件包没有文档。
+
+要查找特定打包组件的文档，请浏览 Langflow 文档和您的提供商的文档。
+如果可用，您还可以通过组件本身找到相关文档的链接，例如 API 端点：
+
+1. 单击组件以显示[组件的标题菜单](/concepts-components#component-menus)。
+2. 单击 <Icon name="Ellipsis" aria-hidden="true" /> **更多**。
+3. 选择**文档**。
+
+Langflow 文档专注于在流程中使用组件包。
+因此，它专注于打包组件的 Langflow 特定配置步骤。
+有关提供商特定功能或 API 的信息，请参阅提供商的文档。
+
+## 组件参数
+
+默认情况下，某些组件输入参数在可视化编辑器中是隐藏的。
+您可以通过每个[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
+
+## 核心组件和组件包
+
+:::tip
+Langflow 文档不会列出所有组件包或组件包中的组件。
+要获取您的 Langflow 版本最准确和最新的组件包和组件列表，请检查 Langflow 中的**组件**菜单。
+
+如果您找不到在早期版本的 Langflow 中使用的组件，它可能已被删除或标记为[传统组件](#legacy-components)。
+:::
+
+除了第三方、特定于提供商的组件包外，Langflow 还提供核心组件。
+
+核心组件旨在支持广泛的用例，通常不与特定提供商绑定。
+例外情况包括[**嵌入模型**核心组件](/components-embedding-models)、[**语言模型**核心组件](/components-models)和大多数[向量存储核心组件](/components-vector-stores)，它们与多个提供商集成。
+
+如果您正在寻找特定服务或集成，请尝试搜索**组件**菜单或浏览核心组件和组件包。
+
+如果所有方法都失败了，您始终可以创建自己的[自定义组件](/components-custom-components)。
+
+## 传统组件
+
+传统组件不再维护，可能在未来版本中被删除。
+
+您仍然可以在流程中使用它们，但应该尽快用非传统组件替换它们。
+标记为 `[DEPRECATED]` 的组件应立即替换。
+
+在**组件**菜单中，您必须启用**传统组件**切换才能查看传统组件。
+
+## 另请参阅
+
+* [LangWatch 可观察性和评估](/integrations-langwatch)
+
+
+
+<!-- Not documented but in Langflow as of 1.5.11 -->
+<!--
+* AgentQL
+* Confluence
+* Firecrawl
+* Git
+* Home Assistant
+* Jigsawstack
+* LangWatch (Mentioned on integrations-langwatch.mdx)
+* Needle
+* Not Diamond
+* Olivya
+* Scrape Graph AI
+* SerpApi (Mentioned on components-tools.mdx)
+* Tavily (Mentioned on components-tools.mdx)
+* Twelve Labs (Mentioned on concepts-file-management.mdx and components-data.mdx)
+* Unstructured
+* WolframAlpha
+* yfinance/Yahoo! Search (Mentioned on components-tools.mdx)
+* YouTube (Mentioned on concepts-file-management.mdx and components-data.mdx)
+-->

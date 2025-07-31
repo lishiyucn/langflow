@@ -1,0 +1,73 @@
+---
+title: 工具组件
+slug: /components-tools
+---
+
+在Langflow 1.5版本中，**Tools**类别被弃用。
+
+所有在此类别中的组件都被其他组件替换或移动到**Components**菜单中的其他类别。
+
+:::important
+许多在**Tools**类别中的组件是遗留组件。
+你可以在流程中使用这些组件，但它们不再被维护，可能在未来版本中被移除。
+
+建议你用本页描述的替代组件替换所有遗留组件。
+:::
+
+## Calculator Tool组件
+
+**Calculator Tool**组件是遗留组件。
+用**Helpers**类别中的[**Calculator**组件](/components-helpers#calculator)替换此组件。
+
+## MCP Connection组件
+
+此组件被移动到**Agents**类别并重命名为[**MCP Tools**组件](/components-agents#mcp-connection)
+
+## Python工具
+
+**Python REPL**和**Python Code Structured**组件是遗留组件。
+用**Processing**类别中的[**Python Interpreter**组件](/components-processing#python-interpreter)替换这些组件。
+
+## 搜索和API请求工具
+
+许多工具组件对公共文件或搜索API执行基本API调用。
+**Tools**类别中的所有这些组件都是遗留组件。
+
+你有两个选项来替换这些组件：
+
+* 使用通用[数据组件](/components-data)进行搜索和API调用，例如[**Web Search**](/components-data#web-search)和[**News Search**](/components-data#news-search)组件。
+
+* 使用**Bundles**类别中特定提供商的搜索和API组件：
+    * [Bundle **arXiv**](/bundles-arxiv)
+    * [Bundle **Bing**](/bundles-bing)
+    * [Bundle **DataStax**](/bundles-datastax)
+    * [Bundle **DuckDuckGo**](/bundles-duckduckgo)
+    * [Bundle **Exa**](/bundles-exa)
+    * [Bundle **Glean**](/bundles-glean)
+    * [Bundle **Google**](/bundles-google)
+    * [Bundle **Icosa Computing**](/bundles-icosacomputing)
+    * [Bundle **LangChain**](/bundles-langchain)
+    * [Bundle **SearchApi**](/bundles-searchapi)
+    * Bundle **SerpApi**
+    * Bundle **Tavily**
+    * [Bundle **Wikipedia**](/bundles-wikipedia)
+    * Bundle **Yahoo! Search**
+
+<details>
+<summary>SearXNG Search Tool</summary>
+
+**SearXNG Search Tool**组件是遗留组件。
+用[数据组件](/components-data)或其他元搜索提供商的[bundle](/components-bundle-components)替换此组件。
+
+此组件创建一个使用SearXNG（元搜索引擎）进行搜索的工具。
+它接受以下参数：
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| url | String | 输入参数。SearXNG实例的URL。 |
+| max_results | Integer | 输入参数。要返回的最大结果数。 |
+| categories | List[String] | 输入参数。要搜索的类别。 |
+| language | String | 输入参数。搜索结果的语言。 |
+| result_tool | Tool | 输出参数。用于LangChain的SearXNG搜索工具。 |
+
+</details>

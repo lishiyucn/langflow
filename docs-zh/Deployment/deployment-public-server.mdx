@@ -1,0 +1,124 @@
+---
+title: 部署公共 Langflow 服务器
+slug: /deployment-public-server
+---
+
+默认情况下，位于 `http://localhost:7860` 的 Langflow 服务器不会暴露到公共互联网。
+但是，您可以使用转发平台（如 [ngrok](https://ngrok.com/docs/getting-started/) 或 [zrok](https://docs.zrok.io/docs/getting-started)）转发 Langflow 服务器流量，使您的服务器公开访问。
+
+当您的 Langflow 服务器公开后，您可以执行诸如[在外部部署 Langflow MCP 服务器](#deploy-your-mcp-server-externally)、[处理 API 请求](#serve-api-requests)和[公开分享流程的 **Playground**](#share-a-flows-playground)等操作。
+
+## 前提条件
+
+- [安装 Langflow](/get-started-installation)
+
+- 安装反向代理或转发服务。
+
+    本指南使用 ngrok，但您可以使用任何类似的反向代理或转发平台。
+
+    如果您想按照本指南操作，请[安装 ngrok](https://ngrok.com/docs/getting-started/#1-install-ngrok) 并[创建 ngrok 认证令牌](https://dashboard.ngrok.com/get-started/your-authtoken)。
+
+## 使用 ngrok 暴露您的 Langflow 服务器
+
+1. 启动 Langflow：
+
+    ```bash
+    uv run langflow run
+    ```
+
+2. 在另一个终端窗口中，使用您的 ngrok 认证令牌来验证本地 ngrok 服务器：
+
+    ```bash
+    ngrok config add-authtoken NGROK_AUTHTOKEN
+    ```
+
+3. 使用 ngrok 将您的 Langflow 服务器暴露到公共互联网：
+
+    ```bash
+    ngrok http http://localhost:7860
+    ```
+
+    此示例假设您使用默认的 Langflow 监听地址 `http://localhost:7860`。如果您有不同的监听地址，必须相应地修改此命令。
+
+    ngrok 会话在您的终端中启动，并部署一个没有身份验证的临时域名。
+    要添加身份验证或部署静态域名，请参阅 [ngrok 文档](https://ngrok.com/docs/)。
+
+    `Forwarding` 行显示您的 Langflow 服务器的转发地址：
+
+    ```
+    Forwarding https://94b1-76-64-171-14.ngrok-free.app -> http://localhost:7860
+    ```
+
+    转发地址充当您的 Langflow 服务器的反向代理，ngrok 将您的本地流量转发到此域名。
+
+4. 要验证您的 Langflow 服务器是否公开可用，请导航到转发地址 URL，例如 `https://94b1-76-64-171-14.ngrok-free.app`。
+
+## 使用公共 Langflow 服务器
+
+当您的 Langflow 服务器公开后，您可以执行诸如[在外部部署 Langflow MCP 服务器](#deploy-your-mcp-server-externally)、[处理 API 请求](#serve-api-requests)和[公开分享流程的 **Playground**](#share-a-flows-playground)等操作。
+
+### 在外部部署您的 MCP 服务器
+
+部署公共 Langflow 服务器后，您还可以公开访问 Langflow 项目的 MCP 服务器。
+
+为此，在[将客户端连接到 Langflow MCP 服务器](/mcp-server#connect-clients-to-use-the-servers-actions)时使用您服务器的转发地址。
+### 处理 API 请求
+
+要向公共 Langflow 服务器的 [Langflow API](/api-reference-api-examples) 端点发送请求，请使用服务器的域名作为 API 请求的[基础 URL](/api-reference-api-examples#base-url)。
+例如：
+
+```bash
+curl -X POST \
+  "PUBLIC_SERVER_DOMAIN/api/v1/webhook/FLOW_ID" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: LANGFLOW_API_KEY" \
+  -d '{"data": "example-data"}'
+```
+
+:::tip
+对于在公共 Langflow 服务器上创建的流程，在 [**API 访问**面板](/concepts-publish)中生成的代码片段会自动使用您的公共服务器域名。
+:::
+
+在脚本中进行 Langflow API 调用时，您也要使用公共域名，包括 Langflow 自动生成的代码片段。
+例如，以下代码片段调用 ngrok 域名来触发指定的流程（`d764c4b8...`）：
+
+    ```python
+    import requests
+
+    url = "https://3f7c-73-64-93-151.ngrok-free.app/api/v1/run/d764c4b8-5cec-4c0f-9de0-4b419b11901a"  # 该流程的完整 API 端点 URL
+
+    # 请求载荷配置
+    payload = {
+        "output_type": "chat",
+        "input_type": "chat",
+        "input_value": "Hello"
+    }
+
+    # 请求头
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key: LANGFLOW_API_KEY"
+    }
+
+    try:
+        # 发送 API 请求
+        response = requests.request("POST", url, json=payload, headers=headers)
+        response.raise_for_status()  # 对错误状态码抛出异常
+
+        # 打印响应
+        print(response.text)
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error making API request: {e}")
+    except ValueError as e:
+        print(f"Error parsing response: {e}")
+    ```
+
+有关脚本中 Langflow API 的演示，请参阅[快速入门](/get-started-quickstart)。
+
+### 分享流程的 Playground
+
+部署公共 Langflow 服务器后，您可以使用**可分享 Playground** 选项在公共 URL 上提供流程的 **Playground**。
+如果用户访问此 URL，他们可以与流程的聊天输入和输出进行交互并查看结果，而无需安装 Langflow 或生成 Langflow API 密钥。
+
+有关更多信息，请参阅[分享流程的 Playground](/concepts-playground#share-a-flows-playground)。

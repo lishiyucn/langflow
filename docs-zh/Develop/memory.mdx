@@ -1,0 +1,140 @@
+---
+title: 内存管理选项
+slug: /memory
+---
+
+Langflow 为与您的流程和 Langflow 服务器相关的数据存储和检索提供灵活的内存管理选项。
+这包括基本的 Langflow 数据库表、文件管理和缓存，以及聊天记忆。
+
+## 存储选项和路径
+
+Langflow 支持本地内存和外部内存选项。
+
+Langflow 的默认存储选项是存储在系统缓存目录中的 [SQLite](https://www.sqlite.org/) 数据库。
+默认存储路径取决于您的操作系统和安装方法：
+
+- **macOS Desktop**: `/Users/<username>/.langflow/data/database.db`
+- **Windows Desktop**: `C:\Users\<name>\AppData\Roaming\com.Langflow\data\langflow.db`
+- **OSS macOS/Windows/Linux/WSL (`uv pip install`)**: `<path_to_venv>/lib/python3.12/site-packages/langflow/langflow.db` （Python 版本可能不同）
+- **OSS macOS/Windows/Linux/WSL (`git clone`)**: `<path_to_clone>/src/backend/base/langflow/langflow.db`
+
+或者，您可以为所有 Langflow 存储使用外部 PostgreSQL 数据库。
+您也可以有选择地为聊天记忆使用外部存储，与其他 Langflow 存储分开。
+有关更多信息，请参阅 [配置外部内存](#configure-external-memory) 和 [存储聊天记忆](#store-chat-memory)。
+
+## 本地 Langflow 数据库表
+
+以下表存储在 `langflow.db` 中：
+
+• **User**：存储用户账户信息，包括凭据、权限和配置文件。有关更多信息，请参阅 [身份验证](/configuration-authentication)。
+
+• **Flow**：包含流程配置。有关更多信息，请参阅 [构建流程](/concepts-flows)。
+
+• **Message**：存储聊天消息和组件之间发生的交互。有关更多信息，请参阅 [消息对象](/data-types#message) 和 [存储聊天记忆](#store-chat-memory)。
+
+• **Transaction**：记录流程运行的执行历史和结果。此信息用于 [日志记录](/logging)。
+
+• **ApiKey**：管理用户的 API 身份验证密钥。有关更多信息，请参阅 [API 密钥](/configuration-api-keys)。
+
+• **Project**：为流程存储提供结构。有关更多信息，请参阅 [项目](/concepts-flows#projects)。
+
+• **Variables**：存储全局加密值和凭据。有关更多信息，请参阅 [全局变量](/configuration-global-variables)。
+
+• **VertexBuild**：跟踪流程中单个节点的构建状态。有关更多信息，请参阅 [在 Playground 中运行流程](/concepts-playground)。
+
+有关更多信息，请参阅 [源代码](https://github.com/langflow-ai/langflow/tree/main/src/backend/base/langflow/services/database/models) 中的数据库模型。
+
+## 配置外部内存
+
+要用另一个数据库替换默认的 Langflow SQLite 数据库，请修改 `LANGFLOW_DATABASE_URL` 环境变量，然后使用您的 `.env` 文件启动 Langflow：
+
+```
+LANGFLOW_DATABASE_URL=postgresql://user:password@localhost:5432/langflow
+```
+
+有关示例，请参阅 [配置外部 PostgreSQL 数据库](/configuration-custom-database)。
+
+### 配置外部数据库连接
+
+以下设置允许您微调数据库连接池和超时设置：
+
+```
+LANGFLOW_DB_CONNECTION_SETTINGS='{"pool_size": 20, "max_overflow": 30, "pool_timeout": 30, "pool_pre_ping": true, "pool_recycle": 1800, "echo": false}'
+LANGFLOW_DB_CONNECT_TIMEOUT=20
+```
+
+- `pool_size`: 连接池中保持的数据库连接的最大数量（默认值：20）
+- `max_overflow`: 超出 pool_size 可以创建的最大连接数（默认值：30）
+- `pool_timeout`: 从连接池获取连接超时前等待的秒数（默认值：30）
+- `pool_pre_ping`: 如果为 true，连接池在每次检出时测试连接的活性（默认值：true）
+- `pool_recycle`: 连接自动回收的秒数（默认值：1800，即 30 分钟）
+- `echo`: 如果为 true，SQL 查询被记录用于调试目的（默认值：false）
+- `LANGFLOW_DB_CONNECT_TIMEOUT`: 建立新数据库连接时等待的最大秒数（默认值：20）
+
+## 配置缓存内存
+
+默认的 Langflow 缓存行为是异步、内存中的缓存。
+```
+LANGFLOW_LANGCHAIN_CACHE=InMemoryCache
+LANGFLOW_CACHE_TYPE=Async
+```
+
+可以配置替代缓存选项，但不支持除默认异步内存缓存之外的选项。
+默认行为适用于大多数用例。
+
+## 存储聊天记忆
+
+具有 **语言模型** 或 **代理** 组件的基于聊天的流程具有默认启用的内置聊天记忆。
+此记忆允许它们检索和引用与相同会话 ID 相关的先前对话中的消息。
+
+内置聊天记忆将记忆存储在 Langflow `messages` 表中。
+
+<details>
+<summary>聊天记忆如何工作？</summary>
+
+聊天记忆是 LLM 或代理的缓存，用于保存过去的对话，以便在未来的交互中保留和引用该上下文。
+例如，如果用户已经告诉 LLM 他们的名字，LLM 可以从聊天记忆中检索该信息，而不是要求用户在未来的对话或消息中重复自己。
+
+聊天记忆与向量存储记忆不同，因为它专门用于从数据库中存储和检索聊天消息。
+
+支持聊天记忆的组件（如 **代理**、**语言模型**、**消息历史** 或第三方 **聊天记忆** 组件）提供对各自数据库的访问 _作为记忆_。
+作为记忆的检索对于 LLM 和代理来说是一个重要的区别，因为这种存储和检索机制专门设计用于回忆过去对话的上下文。
+与为语义搜索和文本块检索而设计的向量存储不同，聊天记忆旨在以针对对话历史优化的方式存储和检索聊天消息。
+
+</details>
+
+### 会话 ID 和聊天记忆
+
+聊天记忆按 [会话 ID (`session_id`)](/session-id) 分组。
+
+默认的会话 ID 是流程 ID，这意味着流程的所有聊天消息都在相同的会话 ID 下作为一个大的聊天会话存储。
+
+为了更好地隔离聊天记忆，特别是在多个用户使用的流程中，请考虑使用自定义会话 ID。
+例如，如果您使用用户 ID 作为会话 ID，那么每个用户的聊天历史都单独存储，将他们的聊天上下文与其他用户的聊天隔离开来。
+
+### 聊天记忆选项
+
+聊天记忆的存储位置和方式取决于您流程中使用的组件：
+
+* **语言模型和代理组件**：所有消息都存储在 [Langflow 存储](#storage-options-and-paths) 中。
+**代理** 组件提供一些记忆配置选项，如 **聊天历史消息数量**。
+
+    **语言模型** 和 **代理** 组件的内置聊天记忆对于大多数用例来说已经足够。
+
+    如果您希望使用专用的外部聊天记忆存储，或者您需要在聊天上下文之外检索记忆，您可以向您的流程添加 **消息历史** 和 **聊天记忆** 组件。
+
+* **消息历史组件**：默认情况下，此组件从 Langflow 存储中存储和检索记忆，除非您附加了 **聊天记忆** 组件。它提供了更多用于排序和过滤记忆的选项，尽管这些选项中的大多数作为可配置或固定参数内置在 **代理** 组件中。
+
+    您可以在有没有 **语言模型** 或 **代理** 组件的情况下使用 **消息历史** 组件。
+    例如，如果您需要在聊天之外从记忆中检索数据，您可以使用 **消息历史** 组件直接从您的聊天记忆数据库中获取该数据，而无需将其输入到聊天中。
+
+* **第三方聊天记忆组件**：仅在您需要专门从专用聊天记忆数据库中存储或检索聊天记忆时才使用这些组件之一。
+通常，只有在您有 Langflow 存储无法满足的特定存储需求时才需要这样做。
+例如，如果您希望通过直接与数据库工作来管理聊天记忆数据，或者如果您希望使用与默认 Langflow 存储不同的数据库。
+
+有关更多信息和示例，请参阅 [**消息历史** 组件](/components-helpers#message-history) 和 [代理记忆](/agents#agent-memory)。
+
+## 另请参阅
+
+* [Langflow 文件管理](/concepts-file-management)
+* [Langflow 日志](/logging)

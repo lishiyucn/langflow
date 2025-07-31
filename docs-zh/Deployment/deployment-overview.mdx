@@ -1,0 +1,24 @@
+---
+title: Langflow 部署概述
+slug: /deployment-overview
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+本节介绍了将本地构建的流程部署到外部环境的不同方式。
+
+* 要通过 Ngrok 网关自托管本地服务器，请参阅 [部署公共 Langflow 服务器](/deployment-public-server)。
+此方法使用 [ngrok](https://ngrok.com/docs/getting-started/) 转发流量并在互联网上共享您的本地 Langflow 服务器，无需部署到云提供商或直接暴露您的网络。
+
+* 要构建和部署包含您的流程文件的 Langflow 容器，请参阅 [容器化 Langflow 应用程序](develop-application)。
+此方法将您的流程和依赖项打包到可移植、可重现的 Docker 镜像中，便于在不同环境中轻松部署。
+
+* 要使用 Docker 和 Caddy 在远程服务器上部署 Langflow 服务器，请参阅 [在远程服务器上部署 Langflow](/deployment-caddyfile)。
+此方法适合在远程服务器上托管您自己的 Langflow 实例，具有安全的 Web 访问，使用 Docker 容器和 Caddy 作为反向代理来支持 HTTPS。
+
+* 要在 Kubernetes 上部署 Langflow，请参阅 [Langflow Kubernetes 架构和最佳实践](/deployment-prod-best-practices)
+此方法创建具有高可用性、可扩展性和强大编排功能的生产级部署。
+
+* 有关特定云提供商的部署指南，请参阅您的云提供商文档。
+Langflow 文档提供了一些示例，例如 [Google Cloud Platform](/deployment-gcp) 和 [Hugging Face Spaces](/deployment-hugging-face-spaces)，帮助您入门。

@@ -1,0 +1,141 @@
+---
+title: Language Model
+slug: /components-models
+---
+
+import Icon from "@site/src/components/icon";
+
+Langflow 中的 Language Model 组件使用指定的大语言模型 (LLM) 生成文本。
+
+Langflow 包含一个核心的 **Language Model** 组件，对许多 LLM 具有内置支持，以及用于连接任何[额外 Language Model 组件](#additional-language-model-components)的接口。
+内置的 LLM 适用于 Langflow 中大多数基于文本的 Language Model 用例。
+
+## 在 flow 中使用 Language Model 组件
+
+在 flow 中任何你会使用 LLM 的地方使用 Language Model 组件。
+
+这些组件接受输入，如聊天消息、文件和指令，以生成文本响应。
+flow 必须包含 [**Chat Input/Output** 组件](/components-io#chat-io) 以允许与 LLM 进行基于聊天的交互。
+但是，您也可以将 **Language Model** 组件用于不直接发出聊天输出的操作，如 **Smart Function** 组件。
+
+以下示例使用核心的 **Language Model** 组件和内置的 LLM 创建一个类似于 [**Basic Prompting** 模板](/basic-prompting)的聊天机器人 flow。
+此示例专注于使用内置模型，但也指示了您可以在哪里集成其他模型。
+
+1. 将 **Language Model** 组件添加到您的 flow 中。
+
+2. 在 **OpenAI API Key** 字段中，输入您的 OpenAI API 密钥。
+
+    此示例使用默认的 OpenAI 模型和内置的 Anthropic 模型来比较不同提供商的响应。
+
+    如果您想使用不同的提供商，请相应地编辑 **Model Provider**、**Model Name** 和 **API Key** 字段。
+
+    如果您想使用未内置在 **Language Model** 组件中的提供商或模型，请参阅[额外的 Language Model 组件](#additional-language-model-components)以了解如何将 **Custom** 模型提供商连接到 **Language Model** 组件。
+    然后，您可以继续按照这些步骤构建您的 flow。
+
+3. 在[组件标题菜单](/concepts-components#component-menus)中，点击 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**，启用 **System Message** 参数，然后点击 **Close**。
+
+4. 将 [**Prompt Template** 组件](/components-prompts)添加到您的 flow 中。
+
+5. 在 **Template** 字段中，输入一些给 LLM 的指令，如 `你是一个在教高中生的地理专家`。
+
+6. 将 **Prompt Template** 组件的输出连接到 **Language Model** 组件的 **System Message** 输入。
+
+7. 将 [**Chat Input** 和 **Chat Output** 组件](/components-io#chat-io)添加到您的 flow 中。
+
+8. 将 **Chat Input** 组件连接到 **Language Model** 组件的 **Input**，然后将 **Language Model** 组件的 **Message** 输出连接到 **Chat Output** 组件。
+
+    ![具有 Language Model、Prompt Template、Chat Input 和 Chat Output 组件的基本提示 flow](/img/component-language-model.png)
+
+9. 打开 **Playground**，提问问题来与 LLM 聊天并测试 flow，如 `猶他州的首府是哪里？`。
+
+    <details>
+    <summary>结果</summary>
+
+    以下响应是 OpenAI 模型响应的示例。
+    您的实际响应可能会根据您请求时的模型版本、您的模板和输入而有所不同。
+
+    ```
+    犹他州的首府是盐湖城。它不仅是该州最大的城市，还是犹他州的文化和经济中心。盐湖城由摩门教先驱于 1847 年建立，以其靠近大盐湖以及在耶稣基督后期圣徒教会历史中的作用而闻名。如需更多信息，您可以参考美国地质调查局或犹他州官方网站等来源。
+    ```
+
+    </details>
+
+10. 尝试不同的模型或提供商以查看响应如何变化。例如：
+
+    1. 在 **Language Model** 组件中，将模型提供商更改为 **Anthropic**。
+    2. 选择一个 Anthropic 模型，如 Claude 3.5 Haiku。
+    3. 输入 Anthropic API 密钥。
+
+11. 打开 **Playground**，问与之前相同的问题，然后比较响应的内容和格式。
+
+    这有助于您了解不同模型如何处理相同的请求，以便您可以为您的用例选择最佳模型。
+    您还可以在每个模型提供商的文档中了解更多关于不同模型的信息。
+
+    <details>
+    <summary>结果</summary>
+
+    以下响应是 Anthropic 模型响应的示例。
+    您的实际响应可能会根据您请求时的模型版本、您的模板和输入而有所不同。
+
+    请注意，此响应更简短并包含来源，而 OpenAI 的响应更像百科全书且没有引用来源。
+
+    ```
+    犹他州的首府是盐湖城。它也是该州人口最多的城市。自 1896 年犹他州成为州以来，盐湖城一直是犹他州的首府。
+    来源：
+    犹他州政府官方网站 (utah.gov)
+    美国人口普查局
+    大英百科全书
+    ```
+
+    </details>
+
+## Language Model 参数
+
+**Language Model** 组件的一些输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| provider | String | 输入参数。要使用的模型提供商。 |
+| model_name | String | 输入参数。要使用的模型名称。选项取决于所选提供商。 |
+| api_key | SecretString | 输入参数。用于所选提供商身份验证的 API 密钥。 |
+| input_value | String | 输入参数。要发送到模型的输入文本。 |
+| system_message | String | 输入参数。帮助设定助手行为的系统消息。 |
+| stream | Boolean | 输入参数。是否流式传输响应。默认值：`False`。 |
+| temperature | Float | 输入参数。控制响应中的随机性。范围：`[0.0, 1.0]`。默认值：`0.1`。 |
+| model | LanguageModel | 输出参数。默认 `Message` 输出的替代输出类型。产生一个配置了指定参数的聊天实例。参见 [Language Model 输出类型](#language-model-output-types)。 |
+
+## Language Model 输出类型
+
+**Language Model** 组件，including核心组件和捆绑组件，可以产生两种类型的输出：
+
+* **Model Response**：默认输出类型将模型生成的响应作为 [`Message` 数据](/data-types#message) 发出。
+当您想要典型的 LLM 交互时使用此输出类型，其中 LLM 根据给定的输入产生文本响应。
+
+* **Language Model**：当您需要将 LLM 连接到 flow 中的另一个组件时，将 **Language Model** 组件的输出类型更改为 [`LanguageModel`](/data-types#languagemodel)。
+这是一种特定的数据类型，只有某些组件需要，如 [**Smart Function** 组件](/components-processing#smart-function)。
+
+    使用此配置，**Language Model** 组件旨在支持由另一个组件完成的操作，而不是为标准的基于聊天的交互产生文本响应。
+    例如，**Smart Function** 组件使用 LLM 从自然语言输入创建函数。
+
+## 额外的 Language Model 组件
+
+如果核心 **Language Model** 组件不支持您的提供商或模型，**Components** 菜单的 [**Bundles**](/components-bundle-components) 部分提供了额外的单一提供商 Language Model 组件。
+
+您可以在 flow 中直接使用捆绑组件，或者可以将它们连接到接受 [`LanguageModel`](/data-types#languagemodel) 输入的其他组件，如 **Language Model** 和 **Agent** 组件。
+
+例如，要将捆绑组件连接到核心 **Language Model** 组件，请执行以下操作：
+
+1. 在 **Language Model** 组件中，将 **Model Provider** 设置为 **Custom**。
+
+    字段名称更改为 **Language Model**，输入端口更改为 `LanguageModel` 端口。
+
+2. 将兼容的捆绑组件添加到您的 flow 中，如 [用于文本生成的 **Vertex AI** 组件](/bundles-vertexai)。
+
+3. 将捆绑组件的输出类型更改为 `LanguageModel`。
+为此，请点击组件输出端口附近的 **Model Response**，然后选择 **Language Model**。
+有关更多信息，请参阅 [Language Model 输出类型](#language-model-output-types)。
+
+4. 将捆绑组件的输出连接到 **Language Model** 组件的 `LanguageModel` 输入端口。
+
+    捆绑组件现在为它所连接的组件提供 LLM 配置，您可以根据需要继续构建您的 flow。

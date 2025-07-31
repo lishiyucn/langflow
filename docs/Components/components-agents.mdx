@@ -1,0 +1,180 @@
+---
+title: Agentes
+slug: /components-agents
+---
+
+Los componentes **Agent** y **MCP Tools** de Langflow son críticos para construir flujos agénticos.
+Estos componentes definen el comportamiento y las capacidades de los agentes de IA en tus flujos.
+
+<details>
+<summary>Cómo funcionan los agentes</summary>
+
+Los agentes extienden los Modelos de Lenguaje Grandes (LLM) integrando _herramientas_, que son funciones que proporcionan contexto adicional y permiten la ejecución autónoma de tareas.
+Estas integraciones hacen que los agentes sean más especializados y potentes que los LLM independientes.
+
+Mientras que un LLM podría generar respuestas aceptables e inertes a consultas y tareas generales, un agente puede aprovechar el contexto integrado y las herramientas para proporcionar respuestas más relevantes e incluso tomar acción.
+Por ejemplo, podrías crear un agente que pueda acceder a la base de conocimientos de tu empresa, repositorios y otros recursos para ayudar a tu equipo con tareas que requieren conocimiento de tus productos específicos, clientes y código.
+
+Los agentes usan LLM como motor de razonamiento para procesar entradas, determinar qué acciones tomar para abordar la consulta, y luego generar una respuesta.
+La respuesta podría ser una respuesta típica basada en texto del LLM, o podría involucrar una acción, como editar un archivo, ejecutar un script, o llamar a una API externa.
+
+En un contexto agéntico, las herramientas son funciones que el agente puede ejecutar para realizar tareas o acceder a recursos externos.
+Una función se envuelve como un objeto `Tool` con una interfaz común que el agente entiende.
+Los agentes se vuelven conscientes de las herramientas a través del registro de herramientas, que es cuando al agente se le proporciona una lista de herramientas disponibles típicamente en la inicialización del agente.
+La descripción del objeto `Tool` le dice al agente qué puede hacer la herramienta para que pueda decidir si la herramienta es apropiada para una solicitud dada.
+
+</details>
+
+## Ejemplos de flujos agénticos
+
+Para ejemplos de flujos agénticos utilizando los componentes **Agent** y **MCP Tools**, consulta lo siguiente:
+
+* [Plantilla **Simple Agent**](/simple-agent): Crea un flujo agéntico básico en Langflow con un componente **Agent** que puede usar otros dos componentes de Langflow como herramientas.
+El LLM especificado en la configuración del componente **Agent** puede usar su funcionalidad incorporada así como la funcionalidad proporcionada por las herramientas conectadas al generar respuestas.
+
+* [Inicio rápido de Langflow](/get-started-quickstart): Modifica la plantilla **Simple Agent** para usar diferentes herramientas, y luego aprende cómo usar un flujo agéntico en una aplicación.
+
+* [Usar un agente como herramienta](/agents-tools#use-an-agent-as-a-tool): Crea un flujo multi-agente.
+
+* [Usar Langflow como cliente MCP](/mcp-client) y [Usar Langflow como servidor MCP](/mcp-server): Usa los componentes **Agent** y **MCP Tools** para implementar el Protocolo de Contexto de Modelo (MCP) en tus flujos.
+
+## Componente Agent {#agent-component}
+
+El componente **Agent** es el actor de agente principal en tus flujos agénticos.
+Este componente usa una integración LLM para responder a entradas, como un mensaje de chat o carga de archivo.
+
+El agente puede usar las herramientas ya disponibles en el modelo LLM base así como herramientas adicionales que conectes al puerto **Tools** del componente **Agent**.
+Puedes conectar cualquier componente de Langflow como herramienta, incluyendo otros componentes **Agent** y servidores MCP a través del [componente **MCP Tools**](#mcp-connection).
+
+Para más información sobre el uso de este componente, consulta [Usar agentes de Langflow](/agents).
+
+## Componente MCP Tools {#mcp-connection}
+
+El componente **MCP Tools** se conecta a un servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) y expone las funciones del servidor MCP como herramientas para que los agentes de Langflow las usen para responder a entradas.
+
+Además de los servidores MCP disponibles públicamente y tus propios servidores MCP personalizados, puedes conectar servidores MCP de Langflow, que permiten a tu agente usar tus flujos de Langflow como herramientas.
+Para hacer esto, usa el [modo SSE](/mcp-client#mcp-sse-mode) del componente **MCP Tools** para conectarte a tu servidor MCP de Langflow en el endpoint `/api/v1/mcp/sse`.
+
+Para más información sobre el uso de este componente y servir flujos como herramientas MCP, consulta [Usar Langflow como cliente MCP](/mcp-client) y [Usar Langflow como servidor MCP](/mcp-server).
+
+<details>
+<summary>Versiones anteriores del componente MCP Tools</summary>
+
+* En la versión 1.5 de Langflow, el componente **MCP Connection** fue renombrado a componente **MCP Tools**.
+* En la versión 1.3 de Langflow, los componentes **MCP Tools (stdio)** y **MCP Tools (SSE)** fueron deprecados y reemplazados por el componente unificado **MCP Connection**, que posteriormente fue renombrado a **MCP Tools**.
+
+</details>
+
+## Componentes de agente heredados
+
+Los siguientes componentes son componentes heredados.
+Aún puedes usar estos componentes en tus flujos, pero ya no se mantienen y pueden ser eliminados en versiones futuras.
+
+Reemplaza estos componentes con el componente **Agent** u otros componentes de Langflow, dependiendo de tu caso de uso.
+
+* **CrewAI Hierarchical Task**
+* **CrewAI Sequential Task**
+
+<details>
+<summary>CrewAI Agent</summary>
+
+Este componente representa agentes CrewAI, permitiendo la creación de agentes de IA especializados con roles, objetivos y capacidades definidas dentro de una tripulación.
+Para más información, consulta la [documentación de agentes CrewAI](https://docs.crewai.com/core-concepts/Agents/).
+
+Este componente acepta los siguientes parámetros:
+
+| Nombre | Nombre Mostrado | Información |
+|------|--------------|------|
+| role | Rol | Parámetro de entrada. El rol del agente. |
+| goal | Objetivo | Parámetro de entrada. El objetivo del agente. |
+| backstory | Historia de fondo | Parámetro de entrada. La historia de fondo del agente. |
+| tools | Herramientas | Parámetro de entrada. Las herramientas a disposición del agente. |
+| llm | Modelo de Lenguaje | Parámetro de entrada. El modelo de lenguaje que ejecuta el agente. |
+| memory | Memoria | Parámetro de entrada. Esto determina si el agente debe tener memoria o no. |
+| verbose | Verboso | Parámetro de entrada. Esto habilita la salida verbosa. |
+| allow_delegation | Permitir Delegación | Parámetro de entrada. Esto determina si el agente puede delegar tareas a otros agentes. |
+| allow_code_execution | Permitir Ejecución de Código | Parámetro de entrada. Esto determina si el agente puede ejecutar código. |
+| kwargs | kwargs | Parámetro de entrada. Argumentos de palabra clave adicionales para el agente. |
+| output | Agente | Parámetro de salida. El objeto CrewAI Agent construido. |
+
+</details>
+
+<details>
+<summary>CrewAI Hierarchical Crew</summary>
+
+Este componente representa un grupo de agentes que gestionan cómo deben colaborar y las tareas que deben realizar en una estructura jerárquica. Este componente permite la creación de una tripulación con un gerente supervisando la ejecución de tareas.
+Para más información, consulta la [documentación de tripulación jerárquica CrewAI](https://docs.crewai.com/how-to/Hierarchical/).
+
+Acepta los siguientes parámetros:
+
+| Nombre | Nombre Mostrado | Información |
+|------|--------------|------|
+| agents | Agentes | Parámetro de entrada. La lista de objetos Agent que representan los miembros de la tripulación. |
+| tasks | Tareas | Parámetro de entrada. La lista de objetos HierarchicalTask que representan las tareas a ejecutar. |
+| manager_llm | LLM del Gerente | Parámetro de entrada. El modelo de lenguaje para el agente gerente. |
+| manager_agent | Agente Gerente | Parámetro de entrada. El agente específico que actuará como gerente. |
+| verbose | Verboso | Parámetro de entrada. Esto habilita la salida verbosa para registro detallado. |
+| memory | Memoria | Parámetro de entrada. La configuración de memoria para la tripulación. |
+| use_cache | Usar Caché | Parámetro de entrada. Esto habilita el almacenamiento en caché de resultados. |
+| max_rpm | RPM Máximo | Parámetro de entrada. Esto establece las solicitudes máximas por minuto. |
+| share_crew | Compartir Tripulación | Parámetro de entrada. Esto determina si la información de la tripulación se comparte entre agentes. |
+| function_calling_llm | LLM de Llamada de Función | Parámetro de entrada. El modelo de lenguaje para llamadas de función. |
+| crew | Tripulación | Parámetro de salida. El objeto Crew construido con ejecución de tareas jerárquica. |
+
+</details>
+
+<details>
+<summary>CrewAI Sequential Crew</summary>
+
+Este componente representa un grupo de agentes con tareas que se ejecutan secuencialmente. Este componente permite la creación de una tripulación que realiza tareas en un orden específico.
+Para más información, consulta la [documentación de tripulación secuencial CrewAI](https://docs.crewai.com/how-to/Sequential/).
+
+Acepta los siguientes parámetros:
+
+| Nombre | Nombre Mostrado | Información |
+|------|--------------|------|
+| tasks | Tareas | Parámetro de entrada. La lista de objetos SequentialTask que representan las tareas a ejecutar. |
+| verbose | Verboso | Parámetro de entrada. Esto habilita la salida verbosa para registro detallado. |
+| memory | Memoria | Parámetro de entrada. La configuración de memoria para la tripulación. |
+| use_cache | Usar Caché | Parámetro de entrada. Esto habilita el almacenamiento en caché de resultados. |
+| max_rpm | RPM Máximo | Parámetro de entrada. Esto establece las solicitudes máximas por minuto. |
+| share_crew | Compartir Tripulación | Parámetro de entrada. Esto determina si la información de la tripulación se comparte entre agentes. |
+| function_calling_llm | LLM de Llamada de Función | Parámetro de entrada. El modelo de lenguaje para llamadas de función. |
+| crew | Tripulación | Parámetro de salida. El objeto Crew construido con ejecución de tareas secuencial. |
+
+</details>
+
+<details>
+<summary>CrewAI Sequential Task Agent</summary>
+
+Este componente crea una Tarea CrewAI y su Agente asociado permitiendo la definición de tareas secuenciales con roles y capacidades específicas del agente.
+Para más información, consulta la [documentación de agentes secuenciales CrewAI](https://docs.crewai.com/how-to/Sequential/).
+
+Acepta los siguientes parámetros:
+
+| Nombre | Nombre Mostrado | Información |
+|------|--------------|------|
+| role | Rol | Parámetro de entrada. El rol del agente. |
+| goal | Objetivo | Parámetro de entrada. El objetivo del agente. |
+| backstory | Historia de fondo | Parámetro de entrada. La historia de fondo del agente. |
+| tools | Herramientas | Parámetro de entrada. Las herramientas a disposición del agente. |
+| llm | Modelo de Lenguaje | Parámetro de entrada. El modelo de lenguaje que ejecuta el agente. |
+| memory | Memoria | Parámetro de entrada. Esto determina si el agente debe tener memoria o no. |
+| verbose | Verboso | Parámetro de entrada. Esto habilita la salida verbosa. |
+| allow_delegation | Permitir Delegación | Parámetro de entrada. Esto determina si el agente puede delegar tareas a otros agentes. |
+| allow_code_execution | Permitir Ejecución de Código | Parámetro de entrada. Esto determina si el agente puede ejecutar código. |
+| agent_kwargs | kwargs del Agente | Parámetro de entrada. Los kwargs adicionales para el agente. |
+| task_description | Descripción de Tarea | Parámetro de entrada. El texto descriptivo detallando el propósito y ejecución de la tarea. |
+| expected_output | Salida Esperada de Tarea | Parámetro de entrada. La definición clara del resultado esperado de la tarea. |
+| async_execution | Ejecución Asíncrona | Parámetro de entrada. La bandera booleana indicando ejecución asíncrona de tarea. |
+| previous_task | Tarea Anterior | Parámetro de entrada. La tarea anterior en la secuencia para encadenamiento. |
+| task_output | Tarea Secuencial | Parámetro de salida. La lista de objetos SequentialTask que representan las tareas creadas. |
+
+</details>
+
+## Ver también
+
+* [Componente **Message History**](/components-helpers#message-history)
+* [Almacenar memoria de chat](/memory#store-chat-memory)
+* [Bundles](/components-bundle-components)
+* [Componentes heredados de LangChain](/bundles-langchain#legacy-langchain-components)

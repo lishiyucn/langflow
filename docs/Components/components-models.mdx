@@ -1,0 +1,141 @@
+---
+title: Modelo de Lenguaje
+slug: /components-models
+---
+
+import Icon from "@site/src/components/icon";
+
+Los componentes de modelo de lenguaje en Langflow generan texto usando un Modelo de Lenguaje Grande (LLM) especificado.
+
+Langflow incluye un componente central **Language Model** que tiene soporte incorporado para muchos LLM, así como una interfaz para conectar cualquier [componente de modelo de lenguaje adicional](#additional-language-model-components).
+Los LLM incorporados son apropiados para la mayoría de casos de uso de modelos de lenguaje basados en texto en Langflow.
+
+## Usar componentes de modelo de lenguaje en un flujo
+
+Usa componentes de modelo de lenguaje en cualquier lugar donde usarías un LLM en un flujo.
+
+Estos componentes aceptan entradas como mensajes de chat, archivos e instrucciones para generar una respuesta de texto.
+El flujo debe incluir [componentes **Chat Input/Output**](/components-io#chat-io) para permitir interacciones basadas en chat con el LLM.
+Sin embargo, también puedes usar el componente **Language Model** para acciones que no emiten salida de chat directamente, como el componente **Smart Function**.
+
+El siguiente ejemplo usa el componente central **Language Model** y un LLM incorporado para crear un flujo de chatbot similar a la [plantilla **Basic Prompting**](/basic-prompting).
+El ejemplo se enfoca en usar los modelos incorporados, pero también indica dónde puedes integrar otro modelo.
+
+1. Agrega el componente **Language Model** a tu flujo.
+
+2. En el campo **OpenAI API Key**, ingresa tu clave API de OpenAI.
+
+    Este ejemplo usa el modelo OpenAI por defecto y un modelo Anthropic incorporado para comparar respuestas de diferentes proveedores.
+
+    Si quieres usar un proveedor diferente, edita los campos **Model Provider**, **Model Name** y **API Key** en consecuencia.
+
+    Si quieres usar un proveedor o modelo que no está incorporado en el componente **Language Model**, consulta [Componentes de modelo de lenguaje adicionales](#additional-language-model-components) para aprender cómo conectar un proveedor de modelo **Custom** al componente **Language Model**.
+    Luego, puedes continuar siguiendo estos pasos para construir tu flujo.
+
+3. En el [menú de encabezado del componente](/concepts-components#component-menus), haz clic en <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**, habilita el parámetro **System Message**, y luego haz clic en **Close**.
+
+4. Agrega un [componente **Prompt Template**](/components-prompts) a tu flujo.
+
+5. En el campo **Template**, ingresa algunas instrucciones para el LLM, como `Eres un experto en geografía que está enseñando a estudiantes de secundaria`.
+
+6. Conecta la salida del componente **Prompt Template** a la entrada **System Message** del componente **Language Model**.
+
+7. Agrega [componentes **Chat Input** y **Chat Output**](/components-io#chat-io) a tu flujo.
+
+8. Conecta el componente **Chat Input** a la **Input** del componente **Language Model**, y luego conecta la salida **Message** del componente **Language Model** al componente **Chat Output**.
+
+    ![Un flujo de prompting básico con componentes Language Model, Prompt Template, Chat Input y Chat Output](/img/component-language-model.png)
+
+9. Abre el **Playground**, y haz una pregunta para chatear con el LLM y probar el flujo, como `¿Cuál es la capital de Utah?`.
+
+    <details>
+    <summary>Resultado</summary>
+
+    La siguiente respuesta es un ejemplo de la respuesta de un modelo OpenAI.
+    Tu respuesta real puede variar basada en la versión del modelo al momento de tu solicitud, tu plantilla y entrada.
+
+    ```
+    La capital de Utah es Salt Lake City. No solo es la ciudad más grande del estado sino que también sirve como el centro cultural y económico de Utah. Salt Lake City fue fundada en 1847 por pioneros mormones y es conocida por su proximidad al Gran Lago Salado y su papel en la historia de la Iglesia de Jesucristo de los Santos de los Últimos Días. Para más información, puedes referirte a fuentes como el Servicio Geológico de EE.UU. o el sitio web oficial del estado de Utah.
+    ```
+
+    </details>
+
+10. Prueba un modelo o proveedor diferente para ver cómo cambia la respuesta. Por ejemplo:
+
+    1. En el componente **Language Model**, cambia el proveedor del modelo a **Anthropic**.
+    2. Selecciona un modelo Anthropic, como Claude 3.5 Haiku.
+    3. Ingresa una clave API de Anthropic.
+
+11. Abre el **Playground**, haz la misma pregunta que hiciste antes, y luego compara el contenido y formato de las respuestas.
+
+    Esto te ayuda a entender cómo diferentes modelos manejan la misma solicitud para que puedas elegir el mejor modelo para tu caso de uso.
+    También puedes aprender más sobre diferentes modelos en la documentación de cada proveedor de modelos.
+
+    <details>
+    <summary>Resultado</summary>
+
+    La siguiente respuesta es un ejemplo de la respuesta de un modelo Anthropic.
+    Tu respuesta real puede variar basada en la versión del modelo al momento de tu solicitud, tu plantilla y entrada.
+
+    Nota que esta respuesta es más corta e incluye fuentes, mientras que la respuesta de OpenAI fue más enciclopédica y no citó fuentes.
+
+    ```
+    La capital de Utah es Salt Lake City. También es la ciudad más poblada del estado. Salt Lake City ha sido la capital de Utah desde 1896, cuando Utah se convirtió en estado.
+    Fuentes:
+    Sitio Web Oficial del Gobierno del Estado de Utah (utah.gov)
+    Oficina del Censo de EE.UU.
+    Encyclopedia Britannica
+    ```
+
+    </details>
+
+## Parámetros del Language Model
+
+Algunos parámetros de entrada del componente **Language Model** están ocultos por defecto en el editor visual.
+Puedes alternar parámetros a través de los <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** en el [menú de encabezado del componente](/concepts-components#component-menus).
+
+| Nombre | Tipo | Descripción |
+|------|------|-------------|
+| provider | String | Parámetro de entrada. El proveedor del modelo a usar. |
+| model_name | String | Parámetro de entrada. El nombre del modelo a usar. Las opciones dependen del proveedor seleccionado. |
+| api_key | SecretString | Parámetro de entrada. La Clave API para autenticación con el proveedor seleccionado. |
+| input_value | String | Parámetro de entrada. El texto de entrada a enviar al modelo. |
+| system_message | String | Parámetro de entrada. Un mensaje del sistema que ayuda a establecer el comportamiento del asistente. |
+| stream | Boolean | Parámetro de entrada. Si transmitir la respuesta en stream. Por defecto: `False`. |
+| temperature | Float | Parámetro de entrada. Controla la aleatoriedad en las respuestas. Rango: `[0.0, 1.0]`. Por defecto: `0.1`. |
+| model | LanguageModel | Parámetro de salida. Tipo de salida alternativo a la salida `Message` por defecto. Produce una instancia de Chat configurada con los parámetros especificados. Ver [Tipos de salida del Language Model](#language-model-output-types). |
+
+## Tipos de salida del Language Model
+
+Los componentes **Language Model**, incluyendo el componente central y los componentes agrupados, pueden producir dos tipos de salida:
+
+* **Model Response**: El tipo de salida por defecto emite la respuesta generada del modelo como [datos `Message`](/data-types#message).
+Usa este tipo de salida cuando quieras la interacción LLM típica donde el LLM produce una respuesta de texto basada en la entrada dada.
+
+* **Language Model**: Cambia el tipo de salida del componente **Language Model** a [`LanguageModel`](/data-types#languagemodel) cuando necesites adjuntar un LLM a otro componente en tu flujo.
+Este es un tipo de datos específico que solo es requerido por ciertos componentes, como el [componente **Smart Function**](/components-processing#smart-function).
+
+    Con esta configuración, el componente **Language Model** está destinado a apoyar una acción completada por otro componente, en lugar de producir una respuesta de texto para una interacción estándar basada en chat.
+    Por ejemplo, el componente **Smart Function** usa un LLM para crear una función a partir de entrada en lenguaje natural.
+
+## Componentes de modelo de lenguaje adicionales
+
+Si tu proveedor o modelo no es soportado por el componente central **Language Model**, componentes de modelo de lenguaje adicionales de un solo proveedor están disponibles en la sección [**Bundles**](/components-bundle-components) del menú **Components**.
+
+Puedes usar componentes agrupados directamente en tus flujos o puedes conectarlos a otros componentes que acepten una entrada [`LanguageModel`](/data-types#languagemodel), como los componentes **Language Model** y **Agent**.
+
+Por ejemplo, para conectar componentes agrupados al componente central **Language Model**, haz lo siguiente:
+
+1. En el componente **Language Model**, establece **Model Provider** a **Custom**.
+
+    El nombre del campo cambia a **Language Model** y el puerto de entrada cambia a un puerto `LanguageModel`.
+
+2. Agrega un componente agrupado compatible a tu flujo, como el [componente **Vertex AI** para generación de texto](/bundles-vertexai).
+
+3. Cambia el tipo de salida del componente agrupado a `LanguageModel`.
+Para hacer esto, haz clic en **Model Response** cerca del puerto de salida del componente, y luego selecciona **Language Model**.
+Para más información, consulta [Tipos de salida del Language Model](#language-model-output-types).
+
+4. Conecta la salida del componente agrupado al puerto de entrada `LanguageModel` del componente **Language Model**.
+
+    El componente agrupado ahora proporciona la configuración LLM para el componente al que está conectado, y puedes continuar construyendo tu flujo según sea necesario.

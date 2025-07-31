@@ -1,0 +1,42 @@
+---
+title: 使用会话 ID 管理组件之间的通信
+slug: /session-id
+---
+
+会话 ID 是客户端/服务器连接的唯一标识符。一个会话等于客户端与服务器连接的持续时间。
+
+在 Langflow **Playground** 中，当前会话在面板的左侧列出。
+
+Langflow 使用会话 ID 来跟踪流程内的不同聊天交互。这允许在单个流程中存在多个聊天会话。消息以会话 ID 作为参考存储在数据库中。
+
+每个会话之间的用户区分在管理客户端/服务器连接方面很有帮助，但在单个流程内维持单独的对话上下文方面也很重要。LLM 依赖过去的交互来生成对查询的响应，如果这些对话没有分开，响应会变得不那么有用，甚至令人困惑。
+
+## 自定义会话 ID
+
+自定义会话 ID 可以作为 API 调用中载荷的一部分设置，或作为单个组件中的高级设置。API 会话 ID 值优先。如果未指定会话 ID，则分配流程 ID。
+
+如果您在载荷中设置了自定义会话 ID，所有下游组件都使用上游组件的会话 ID 值。
+用您的 Langflow 部署中的值替换 `LANGFLOW_SERVER_ADDRESS`、`FLOW_ID` 和 `LANGFLOW_API_KEY`。
+```
+curl --request POST \
+  --url "http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID" \
+  --header "Content-Type: application/json" \
+  --header "x-api-key: $LANGFLOW_API_KEY" \
+  --data '{
+  "input_value": "Hello",
+  "output_type": "chat",
+  "input_type": "chat",
+  "session_id": "my_custom_session_value"
+}'
+```
+
+`my_custom_session_value` 值在接受它的组件中使用，来自此流程的存储消息以各自的 `session_id` 值存储在 `langflow.db` 中。
+
+## 按会话 ID 从记忆中检索消息
+
+要从本地 Langflow 记忆中检索消息，请向您的流程添加一个 [消息历史](/components-helpers#message-history) 组件。
+该组件接受 `sessionID` 作为过滤参数，并自动使用来自上游的会话 ID 值以按会话 ID 从存储中检索消息历史。
+
+可以通过 `GET /v1/monitor/messages` 从 Langflow API 按 `session_id` 检索消息。有关更多信息，请参阅 [监控端点](https://docs.langflow.org/api-monitor)。
+
+有关会话 ID 实际应用的示例，请参阅 [在 Langflow 中使用会话 ID](https://www.youtube.com/watch?v=nJiF_eF21MY)。

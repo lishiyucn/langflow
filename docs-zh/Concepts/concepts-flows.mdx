@@ -1,0 +1,97 @@
+---
+title: 构建 flow
+slug: /concepts-flows
+---
+
+import Icon from "@site/src/components/icon";
+
+_Flow_ 是应用程序工作流的功能表示。
+Flow 接收输入、处理它并产生输出。
+
+Flow 由_组件_组成，这些组件代表您应用程序工作流中的各个步骤。
+
+![工作区内的基本提示 flow](/img/workspace-basic-prompting.png)
+
+Langflow flow 是完全可序列化的，可以从安装 Langflow 的文件系统中保存和加载。
+
+:::tip
+要在几分钟内尝试构建和运行 flow，请参阅 [Langflow 快速开始](/get-started-quickstart)。
+:::
+
+## 创建 flow
+
+在 Langflow UI 中有四种创建 flow 的方法：
+
+* **创建空白 flow**：从[项目页面](#projects)中选择一个项目，然后点击 **New Flow**。
+* **从模板创建 flow**：从[项目页面](#projects)中选择一个项目，然后点击 **New Flow**。
+* **复制现有 flow**：从[项目页面](#projects)中找到您要复制的 flow，点击 <Icon name="Ellipsis" aria-hidden="true" /> **More**，然后选择 **Duplicate**。
+* **导入 flow**：参阅[导入和导出 flow](/concepts-flows-import)。
+
+您也可以使用 [Langflow API](/api-flows) 创建 flow，但 Langflow 团队建议在您熟悉 flow 创建之前使用可视化编辑器。
+
+### 添加组件
+
+Flow 由[组件](/concepts-components)组成，这些是您在 Langflow [可视化编辑器](/concepts-overview)中配置和连接的节点。
+每个组件执行特定的任务，比如服务 AI 模型或连接数据源。
+
+从**组件**菜单中拖放组件来将它们添加到您的 flow 中。
+然后，配置组件设置并将组件连接在一起。
+
+![Chat 输入和输出连接到语言模型组件](/img/connect-component.png)
+
+每个组件都有配置设置和选项。其中一些是所有组件共有的，一些是特定组件独有的。
+
+要形成一个统一的 flow，您通过_边缘_或_端口_连接组件，这些都有它们接收或发送的特定数据类型。
+例如，消息端口在组件之间发送文本字符串。
+
+有关组件配置的更多信息，包括端口类型和底层组件代码，请参阅[组件概述](/concepts-components)。
+
+### 运行 flow
+
+在您构建原型 flow 后，您可以在 [**Playground**](/concepts-playground) 中测试它。
+当您准备使用 Langflow 进行应用程序开发时，请学习如何[使用 Langflow API 触发 flow](/concepts-publish)，探索更高级的配置选项（如[自定义依赖](/install-custom-dependencies)），并最终[容器化您的 Langflow 应用程序](/develop-application)。
+
+当您准备投入生产或部署 Langflow MCP 服务器以通过公共互联网访问时，请参阅 [Langflow 部署概述](/deployment-overview)。
+
+#### Flow 图
+
+当 flow 运行时，Langflow 从节点（组件）和边缘（连接）构建一个有向无环图 (DAG) 对象，并对节点进行排序以确定执行顺序。
+
+图构建调用每个组件的 `def_build` 函数来验证和准备节点。
+然后按依赖顺序处理此图。
+每个节点都被顺序构建和执行，每个已构建节点的结果被传递给依赖于该节点结果的节点。
+
+## 在项目中管理 flow {#projects}
+
+**项目**页面是您启动 Langflow 时到达的地方。
+这是您高级查看和管理 flow 的地方。
+
+Langflow 项目像文件夹一样，您可以用它来组织相关的 flow。
+默认项目是 **Starter Project**，除非您创建另一个项目，否则您的 flow 将存储在这里。
+要创建项目，请点击 <Icon name="Plus" aria-hidden="true"/> **Create new project**。
+
+![Projects page with multiple flows in a project](/img/my-projects.png)
+
+从**项目**页面，您可以管理每个项目中的 flow：
+* **查看项目中的 flow**：在**项目**列表中选择项目名称。
+* **创建 flow**：参阅[创建 flow](#create-a-flow)。
+* **编辑 flow 的名称和描述**：找到您要编辑的 flow，点击 <Icon name="Ellipsis" aria-hidden="true" /> **More**，然后选择 **Edit details**。
+* **删除 flow**：找到您要删除的 flow，点击 <Icon name="Ellipsis" aria-hidden="true" /> **More**，然后选择 **Delete**。
+* **将 flow 作为 MCP 工具提供服务**：参阅[将 Langflow 用作 MCP 服务器](/mcp-server)。
+
+## Flow 存储和日志
+
+默认情况下，flow 和 [flow 日志](/logging)存储在本地磁盘的以下默认位置：
+
+- **macOS Desktop**: `/Users/<username>/.langflow/cache`
+- **Windows Desktop**: `C:\Users\<username>\AppData\Roaming\com.Langflow\cache`
+- **OSS macOS/Windows/Linux/WSL (uv pip install)**: `<path_to_venv>/lib/python3.12/site-packages/langflow/cache`
+- **OSS macOS/Windows/Linux/WSL (git clone)**: `<path_to_clone>/src/backend/base/langflow/cache`
+
+Flow 存储位置可以通过 [`LANGFLOW_CONFIG_DIR`](/environment-variables#LANGFLOW_CONFIG_DIR) 环境变量进行自定义，flow 日志存储位置可以通过 [`LANGFLOW_LOG_FILE`](/environment-variables#LANGFLOW_LOG_FILE) 环境变量进行自定义。
+
+## 参阅
+
+* [共享和嵌入 flow](/concepts-publish)
+* [导入和导出 flow](/concepts-flows-import)
+* [Langflow 环境变量](/environment-variables)

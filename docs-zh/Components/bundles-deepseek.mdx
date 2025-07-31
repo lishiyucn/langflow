@@ -1,0 +1,38 @@
+---
+title: DeepSeek
+slug: /bundles-deepseek
+---
+
+import Icon from "@site/src/components/icon";
+
+[Bundle](/components-bundle-components) 包含支持 Langflow 特定第三方集成的自定义组件。
+
+本页描述了 **DeepSeek** bundle 中可用的组件。
+
+有关 DeepSeek 组件使用的 DeepSeek 功能和特性的更多信息，请参阅 [DeepSeek 文档](https://api-docs.deepseek.com/)。
+
+## DeepSeek 文本生成
+
+**DeepSeek** 组件使用 DeepSeek 的语言模型生成文本。
+
+它可以输出 **模型响应** ([`Message`](/data-types#message)) 或 **语言模型** ([`LanguageModel`](/data-types#languagemodel))。
+
+当您想要将 DeepSeek 模型用作其他 LLM 驱动组件（如 **语言模型**或 **智能函数**组件）的 LLM 时，请使用 **语言模型**输出。
+
+有关更多信息，请参阅[**语言模型**组件](/components-models)。
+
+### DeepSeek 文本生成参数
+
+许多 **DeepSeek** 组件输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的<Icon name="SlidersHorizontal" aria-hidden="true"/> **控制**切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| max_tokens | Integer | 输入参数。要生成的最大令牌数。设置为 `0` 表示无限制。范围：`0-128000`。 |
+| model_kwargs | Dictionary | 输入参数。模型的其他关键字参数。 |
+| json_mode | Boolean | 输入参数。如果为 `True`，无论是否传递模式都输出 JSON。 |
+| model_name | String | 输入参数。要使用的 DeepSeek 模型。默认：`deepseek-chat`。 |
+| api_base | String | 输入参数。API 请求的基础 URL。默认：`https://api.deepseek.com`。 |
+| api_key | SecretString | 输入参数。用于身份验证的 DeepSeek API 密钥。 |
+| temperature | Float | 输入参数。控制响应中的随机性。范围：`[0.0, 2.0]`。默认：`1.0`。 |
+| seed | Integer | 输入参数。为随机数生成初始化的数字。使用相同的种子整数获得更可重现的结果，使用不同的种子数字获得更随机的结果。 |

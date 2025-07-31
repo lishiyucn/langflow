@@ -1,0 +1,208 @@
+---
+title: 身份验证
+slug: /configuration-authentication
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+本指南介绍 Langflow 的身份验证系统和 API 密钥管理，包括如何保护您的部署以及管理对 flow 和组件的访问。
+
+:::warning
+永远不要在没有适当安全措施的情况下将 Langflow 端口直接暴露到互联网。
+
+禁用 `LANGFLOW_AUTO_LOGIN`，使用安全的 `LANGFLOW_SECRET_KEY`，并确保您的 Langflow 服务器位于启用身份验证的反向代理后面。
+有关更多信息，请参阅[启动带身份验证的安全 Langflow 服务器](#start-a-secure-langflow-server-with-authentication)。
+:::
+
+## 身份验证配置值
+
+本节描述可用的身份验证配置变量。
+
+您可以使用 Langflow 仓库中的 [`.env.example`](https://github.com/langflow-ai/langflow/blob/main/.env.example) 文件作为您自己的 `.env` 文件的模板。
+
+### LANGFLOW_AUTO_LOGIN
+
+Langflow **不允许**用户同时或共享访问 flow。
+如果启用了 `AUTO_LOGIN` 并且禁用了用户管理（`LANGFLOW_NEW_USER_IS_ACTIVE=true`），用户可以访问同一环境，但它没有密码保护。如果两个用户访问同一个 flow，Langflow 只保存最后一个用户保存的工作。
+
+```bash
+LANGFLOW_AUTO_LOGIN=True
+```
+
+在 Langflow 1.5 及更高版本中，大多数 API 端点都需要 Langflow API 密钥，即使 `AUTO_LOGIN` 设置为 `True`。
+唯一的例外是 MCP 端点 `/v1/mcp`、`/v1/mcp-projects` 和 `/v2/mcp`，它们从不需要身份验证。
+
+<details>
+<summary>AUTO_LOGIN 和 SKIP_AUTH 选项</summary>
+
+在 Langflow 1.5 之前的版本中，如果 `LANGFLOW_AUTO_LOGIN=true`，则 Langflow 会自动以超级用户身份登录用户，无需身份验证。
+在这种情况下，API 请求不需要 Langflow API 密钥。
+
+在 Langflow 1.5 版本中，您可以设置 `LANGFLOW_SKIP_AUTH_AUTO_LOGIN=true` 和 `LANGFLOW_AUTO_LOGIN=true` 来跳过 API 请求的身份验证。
+但是，`LANGFLOW_SKIP_AUTH_AUTO_LOGIN` 选项将在未来版本中被移除。
+</details>
+
+### LANGFLOW_SUPERUSER 和 LANGFLOW_SUPERUSER_PASSWORD
+
+这些环境变量只在 `LANGFLOW_AUTO_LOGIN` 设置为 `False` 时才相关。
+它们指定超级用户的用户名和密码，这对于管理任务至关重要：
+
+```text
+LANGFLOW_SUPERUSER=administrator
+LANGFLOW_SUPERUSER_PASSWORD=securepassword
+```
+
+### LANGFLOW_SECRET_KEY
+
+这个环境变量包含用于加密敏感数据（如 API 密钥）的密钥。
+Langflow 使用 [Fernet](https://pypi.org/project/cryptography/) 库进行密钥加密。
+
+```text
+LANGFLOW_SECRET_KEY=dBuuuB_FHLvU8T9eUNlxQF9ppqRxwWpXXQ42kM2_fb
+```
+
+:::warning
+如果没有提供密钥，Langflow 会自动生成一个。在生产环境中不建议这样做，特别是在 Kubernetes 等多实例部署中，自动生成的密钥无法解密由其他实例加密的数据。
+:::
+
+要生成 `LANGFLOW_SECRET_KEY`，请按照以下步骤操作：
+
+1. 运行命令生成并将密钥复制到剪贴板。
+
+        <Tabs>
+        <TabItem value="linux-macos" label="Linux or macOS">
+
+        ```bash
+        # Copy to clipboard (macOS)
+        python3 -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')" | pbcopy
+
+        # Copy to clipboard (Linux)
+        python3 -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')" | xclip -selection clipboard
+
+        # Or just print
+        python3 -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')"
+        ```
+
+        </TabItem>
+        <TabItem value="Windows" label="Windows">
+
+        ```bash
+        # Copy to clipboard
+        python -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')" | clip
+
+        # Or just print
+        python -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')"
+        ```
+
+        </TabItem>
+        </Tabs>
+
+2. 将值粘贴到您的 `.env` 文件中：
+
+    ```text
+    LANGFLOW_SECRET_KEY=dBuuuB_FHLvU8T9eUNlxQF9ppqRxwWpXXQ42kM2_fb
+    ```
+
+### LANGFLOW_NEW_USER_IS_ACTIVE
+
+当此选项设置为 `True` 时，新用户会自动激活并可以登录，无需超级用户从 **Admin 页面**显式激活。
+默认情况下，此变量设置为 `False`。
+
+```text
+LANGFLOW_NEW_USER_IS_ACTIVE=False
+```
+
+## 启动带身份验证的安全 Langflow 服务器
+
+使用[身份验证配置值](/configuration-authentication#authentication-configuration-values)中描述的变量，启动启用身份验证和密钥加密的安全 Langflow 服务器。
+
+以超级用户身份登录后，在您的服务器上创建新用户。
+
+### 启动 Langflow 服务器
+
+1. 创建 `.env` 文件并为安全服务器填入值。
+此服务器创建超级用户账户，要求用户在使用 Langflow 之前登录，并使用 `LANGFLOW_SECRET_KEY` 加密密钥，该密钥将在下一步中添加。
+使用以下配置创建 `.env` 文件：
+
+```text
+LANGFLOW_AUTO_LOGIN=False
+LANGFLOW_SUPERUSER=administrator
+LANGFLOW_SUPERUSER_PASSWORD=securepassword
+LANGFLOW_SECRET_KEY=your_generated_key
+LANGFLOW_NEW_USER_IS_ACTIVE=False
+```
+
+2. 生成用于加密敏感数据的密钥。
+
+    使用以下命令之一生成您的密钥：
+
+    <Tabs>
+    <TabItem value="linux-macos" label="Linux or macOS">
+
+    ```bash
+    # Copy to clipboard (macOS)
+    python3 -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')" | pbcopy
+
+    # Copy to clipboard (Linux)
+    python3 -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')" | xclip -selection clipboard
+
+    # Or just print
+    python3 -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')"
+    ```
+
+    </TabItem>
+    <TabItem value="Windows" label="Windows">
+
+    ```bash
+    # Copy to clipboard
+    python -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')" | clip
+
+    # Or just print
+    python -c "from secrets import token_urlsafe; print(f'LANGFLOW_SECRET_KEY={token_urlsafe(32)}')"
+    ```
+
+    </TabItem>
+    </Tabs>
+
+3. 将您的 `LANGFLOW_SECRET_KEY` 粘贴到 `.env` 文件中。
+
+4. 使用 `.env` 文件中的配置启动 Langflow。
+
+    ```text
+    uv run langflow run --env-file .env
+    ```
+
+5. 验证服务器正在运行。默认位置是 `http://localhost:7860`。
+
+### 以管理员身份管理用户
+
+1. 要以超级用户身份完成首次登录，请转到 `http://localhost:7860/login`。
+2. 使用您的超级用户凭据登录。
+
+    * 用户名：`LANGFLOW_SUPERUSER` 的值（例如，`administrator`）
+    * 密码：`LANGFLOW_SUPERUSER_PASSWORD` 的值（例如，`securepassword`）
+
+    默认值都是 `langflow`。
+
+3. 要管理服务器上的用户，请导航到 `http://localhost:7860/admin` 的 `/admin` 页面。
+
+    点击您的用户头像，然后点击 **Admin Page**。
+
+    作为超级用户，您可以创建用户、设置权限、重置密码和删除账户。
+
+4. 要创建用户，在 Langflow UI 中，点击 **New User**，然后填写以下字段：
+
+    * **Username**
+    * **Password** 和 **Confirm Password**
+    * 为新用户选择 **Active** 并取消选择 **Superuser**。
+    **Active** 用户可以登录系统并访问他们的 flow。**Inactive** 用户无法登录或查看他们的 flow。
+    **Superuser** 具有完整的管理权限。
+
+5. 要完成用户创建，点击 **Save**。
+您的新用户将出现在 **Admin Page** 中。
+
+6. 要确认新用户的功能，请退出 Langflow，然后使用新用户的凭据重新登录。
+尝试访问 `/admin` 页面。您应该被重定向到 `/flows` 页面，因为新用户不是超级用户。
+
+您已经启动了一个启用身份验证和密钥加密的安全 Langflow 服务器。

@@ -1,0 +1,55 @@
+---
+title: 记忆组件
+slug: /components-memories
+---
+
+在Langflow版本1.5中，**Memory**类别被移除。
+
+所有在此类别中的组件都被其他组件替换或移动到**Components**菜单中的其他类别。
+
+:::important
+一些在**Memory**类别中的组件是遗留组件。
+你可以在流程中使用这些组件，但它们不再被维护，可能在未来版本中被移除。
+
+建议你用本页描述的替代组件替换所有遗留组件。
+:::
+
+## Message History
+
+[**Message History**组件](/components-helpers#message-history)被移动到**Helpers**类别。
+此组件结合了遗留**Chat History**和**Message Store**组件的功能。
+
+## Message Store
+
+**Message Store**组件是遗留组件。
+此组件提供的功能在**Message History**组件中可用。
+用[**Message History**组件](/components-helpers#message-history)替换此组件。
+
+## 提供商特定的聊天记忆组件
+
+提供商特定的组件被移动到**Bundles**类别：
+
+- [**Mem0 Chat Memory**组件](/bundles-mem0)
+- [**Redis Chat Memory**组件](/bundles-redis)
+- [**Cassandra Chat Memory**组件](/bundles-datastax#cassandra-chat-memory)
+- [**Astra DB Chat Memory**组件](/bundles-datastax#astra-db-chat-memory)
+
+<details>
+<summary>Zep Chat Memory</summary>
+
+**Zep Chat Memory**组件是遗留组件。
+用[**Message History**组件](/components-helpers#message-history)替换此组件。
+
+此组件创建`ZepChatMessageHistory`实例，启用使用Zep（LLM的记忆服务器）存储和检索聊天消息。
+
+它接受以下参数：
+
+| 名称          | 类型          | 描述                                               |
+|---------------|---------------|------------------------------------------------------------|
+| url           | MessageText   | 输入参数。Zep实例的URL。必需。 |
+| api_key       | SecretString  | 输入参数。用于与Zep实例认证的API密钥。 |
+| api_base_path | Dropdown      | 输入参数。要使用的API版本。选项包括api/v1或api/v2。 |
+| session_id    | MessageText   | 输入参数。聊天会话的唯一标识符。可选。 |
+| message_history | BaseChatMessageHistory  | 输出参数。会话的ZepChatMessageHistory实例。 |
+
+</details>

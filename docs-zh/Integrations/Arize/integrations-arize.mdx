@@ -1,0 +1,108 @@
+---
+title: Arize
+slug: /integrations-arize
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Arize 是一个基于 [OpenTelemetry](https://opentelemetry.io/) 和 [OpenInference](https://docs.arize.com/phoenix/reference/open-inference) 构建的工具，用于监控和优化 LLM 应用程序。
+
+要启用 Arize 跟踪，请在您的 Langflow 部署中设置所需的 Arize 环境变量。
+Arize 将自动开始监控并收集来自您的 LLM 应用程序的遥测数据。
+
+:::tip
+在 Arize 文档中也提供了集成 Langflow 和 Arize 的说明：
+
+* [使用 Arize 平台进行 Langflow 跟踪](https://arize.com/docs/ax/integrations/frameworks-and-platforms/langflow/langflow-tracing)
+* [使用 Arize Phoenix 进行 Langflow 跟踪](https://arize.com/docs/phoenix/integrations/langflow/langflow-tracing)
+:::
+
+## 前提条件
+
+* 如果您使用的是[标准 Arize 平台](https://docs.arize.com/arize)，您需要一个 **Arize Space ID** 和 **Arize API Key**。
+* 如果您使用的是开源的 [Arize Phoenix 平台](https://docs.arize.com/phoenix)，您需要一个 **Arize Phoenix API key**。
+
+## 将 Arize 连接到 Langflow
+
+<Tabs>
+<TabItem value="platform" label="Arize Platform" default>
+
+1. 在您的 [Arize 仪表板](https://app.arize.com/)中，复制您的 **Space ID** 和 [**API Key (Ingestion Service Account Key)**](https://arize.com/docs/ax/security-and-settings/api-keys)。
+
+2. 在您的 Langflow 应用程序根目录中，编辑现有的 Langflow `.env` 文件或创建一个新文件。
+
+3. 添加 `ARIZE_SPACE_ID` 和 `ARIZE_API_KEY` 环境变量：
+
+    ```bash
+    ARIZE_SPACE_ID=SPACE_ID
+    ARIZE_API_KEY=API_KEY
+    ```
+
+    将 `SPACE_ID` 和 `API_KEY` 替换为您从 Arize 平台复制的值。
+
+    如果您使用的是标准 Arize 平台，则无需指定 Arize 项目名称。
+
+4. 使用您的 `.env` 文件启动 Langflow 应用程序：
+
+    ```bash
+    uv run langflow run --env-file .env
+    ```
+
+</TabItem>
+<TabItem value="phoenix" label="Arize Phoenix">
+
+1. 在您的 [Arize Phoenix 仪表板](https://app.phoenix.arize.com/)中，复制您的 **API Key**。
+
+2. 在您的 Langflow 应用程序根目录中，编辑现有的 Langflow `.env` 文件或创建一个新文件。
+
+3. 添加 `PHOENIX_API_KEY` 环境变量：
+
+    ```bash
+    PHOENIX_API_KEY=API_KEY
+    ```
+
+    将 `API_KEY` 替换为您从 Arize Phoenix 平台复制的 Arize Phoenix API key。
+
+4. 使用您的 `.env` 文件启动 Langflow 应用程序：
+
+    ```bash
+    uv run langflow run --env-file .env
+    ```
+
+</TabItem>
+</Tabs>
+
+## 运行流程并在 Arize 中查看指标
+
+1. 在 Langflow 中，运行具有 **Agent** 或 **Language Model** 组件的流程。
+您必须与流程聊天或触发 LLM 以产生供 Arize 跟踪的流量。
+
+    例如，您可以从 [**Simple Agent** 模板](/simple-agent)创建一个流程，将您的 OpenAI API 密钥添加到 **Agent** 组件，然后点击 **Playground** 与流程聊天并生成流量。
+
+2. 在 Arize 中，打开您的项目仪表板，然后等待 Arize 处理数据。
+这可能需要几分钟时间。
+
+3. 要查看流程的指标，请转到 **LLM Tracing** 选项卡。
+
+    每次 Langflow 执行都会在 Arize 中生成两个跟踪：
+
+    * `AgentExecutor` 跟踪是 LangChain 的 `AgentExecutor` 的 Arize 跟踪。
+    * `UUID` 跟踪是 Langflow 组件的跟踪。
+
+4. 要查看跟踪，请转到 **Traces** 选项卡。
+
+    _跟踪_是请求的完整过程，由多个_跨度_组成。
+
+5. 要查看跨度，请转到 **Spans** 选项卡。
+
+    _跨度_是跟踪中的单个操作。
+    例如，_跨度_可以是对 OpenAI 的单个 API 调用或对自定义工具的单个函数调用。
+
+    有关 Arize 中跟踪指标的信息，请参阅 [Arize LLM 跟踪文档](https://docs.arize.com/arize/llm-tracing/tracing)。
+
+6. 要将跨度添加到[数据集](https://docs.arize.com/arize/llm-datasets-and-experiments/datasets-and-experiments)，请点击 **Add to Dataset**。
+
+    **LLM Tracing** 选项卡上的所有指标都可以添加到数据集中。
+
+7. 要查看数据集，请点击 **Datasets** 选项卡，然后选择您的数据集。

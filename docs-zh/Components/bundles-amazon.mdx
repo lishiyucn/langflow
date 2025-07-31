@@ -1,0 +1,55 @@
+---
+title: Amazon
+slug: /bundles-amazon
+---
+
+import Icon from "@site/src/components/icon";
+
+[组件包](/components-bundle-components)包含支持 Langflow 与特定第三方集成的自定义组件。
+
+本页面描述了 **Amazon** 组件包中可用的组件。
+
+## Amazon Bedrock
+
+该组件使用 [Amazon Bedrock LLMs](https://docs.aws.amazon.com/bedrock) 生成文本。
+
+它可以输出**模型响应** ([`Message`](/data-types#message)) 或**语言模型** ([`LanguageModel`](/data-types#languagemodel))。
+具体来说，**语言模型**输出是根据组件参数配置的 [`ChatBedrock`](https://python.langchain.com/docs/integrations/chat/bedrock/) 实例。
+
+当您希望将 Amazon Bedrock 模型用作其他 LLM 驱动组件（例如**语言模型**或**智能函数**组件）的 LLM 时，请使用**语言模型**输出。
+
+有关更多信息，请参阅[**语言模型**组件](/components-models)。
+
+### Amazon Bedrock 参数
+
+默认情况下，许多 **Amazon Bedrock** 组件输入参数在可视化编辑器中是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制**来切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| model_id | String | 输入参数。要使用的 Amazon Bedrock 模型 ID。选项包括各种模型。 |
+| aws_access_key | SecretString | 输入参数。用于身份验证的 AWS 访问密钥。 |
+| aws_secret_key | SecretString | 输入参数。用于身份验证的 AWS 秘密密钥。 |
+| aws_session_token | SecretString | 输入参数。AWS 账户的会话密钥。 |
+| credentials_profile_name | String | 输入参数。要使用的 AWS 凭据配置文件名称。 |
+| region_name | String | 输入参数。AWS 区域名称。默认值：`us-east-1`。 |
+| model_kwargs | Dictionary | 输入参数。模型的其他关键字参数。 |
+| endpoint_url | String | 输入参数。Bedrock 服务的自定义端点 URL。 |
+
+## Amazon Bedrock 嵌入模型
+
+**Amazon Bedrock 嵌入模型**组件用于从 [Amazon Bedrock](https://aws.amazon.com/bedrock/) 加载嵌入模型。
+
+有关在流程中使用嵌入模型组件的更多信息，请参阅[**嵌入模型**组件](/components-embedding-models)。
+
+### Amazon Bedrock 嵌入模型参数
+
+默认情况下，一些 **Amazon Bedrock 嵌入模型**组件输入参数在可视化编辑器中是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制**来切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| credentials_profile_name | String | 输入参数。`~/.aws/credentials` 或 `~/.aws/config` 中 AWS 凭据配置文件的名称，其中包含访问密钥或角色信息。 |
+| model_id | String | 输入参数。要调用的模型 ID，例如 `amazon.titan-embed-text-v1`。这的值等同于 `list-foundation-models` API 中的 `modelId` 属性。 |
+| endpoint_url | String | 输入参数。用于设置除默认 AWS 端点以外的特定服务端点的 URL。 |
+| region_name | String | 输入参数。要使用的 AWS 区域，例如 `us-west-2`。如果未提供，则回退到 `AWS_DEFAULT_REGION` 环境变量或 `~/.aws/config` 中指定的区域。 |

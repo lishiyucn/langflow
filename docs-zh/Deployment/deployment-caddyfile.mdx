@@ -1,0 +1,143 @@
+---
+title: 在远程服务器上部署 Langflow
+slug: /deployment-caddyfile
+---
+
+了解如何在您自己的远程服务器上部署 Langflow，并具有安全的 Web 访问。
+本指南将带您了解如何使用 [Docker](https://docs.docker.com/) 在远程服务器上设置 Langflow，并使用 [Caddy](https://caddyserver.com/docs/) 配置安全的 Web 访问。
+
+## 前提条件
+
+* 具有双核 CPU 和至少 2 GB RAM 的服务器。
+此示例使用 [Hetzner cloud](https://www.hetzner.com/) 进行托管。您的部署可能会有所不同。
+
+## 使用 SSH 连接到您的远程服务器
+
+1. 创建 SSH 密钥。
+此密钥允许您远程连接到您的服务器。
+将 `DANA@EXAMPLE.COM` 替换为您希望与 SSH 密钥关联的电子邮件地址。
+    ```bash
+    ssh-keygen -t ed25519 -C "DANA@EXAMPLE.COM"
+    ```
+
+2. 在您的终端中，按照说明创建 SSH 密钥对。
+这会创建私钥和公钥。
+要从终端复制公钥，请输入以下命令：
+    ```bash
+    cat ~/Downloads/host-lf.pub | pbcopy
+    ```
+3. 在您的远程服务器中，添加您在上一步中复制的 SSH 密钥。
+例如，如果您使用 Hetzner 云服务器，请单击 **Server**，然后选择 **SSH keys** 来添加 SSH 密钥。
+4. 要使用 SSH 连接到您的服务器，请输入以下命令。
+    ```bash
+    ssh -i PATH_TO_PRIVATE_KEY/PRIVATE_KEY_NAME root@SERVER_IP_ADDRESS
+    ```
+
+    替换以下内容：
+    * `PATH_TO_PRIVATE_KEY/PRIVATE_KEY_NAME`：与您添加到服务器的公钥匹配的私有 SSH 密钥文件的路径
+    * `SERVER_IP_ADDRESS`：您服务器的 IP 地址
+5. 当提示输入密钥指纹时，输入 `yes`。
+终端输出指示连接是成功还是失败。
+以下是连接到 Hetzner 云服务器后返回的响应：
+    ```text
+     System information as of Mon May 19 04:34:44 PM UTC 2025
+
+      System load:  0.0               Processes:             129
+      Usage of /:   1.5% of 74.79GB   Users logged in:       0
+      Memory usage: 5%                IPv4 address for eth0: 5.161.250.132
+      Swap usage:   0%                IPv6 address for eth0: 2a01:4ff:f0:4de7::1
+    ```
+
+## 在您的服务器上部署 Langflow
+
+现在您的本地计算机通过 SSH 连接到远程服务器，您可以安装 Docker，创建 `docker-compose.yml` 文件，并使用反向代理（如 Caddy）公开提供服务。
+
+1. 在您的服务器上安装 Docker。
+由于此示例服务器是 Ubuntu 服务器，它可以安装 snap 包。
+如果您不使用 Ubuntu 或更喜欢不同的安装方法，请参阅[官方 Docker 安装指南](https://docs.docker.com/get-started/get-docker/)，获取适用于您操作系统的说明。
+    ```bash
+    snap install docker
+    ```
+2. 创建一个名为 `docker-compose.yml` 的文件，然后在文本编辑器中打开它：
+    ```bash
+    touch docker-compose.yml && nano docker-compose.yml
+    ```
+    以下示例定义了来自 `langflow:latest` 镜像的 Langflow 服务和一个 Caddy 服务，通过反向代理暴露 Langflow。
+    :::tip
+    [host-langflow](https://github.com/datastax/host-langflow) 仓库提供了此 `docker-compose.yml` 和 `Caddyfile` 的预构建副本，如果您更喜欢将仓库 fork 到您的服务器。
+    :::
+3. 将以下值添加到 `docker-compose.yml`，然后保存文件。
+    ```yml
+    version: "3.8"
+
+    services:
+      langflow:
+        image: langflowai/langflow:latest
+        ports:
+          - "7860:7860"
+        environment:
+          - LANGFLOW_HOST=0.0.0.0
+          - LANGFLOW_PORT=7860
+
+      caddy:
+        image: caddy:latest
+        ports:
+          - "80:80"
+          - "443:443"
+        volumes:
+          - ./Caddyfile:/etc/caddy/Caddyfile
+          - caddy_data:/data
+          - caddy_config:/config
+        depends_on:
+          - langflow
+
+    volumes:
+      caddy_data:
+      caddy_config:
+    ```
+4. 创建一个名为 `Caddyfile` 的文件。
+    ```bash
+    touch Caddyfile && nano Caddyfile
+    ```
+5. 将以下值添加到 `Caddyfile`，然后保存文件。
+Caddyfile 配置 Caddy 监听端口 80，并将所有到达端口 80 的传入请求转发到端口 7860 的 Langflow 服务。
+    ```
+    :80 {
+        reverse_proxy langflow:7860
+    }
+    ```
+6. 要部署您的服务器，请运行 `docker-compose up`。
+当出现 `Welcome to Langflow` 消息时，Langflow 正在运行，并可在 Docker 网络内部的 `http://0.0.0.0:7860` 访问。
+7. 要通过公共互联网访问您的 Langflow 服务器，请导航到您服务器的公共 IP 地址，例如 `http://5.161.250.132`。
+此地址使用 HTTP，因为 HTTPS 尚未启用。
+
+8. 推荐：启用 HTTPS：
+
+    1. 修改您域名的 A 记录以指向您服务器的 IP 地址。例如：
+
+        ```
+        Type: A
+        Name: langflow
+        Value: 5.161.250.132  # 设置为您服务器的 IP 地址
+        ```
+
+    2. 停止您的服务器。
+    3. 修改您的 Caddyfile 以包含端口 `443`，使 Caddy 可以将 HTTP（端口 80）和 HTTPS（端口 443）请求都转发到 Langflow 服务：
+
+        ```
+        :80, :443 {
+            reverse_proxy langflow:7860
+        }
+        ```
+
+    4. 启动您的服务器。
+
+        当用户访问您的域名时，Caddy 会识别传入流量并自动将其路由到您的服务器，并建立安全、加密的连接。
+
+9. 要退出 SSH 会话，请输入 `exit`。
+
+## 参阅
+
+要将您的本地流程打包为自定义 Docker 镜像，请参阅[容器化 Langflow 应用程序](/develop-application)。
+
+有关部署 Langflow 的分步指南，包括部署到 [fly.io](https://fly.io/) 和 [Flightcontrol.dev](https://www.flightcontrol.dev/)，请参阅 [How to Host Langflow Anywhere](https://www.youtube.com/watch?v=q4qt5hSnte4)。

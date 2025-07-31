@@ -1,0 +1,29 @@
+---
+title: 在 Google Cloud Platform 上部署 Langflow
+slug: /deployment-gcp
+---
+
+本指南演示如何在 Google Cloud Platform 上部署 Langflow。
+
+要使用 Cloud Shell 在 Google Cloud Platform 上部署 Langflow，请使用以下脚本。
+
+该脚本将指导您设置基于 Debian 的虚拟机，其中包含 Langflow 软件包、Nginx 以及在 GCP 中运行 Langflow 开发环境所需的配置。
+
+## 前提条件
+
+* 一个具有创建资源必要权限的 [Google Cloud](https://console.cloud.google.com/) 项目
+
+## 在 GCP 中部署 Langflow
+
+1. 点击以下按钮启动 Cloud Shell：
+
+   [![Deploy to Google Cloud](https://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/langflow-ai/langflow&working_dir=scripts/gcp&shellonly=true&tutorial=walkthroughtutorial.md)
+
+2. 点击 **Trust repo**。某些 gcloud 命令可能无法在临时 Cloud Shell 环境中运行。
+3. 点击 **Start** 并按照教程部署 Langflow。
+
+## 定价
+
+此部署使用[抢占式实例](https://cloud.google.com/compute/docs/instances/preemptible)，这是运行 Langflow 的成本效益选项。但是，**由于抢占式实例的性质，如果 Google Cloud 需要回收资源，虚拟机可能随时被终止**。
+
+有关更多信息，请参阅 [GCP 定价计算器](https://cloud.google.com/products/calculator?hl=en)。

@@ -1,0 +1,57 @@
+---
+title: Azure
+slug: /bundles-azure
+---
+
+import Icon from "@site/src/components/icon";
+
+[组件包](/components-bundle-components)包含支持 Langflow 与特定第三方集成的自定义组件。
+
+本页面描述了 **Azure** 组件包中可用的组件。
+
+## Azure OpenAI
+
+该组件使用 [Azure OpenAI LLM](https://learn.microsoft.com/en-us/azure/ai-services/openai/) 生成文本。
+
+它可以输出**模型响应** ([`Message`](/data-types#message)) 或**语言模型** ([`LanguageModel`](/data-types#languagemodel))。
+具体来说，**语言模型**输出是根据组件参数配置的 [`AzureChatOpenAI`](https://python.langchain.com/docs/integrations/chat/azure_chat_openai/) 实例。
+
+当您希望将 Azure OpenAI 模型用作其他 LLM 驱动组件（例如**语言模型**或**智能函数**组件）的 LLM 时，请使用**语言模型**输出。
+
+有关更多信息，请参阅[**语言模型**组件](/components-models)。
+
+### Azure OpenAI 参数
+
+默认情况下，许多 **Azure OpenAI** 组件输入参数在可视化编辑器中是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制**来切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| Model Name | String | 输入参数。指定用于文本生成的 Azure OpenAI 模型名称。 |
+| Azure Endpoint | String | 输入参数。您的 Azure 端点，包括资源。 |
+| Deployment Name | String | 输入参数。指定部署名称。 |
+| API Version | String | 输入参数。指定要使用的 Azure OpenAI API 版本。 |
+| API Key | SecretString | 输入参数。您的 Azure OpenAI API 密钥。 |
+| Temperature | Float | 输入参数。指定采样温度。默认值：`0.7`。 |
+| Max Tokens | Integer | 输入参数。指定要生成的最大 token 数量。默认值：`1000`。 |
+| Input Value | String | 输入参数。指定用于文本生成的输入文本。 |
+| Stream | Boolean | 输入参数。指定是否从模型流式传输响应。默认值：`False`。 |
+
+## Azure OpenAI Embeddings
+
+**Azure OpenAI 嵌入模型**组件使用 Azure OpenAI 模型生成嵌入。
+
+有关在流程中使用嵌入模型组件的更多信息，请参阅[**嵌入模型**组件](/components-embedding-models)。
+
+### Azure OpenAI 嵌入模型参数
+
+默认情况下，一些 **Azure OpenAI 嵌入模型**组件输入参数在可视化编辑器中是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制**来切换参数。
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| Model | String | 输入参数。要使用的模型名称。默认值：`text-embedding-3-small`。 |
+| Azure Endpoint | String | 输入参数。您的 Azure 端点，包括资源，例如 `https://example-resource.azure.openai.com/`。 |
+| Deployment Name | String | 输入参数。部署名称。 |
+| API Version | String | 输入参数。要使用的 API 版本，选项包括各种日期。 |
+| API Key | String | 输入参数。访问 Azure OpenAI 服务所需的 API 密钥。 |

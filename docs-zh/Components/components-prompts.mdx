@@ -1,0 +1,64 @@
+---
+title: Prompt模板
+slug: /components-prompts
+---
+
+使用核心的**Prompt Template**组件创建一个_prompt_，为LLM或智能体提供指令和上下文，与其他输入（如聊天消息和文件上传）分开。
+
+Prompt是结构化的输入，使用自然语言、固定值和动态变量为LLM提供基础上下文。
+例如：
+
+* 为用户查询定义一致的结构，使LLM更容易理解并适当地响应。
+* 为LLM定义特定的输出格式，如JSON或结构化文本。
+* 为LLM定义角色，如`你是一个有用的助手`或`你是微生物学专家`。
+* 允许LLM引用聊天记忆。
+
+**Prompt Template**组件也可以将可变指令输出给流程中后面的其他组件。
+
+## Prompt Template参数
+
+| 名称   | 显示名称 | 描述                                                        |
+|----------|----------------|-------------------------------------------------------------------|
+| template | Template       | 输入参数。使用动态变量(`{VARIABLE_NAME}`)创建prompt模板。 |
+| prompt   | Prompt Message | 输出参数。由`build_prompt`方法返回的构建的prompt消息。 |
+
+## 在prompt中定义变量
+
+**Prompt Template**组件中的变量会动态地向**Prompt Template**组件添加字段，以便你的流程可以从其他组件、Langflow全局变量或固定输入中接收这些值的定义。
+
+例如，使用[**Message History**组件](/components-helpers#message-history)，你可以使用`{memory}`变量将聊天历史传递给prompt。
+
+以下步骤演示如何向**Prompt Template**组件添加变量：
+
+1. 基于[**Basic prompting**模板](/basic-prompting)创建一个流程。
+
+    此模板已经有一个**Prompt Template**组件，但模板只包含自然语言指令：`响应用户，就像你是一个GenAI专家，热心帮助他们开始构建一些新鲜的东西。`
+
+    此prompt为LLM的聊天交互定义了一个角色，但不包含变量来帮助你创建能动态适应变化上下文（如不同用户和环境）的prompt。
+
+2. 点击**Prompt Template**组件，然后在**Template**字段中添加一些变量。
+
+    变量通过将变量名包装在大括号中来声明，如`{variable_name}`。
+    例如，以下模板创建变量`context`和`user_question`：
+
+    ```text
+    给定上下文
+    {context}
+    回答问题
+    {user_question}
+    ```
+
+4. 点击**Check & Save**保存模板。
+
+    将变量添加到模板后，会为每个变量向**Prompt Template**组件添加新字段。
+
+5. 为变量字段提供输入：
+
+   * 将字段连接到其他组件以将这些组件的输出传递给变量。
+   * 使用Langflow全局变量。
+   * 直接在字段中输入固定值。
+
+## 另请参阅
+
+* [LangChain Prompt Hub](/bundles-langchain#prompt-hub)
+* [处理组件](/components-processing)

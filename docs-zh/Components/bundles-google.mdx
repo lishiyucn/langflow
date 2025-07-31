@@ -1,0 +1,145 @@
+---
+title: Google components
+slug: /bundles-google
+---
+
+import Icon from "@site/src/components/icon";
+
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
+
+本页面描述 **Google** bundle 中可用的组件。
+
+## BigQuery
+
+请参阅 [**BigQuery** 组件](/integrations-google-big-query)。
+
+## Google Generative AI
+
+此组件使用 [Google Generative AI 模型](https://cloud.google.com/vertex-ai/docs/)生成文本。
+
+### Google Generative AI 参数
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| Google API Key | SecretString | 输入参数。用于 Google Generative AI 的 Google API 密钥。 |
+| Model | String | 输入参数。要使用的模型名称，例如 `"gemini-pro"`。 |
+| Max Output Tokens | Integer | 输入参数。要生成的最大 token 数量。 |
+| Temperature | Float | 输入参数。使用此温度运行推理。 |
+| Top K | Integer | 输入参数。考虑最可能的前 K 个 token 集合。 |
+| Top P | Float | 输入参数。采样时考虑的 token 最大累积概率。 |
+| N | Integer | 输入参数。为每个提示生成的聊天完成数量。 |
+| model | LanguageModel | 输出参数。使用指定参数配置的 ChatGoogleGenerativeAI 实例。 |
+
+## Google Generative AI Embeddings
+
+**Google Generative AI Embeddings** 组件使用 `langchain-google-genai` 包中的 GoogleGenerativeAIEmbeddings 类连接到 Google 的生成式 AI 嵌入服务。
+
+有关在 flow 中使用嵌入模型组件的更多信息，请参阅 [**Embedding Model** 组件](/components-embedding-models)。
+
+### Google Generative AI Embeddings 参数
+
+| 名称 | 显示名称 | 信息 |
+|------|--------------|------|
+| api_key | API Key | 输入参数。用于访问 Google 生成式 AI 服务的密钥 API 密钥。必需。 |
+| model_name | Model Name | 输入参数。要使用的嵌入模型名称。默认值："models/text-embedding-004"。 |
+| embeddings | Embeddings | 输出参数。构建的 GoogleGenerativeAIEmbeddings 对象。 |
+
+## Google Search API
+
+此组件允许您调用 Google Search API。
+
+### Google Search API 参数
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| google_api_key | SecretString | 输入参数。用于身份验证的 Google API 密钥。 |
+| google_cse_id | SecretString | 输入参数。Google 自定义搜索引擎 ID。 |
+| input_value | String | 输入参数。搜索查询输入。 |
+| k | Integer | 输入参数。要返回的搜索结果数量。 |
+| results | List[Data] | 输出参数。搜索结果列表。 |
+| tool | Tool | 输出参数。用于 LangChain 的 Google Search 工具。 |
+
+## Serper Google Search API
+
+此组件允许您调用 Serper.dev Google Search API。
+
+### Google Serper API 参数
+
+| 名称 | 类型 | 描述 |
+|------|------|-------------|
+| serper_api_key | SecretString | 输入参数。用于 Serper.dev 身份验证的 API 密钥。 |
+| input_value | String | 输入参数。搜索查询输入。 |
+| k | Integer | 输入参数。要返回的搜索结果数量。 |
+| results | List[Data] | 输出参数。搜索结果列表。 |
+| tool | Tool | 输出参数。用于 LangChain 的 Serper Google Search 工具。 |
+
+## Google Vertex AI
+
+有关 Vertex AI 组件的信息，请参阅 [**Vertex AI** bundle](/bundles-vertexai)。
+
+## 旧版 Google 组件
+
+以下 Google 组件被认为是旧版组件。
+您仍然可以在 flow 中使用它们，但它们不再受支持，可能在未来版本中被移除。
+
+作为这些组件的替代方案，您可以使用 [Composio 组件](/integrations-composio)将您的 flow 连接到 Google 服务。
+
+<details>
+<summary>Google OAuth Token</summary>
+
+**Google OAuth Token** 组件在 Langflow 1.4.0 中已废弃。
+
+要将您的 flow 连接到 Google OAuth 服务，请使用 [Composio 组件](/integrations-composio)。
+
+</details>
+
+<details>
+<summary>Gmail Loader</summary>
+
+此组件使用提供的凭据和过滤器从 Gmail 加载电子邮件。
+
+| 输入       | 类型             | 描述                                                                          |
+| ----------- | ---------------- | ------------------------------------------------------------------------------------ |
+| json_string | SecretStrInput   | 输入参数。包含服务账户访问的 OAuth 2.0 访问令牌信息的 JSON 字符串。有关创建服务账户 JSON 的信息，请参阅 [Service Account JSON](https://developers.google.com/identity/protocols/oauth2/service-account)。 |
+| label_ids   | MessageTextInput | 输入参数。用于过滤电子邮件的以逗号分隔的标签 ID 列表。                                |
+| max_results | MessageTextInput | 输入参数。要加载的最大电子邮件数量。                                                |
+| data   | Data | 输出参数。加载的电子邮件数据。 |
+
+</details>
+
+<details>
+<summary>Google Calendar Loader</summary>
+
+This component accepts the following parameters:
+
+| Input       | Type             | Description                                                                          |
+| ----------- | ---------------- | ------------------------------------------------------------------------------------ |
+| json_string | SecretStrInput   | Input parameter. A JSON string containing OAuth 2.0 access token information for service account access. For information about creating a service account JSON, see [Service Account JSON](https://developers.google.com/identity/protocols/oauth2/service-account). |
+| document_id | MessageTextInput | Input parameter. A single Google Drive document ID.                                                   |
+| docs   | Data | Output parameter. The loaded document data. |
+
+</details>
+
+<details>
+<summary>Google Drive Search</summary>
+
+This component searches Google Drive files using provided credentials and query parameters.
+
+| Input          | Type             | Description                                                                          |
+| -------------- | ---------------- | ------------------------------------------------------------------------------------ |
+| token_string   | SecretStrInput   | Input parameter. A JSON string containing OAuth 2.0 access token information for service account access. For information about creating a service account JSON, see [Service Account JSON](https://developers.google.com/identity/protocols/oauth2/service-account).  |
+| query_item     | DropdownInput    | Input parameter. The field to query.                                                                  |
+| valid_operator | DropdownInput    | Input parameter. The operator to use in the query.                                                    |
+| search_term    | MessageTextInput | Input parameter. The value to search for in the specified query item.                                 |
+| query_string   | MessageTextInput | Input parameter. The query string used for searching.                      |
+| doc_urls   | List[str] | Output parameter. The URLs of the found documents.                |
+| doc_ids    | List[str] | Output parameter. The IDs of the found documents.                 |
+| doc_titles | List[str] | Output parameter. The titles of the found documents.              |
+| Data       | Data      | Output parameter. The document titles and URLs in a structured format. |
+
+</details>
+
+## 参阅
+
+- [Composio bundle](/integrations-composio)
+- [Vertex AI bundle](/bundles-vertexai)

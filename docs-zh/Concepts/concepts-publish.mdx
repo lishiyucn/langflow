@@ -1,0 +1,535 @@
+---
+title: 使用 Langflow API 触发 flow
+slug: /concepts-publish
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+构建 flow 后，您可能希望在应用程序中运行它，比如在移动应用或网站中的聊天机器人。
+
+Langflow 提供多种从外部应用程序运行 flow 的方法：
+
+* [使用 Langflow API 触发 flow](#api-access)
+* [在网站中添加嵌入式聊天小部件](#embedded-chat-widget)
+* [通过 Langflow MCP 服务器提供 flow 服务](#serve-flows-through-a-langflow-mcp-server)
+
+虽然您可以在独立的本地 Langflow 实例中使用这些选项，但当您[部署了 Langflow 服务器](/deployment-overview)或[将 Langflow 打包为应用程序的依赖项](/develop-application)时，它们通常更有价值。
+
+## 使用 Langflow API 运行 flow {#api-access}
+
+Langflow API 是以编程方式访问您的 flow 和 Langflow 服务器的主要方法。
+
+:::tip 试试看
+有关调用 Langflow API 的脚本示例，请参阅[快速开始](/get-started-quickstart)。
+:::
+
+### 生成 API 代码片段
+
+为了帮助您在脚本中嵌入 Langflow API 请求，Langflow 会自动为您的 flow 生成 Python、JavaScript 和 curl 代码片段。
+要获取这些代码片段，请执行以下操作：
+
+1. 在 Langflow 中，打开您想要嵌入到应用程序中的 flow。
+2. 点击 **Share**，然后选择 **API access**。
+
+    这些代码片段调用 `/v1/run/$FLOW_ID` 端点，并自动填充最小值，如 Langflow 服务器 URL、flow ID、请求头和请求参数。
+
+    :::tip Windows
+    API 访问面板生成的路径假定为 *nix 环境。
+    如果您使用 Microsoft Windows 或 WSL，可能需要调整代码片段中给出的文件路径。
+    :::
+
+    ![API access pane](/img/api-pane.png)
+
+3. 可选：点击 [**Input Schema**](#input-schema) 来修改代码片段中的组件参数，而无需更改 flow 本身。
+
+4. 复制您要使用的语言的片段。
+
+5. 按原样运行片段，或在更大的脚本上下文中使用片段。
+
+有关其他 Langflow API 端点的更多信息和示例，请参阅[Langflow API 入门](/api-reference-api-examples)。
+
+### Langflow API 身份验证
+
+在 Langflow 1.5 及更高版本中，大多数 API 端点都需要使用 Langflow API 密钥进行身份验证，即使 `AUTO_LOGIN` 设置为 `True`。
+唯一的例外是 MCP 端点 `/v1/mcp`、`/v1/mcp-projects` 和 `/v2/mcp`，它们从不需要身份验证。
+
+在 **API access** 面板中生成的代码片段包含一个脚本，该脚本检查在本地终端会话中设置的 `LANGFLOW_API_KEY` 环境变量。
+此脚本不会检查在本地终端会话之外的任何地方设置的 Langflow API 密钥。
+
+要使此脚本工作，您必须在打算运行代码片段的终端会话中设置 `LANGFLOW_API_KEY` 变量，如 `export LANGFLOW_API_KEY="sk..."`。
+
+或者，您可以编辑代码片段以包含 `x-api-key` 请求头，并确保请求可以对 Langflow API 进行身份验证。
+
+有关更多信息，请参阅 [API 密钥](/configuration-api-keys) 和 [Langflow API 入门](/api-reference-api-examples)
+
+### Input Schema (tweaks) {#input-schema}
+
+Tweaks 是一次性覆盖，在运行时修改组件参数，而不是永久修改 flow 本身。
+有关在脚本中使用 tweaks 的示例，请参阅[快速开始](/get-started-quickstart)。
+
+:::tip
+Tweaks 使您的 flow 更动态和可重用。
+
+您可以创建一个 flow 并通过在每个应用程序的 Langflow API 请求中传递特定于应用程序的 tweaks 来将其用于多个应用程序。
+:::
+
+在 **API access** 面板中，点击 **Input Schema** 将 `tweaks` 添加到 flow 代码片段的请求载荷中。
+
+对 flow 的 **Input Schema** 的更改仅保存为该 flow 的 **API access** 代码片段的 tweaks。
+这些 tweaks 不会更改在 **Workspace** 中设置的 flow 参数，也不适用于其他 flow。
+
+通过 **Input Schema** 添加 tweaks 可以帮助您排除手动添加到 Langflow API 请求中的 tweaks 的格式问题。
+
+例如，以下 curl 命令包含一个 tweak，用于禁用 flow 的 **Chat Input** 组件中的 **Store Messages** 设置：
+
+```bash
+curl --request POST \
+  --url "http://LANGFLOW_SERVER_ADDRESS/api/v1/run/FLOW_ID" \
+  --header "Content-Type: application/json" \
+  --header "x-api-key: LANGFLOW_API_KEY" \
+  --data '{
+  "input_value": "Text to input to the flow",
+  "output_type": "chat",
+  "input_type": "chat",
+  "tweaks": {
+    "ChatInput-4WKag": {
+      "should_store_message": false
+    }
+  }
+}'
+```
+
+### 使用 flow ID 别名
+
+如果您希望请求使用别名而不是实际的 flow ID，您可以重命名 flow 的 `/v1/run/$FLOW_ID` 端点：
+
+1. 在 Langflow 中，打开 flow，点击 **Share**，然后选择 **API access**。
+2. 点击 **Input Schema**。
+3. 在 **Endpoint Name** 字段中，为您的 flow ID 输入一个别名，如一个易记、人类可读的名称。
+
+    名称只能包含字母、数字、连字符和下划线，如 `flow-customer-database-agent`。
+
+4. 要保存更改，请关闭 **Input Schema** 面板。
+
+自动生成的代码片段现在使用您的新端点名称而不是原始 flow ID，如 `url = "http://localhost:7868/api/v1/run/flow-customer-database-agent"`。
+
+## 将 flow 嵌入到网站中 {#embedded-chat-widget}
+
+对于每个 flow，Langflow 提供了一个代码片段，您可以将其插入到网站 HTML 的 `<body>` 中，通过嵌入式聊天小部件与您的 flow 交互。
+
+:::important 所需组件
+聊天小部件仅支持具有 **Chat Input** 和 **Chat Output** 组件的 flow，这些组件是聊天体验所必需的。
+**Text Input** 和 **Text Output** 组件可以发送和接收消息，但它们不包含持续的 LLM 聊天上下文。
+
+尝试与没有 [**Chat Input** 组件](/components-io) 的 flow 聊天将触发 flow，但响应只是表示输入为空。
+:::
+
+### 获取 langflow-chat 片段
+
+要获取 flow 的嵌入式聊天小部件代码片段，请执行以下操作：
+
+1. 在 Langflow 中，打开您要嵌入的 flow。
+2. 点击 **Share**，然后选择 **Embed into site**。
+3. 复制代码片段并在您网站 HTML 的 `<body>` 中使用它。
+有关更多信息，请参阅[使用 React、Angular 或 HTML 嵌入聊天小部件](#embed-the-chat-widget)。
+4. 添加 `api_key` 属性以确保小部件有权限运行 flow，如[配置 langflow-chat web 组件](#configure-the-langflow-chat-web-component)中所解释。
+
+聊天小部件实现为一个名为 `langflow-chat` 的 web 组件，从 CDN 加载。有关更多信息，请参阅 [langflow-embedded-chat 仓库](https://github.com/langflow-ai/langflow-embedded-chat)。
+
+例如，以下 HTML 为部署在 ngrok 上的 Langflow 服务器上托管的[基本提示 flow](/basic-prompting) 嵌入了一个聊天小部件：
+
+```html
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/gh/langflow-ai/langflow-embedded-chat@main/dist/build/static/js/bundle.min.js"></script>
+  </head>
+  <body>
+    <langflow-chat
+      host_url="https://c822-73-64-93-151.ngrok-free.app"
+      flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+      api_key="$LANGFLOW_API_KEY"
+    ></langflow-chat>
+  </body>
+</html>
+```
+
+When this code is deployed to a live site, it renders as a responsive chatbot.
+If a user interacts with the chatbot, the input triggers the specified flow, and then the chatbot returns the output from the flow run.
+
+![Default chat widget](/img/chat-widget-default.png)
+
+:::tip Try it
+Use the [Langflow embedded chat CodeSandbox](https://codesandbox.io/p/sandbox/langflow-embedded-chat-example-dv9zpx) for an interactive live demo of the embedded chat widget that uses your own flow.
+For more information, see the [langflow-embedded-chat README](https://github.com/langflow-ai/langflow-embedded-chat?tab=readme-ov-file#live-example).
+:::
+
+### Embed the chat widget with React, Angular, or HTML {#embed-the-chat-widget}
+
+The following examples show how to use embedded chat widget in React, Angular, and plain HTML.
+
+<Tabs>
+<TabItem value="react" label="React" default>
+
+To use the chat widget in your React application, create a component that loads the widget script and renders the chat interface:
+
+1. Declare your web component, and then encapsulate it in a React component:
+
+    ```javascript
+    //Declaration of langflow-chat web component
+    declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+        "langflow-chat": any;
+        }
+    }
+    }
+
+    //Definition for langflow-chat React component
+    export default function ChatWidget({ className }) {
+    return (
+        <div className={className}>
+        <langflow-chat
+            host_url="https://c822-73-64-93-151.ngrok-free.app"
+            flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+            api_key="$LANGFLOW_API_KEY"
+        ></langflow-chat>
+        </div>
+    );
+    }
+    ```
+
+2. Place the component anywhere in your code to render the chat widget.
+
+    In the following example, the React widget component is located at `docs/src/components/ChatWidget/index.tsx`, and `index.tsx` includes a script to load the chat widget code from CDN, along with the declaration and definition from the previous step:
+
+    ```javascript
+    import React, { useEffect } from 'react';
+
+    // Component to load the chat widget script
+    const ChatScriptLoader = () => {
+    useEffect(() => {
+        if (!document.querySelector('script[src*="langflow-embedded-chat"]')) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/gh/langflow-ai/langflow-embedded-chat@main/dist/build/static/js/bundle.min.js';
+        script.async = true;
+        document.body.appendChild(script);
+        }
+    }, []);
+
+    return null;
+    };
+
+    //Declaration of langflow-chat web component
+    declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+        "langflow-chat": any;
+        }
+    }
+    }
+
+    //Definition for langflow-chat React component
+    export default function ChatWidget({ className }) {
+    return (
+        <div className={className}>
+        <ChatScriptLoader />
+        <langflow-chat
+            host_url="https://c822-73-64-93-151.ngrok-free.app"
+            flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+            api_key="$LANGFLOW_API_KEY"
+        ></langflow-chat>
+        </div>
+    );
+    }
+    ```
+
+3. Import the `langflow-chat` React component to make it available for use on a page.
+Modify the following import statement with your React component's name and path:
+
+    ```jsx
+    import ChatWidget from '@site/src/components/ChatWidget';
+    ```
+
+4. To display the widget, call your `langflow-chat` component in the desired location on the page.
+Modify the following reference for your React component's name and the desired `className`:
+
+   ```
+   <ChatWidget className="my-chat-widget" />
+   ```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+To use the chat widget in your Angular application, create a component that loads the widget script and renders the chat interface.
+
+In an Angular application, `langflow-chat` is a custom web component that you must explicitly allow in your site's `.components.ts`.
+Therefore, to use the embedded chat widget, you must add `CUSTOM_ELEMENTS_SCHEMA` to your module's configuration, and then integrate the `<langflow-chat>` element.
+
+Angular requires you to explicitly allow custom web components, like `langflow-chat`, in your site's  `components`.
+Therefore, you must add the `<langflow-chat>` element to your Angular template and configure Angular to recognize it.
+You must add `CUSTOM_ELEMENTS_SCHEMA` to your module's configuration to enable this.
+
+1. In your Angular application, edit the `.module.ts` file where you want to add the `langflow-chat` web component.
+
+2. At the top of `.module.ts`, import `CUSTOM_ELEMENTS_SCHEMA`:
+
+    ```
+    import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+    ```
+
+3. In the `@NgModule` decorator, add `CUSTOM_ELEMENTS_SCHEMA` to the `schemas` array:
+
+    ```javascript
+    import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { AppComponent } from './app.component';
+
+    @NgModule({
+    declarations: [
+        AppComponent
+    ],
+    imports: [
+        BrowserModule
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    providers: [],
+    bootstrap: [AppComponent]
+    })
+    export class AppModule { }
+    ```
+
+4. Edit the `.component.ts` file where you want to use the embedded chat widget.
+
+5. In the `@Component` decorator, add the `<langflow-chat>` element to the `template` key:
+
+    ```javascript
+    import { Component } from '@angular/core';
+
+    @Component({
+    selector: 'app-root',
+    template: `
+        <div class="container">
+        <h1>Langflow Chat Test</h1>
+        <langflow-chat
+            host_url="https://c822-73-64-93-151.ngrok-free.app"
+            flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+            api_key="$LANGFLOW_API_KEY"
+        ></langflow-chat>
+        </div>
+    `,
+    styles: [`
+        .container {
+        padding: 20px;
+        text-align: center;
+        }
+    `]
+    })
+    export class AppComponent {
+    title = 'Langflow Chat Test';
+    }
+    ```
+
+</TabItem>
+<TabItem value="html" label="HTML">
+
+```html
+<html lang="en">
+<head>
+<script src="https://cdn.jsdelivr.net/gh/langflow-ai/langflow-embedded-chat@v1.0.7/dist/build/static/js/bundle.min.js"></script>
+</head>
+<body>
+<langflow-chat
+    host_url="https://c822-73-64-93-151.ngrok-free.app"
+    flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+    api_key="$LANGFLOW_API_KEY"
+  ></langflow-chat>
+</body>
+</html>
+```
+
+</TabItem>
+</Tabs>
+
+### Configure the langflow-chat web component {#configure-the-langflow-chat-web-component}
+
+To use the embedded chat widget in your HTML, the `langflow-chat` web component must include the following minimum inputs (also known as _props_ in React):
+
+* `host_url`: Your Langflow server URL. Must be `HTTPS`. Don't include a trailing slash (`/`).
+* `flow_id`: The ID of the flow you want to embed.
+* `api_key`: A [Langflow API key](/configuration-api-keys).
+This prop is recommended to ensure the widget has permission to run the flow.
+
+The minimum inputs are automatically populated in the [**Embed into site** code snippet](#get-a-langflow-chat-snippet) that is generated by Langflow.
+
+You can use additional inputs (props) to modify the embedded chat widget.
+For a list of all props, types, and descriptions, see the [langflow-embedded-chat README](https://github.com/langflow-ai/langflow-embedded-chat?tab=readme-ov-file#configuration).
+
+<details>
+<summary>Example: Langflow API key prop</summary>
+
+The `api_key` prop stores a Langflow API key that the chat widget can use to authenticate the underlying Langflow API request.
+
+The Langflow team recommends following industry best practices for handling sensitive credentials.
+For example, securely store your API key, and then retrieve with an environment variable:
+
+```html
+<langflow-chat
+    host_url="https://c822-73-64-93-151.ngrok-free.app"
+    flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+    api_key="$LANGFLOW_API_KEY"
+></langflow-chat>
+```
+
+</details>
+
+<details>
+<summary>Example: Style props</summary>
+
+There are many props you can use to customize the style and positioning of the embedded chat widget.
+Many of these props are of type JSON, and they require specific formatting, depending on where you embed the `langflow-chat` web component.
+
+In React and plain HTML, JSON props are expressed as JSON objects or stringified JSON, such as `\{"key":"value"\}`:
+
+```html
+<langflow-chat
+    host_url="https://c822-73-64-93-151.ngrok-free.app"
+    flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+    api_key="$LANGFLOW_API_KEY"
+    chat_window_style='{
+        "backgroundColor": "#1a0d0d",
+        "border": "4px solid #b30000",
+        "borderRadius": "16px",
+        "boxShadow": "0 8px 32px #b30000",
+        "color": "#fff",
+        "fontFamily": "Georgia, serif",
+        "padding": "16px"
+    }'
+    window_title="Custom Styled Chat"
+    height="600"
+    width="400"
+></langflow-chat>
+```
+
+For Angular applications, use [property binding syntax](https://angular.dev/guide/templates/binding#binding-dynamic-properties-and-attributes) to pass JSON props as JavaScript objects.
+For example:
+
+```javascript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <div class="container">
+      <h1>Langflow Chat Test</h1>
+      <langflow-chat
+        host_url="https://c822-73-64-93-151.ngrok-free.app"
+        flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+        api_key="$LANGFLOW_API_KEY"
+        [chat_window_style]='{"backgroundColor": "#ffffff"}'
+        [bot_message_style]='{"color": "#000000"}'
+        [user_message_style]='{"color": "#000000"}'
+        height="600"
+        width="400"
+        chat_position="bottom-right"
+      ></langflow-chat>
+    </div>
+  `,
+  styles: [`
+    .container {
+      padding: 20px;
+      text-align: center;
+    }
+  `]
+})
+export class AppComponent {
+  title = 'Langflow Chat Test';
+}
+```
+
+</details>
+
+<details>
+<summary>Example: Session ID prop</summary>
+
+The following example adds a custom [session ID](/session-id) to help identify flow runs started by the embeded chat widget:
+
+```html
+<langflow-chat
+    host_url="https://c822-73-64-93-151.ngrok-free.app"
+    flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+    api_key="$LANGFLOW_API_KEY"
+    session_id="$SESSION_ID"
+></langflow-chat>
+```
+
+</details>
+
+<details>
+<summary>Example: Tweaks prop</summary>
+
+Use the `tweaks` prop to modify flow parameters at runtime.
+The available keys for the `tweaks` object depend on the flow you are serving through the embedded chat widget.
+
+In React and plain HTML, `tweaks` are declared as a JSON object, similar to how you would pass them to a Langflow API endpoint like [`/v1/run/$FLOW_ID`](/api-flows-run#run-flow).
+For example:
+
+```html
+<langflow-chat
+    host_url="https://c822-73-64-93-151.ngrok-free.app"
+    flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+    api_key="$LANGFLOW_API_KEY"
+    tweaks='{
+        "model_name": "llama-3.1-8b-instant"
+    }'
+></langflow-chat>
+```
+
+For Angular applications, use [property binding syntax](https://angular.dev/guide/templates/binding#binding-dynamic-properties-and-attributes) to pass JSON props as JavaScript objects.
+For example:
+
+```javascript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <div class="container">
+      <h1>Langflow Chat Test</h1>
+      <langflow-chat
+        host_url="https://c822-73-64-93-151.ngrok-free.app"
+        flow_id="dcbed533-859f-4b99-b1f5-16fce884f28f"
+        api_key="$LANGFLOW_API_KEY"
+        [tweaks]='{"model_name": "llama-3.1-8b-instant"}'
+      ></langflow-chat>
+    </div>
+  `,
+  styles: [`
+    .container {
+      padding: 20px;
+      text-align: center;
+    }
+  `]
+})
+export class AppComponent {
+  title = 'Langflow Chat Test';
+}
+```
+
+</details>
+
+## Serve flows through a Langflow MCP server
+
+Each [Langflow project](/concepts-flows#projects) has an MCP server that exposes the project's flows as [tools](https://modelcontextprotocol.io/docs/concepts/tools) that [MCP clients](https://modelcontextprotocol.io/clients) can use to generate responses.
+
+In addition to serving flows through Langflow MCP servers, you can use Langflow as an MCP client to access any MCP server, including Langflow MCP servers.
+
+Interactions with Langflow MCP servers happen through the Langflow API's `/mcp` endpoints.
+
+For more information, see [Use Langflow as an MCP server](/mcp-server) and [Use Langflow as an MCP client](/mcp-client).
+
+## See also
+
+* [Import and export flows](/concepts-flows-import)
+* [Files endpoints](/api-files)
+* [Use the Playground](/concepts-playground)

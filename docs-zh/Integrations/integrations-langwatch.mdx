@@ -1,0 +1,43 @@
+---
+title: LangWatch
+slug: /integrations-langwatch
+---
+
+[LangWatch](https://app.langwatch.ai/) 是一个一体化的 LLMOps 平台，提供监控、可观测性、分析、评估和警报功能，用于获取用户洞察并改进您的 LLM 工作流。
+
+## 集成 LangWatch 可观测性
+
+要与 Langflow 集成，请将您的 LangWatch API 密钥添加为 Langflow 环境变量：
+
+1. 从您的 LangWatch 账户获取 LangWatch API 密钥。
+
+2. 将密钥添加到您的 Langflow `.env` 文件中：
+
+    ```shell
+    LANGWATCH_API_KEY="API_KEY_STRING"
+    ```
+
+    或者，您可以在终端会话中设置环境变量：
+
+    ```shell
+    export LANGWATCH_API_KEY="API_KEY_STRING"
+    ```
+
+3. 如果您修改了 Langflow `.env` 文件，请使用您的 `.env` 文件重启 Langflow：
+
+    ```
+    langflow run --env-file .env
+    ```
+
+4. 运行一个流程。
+
+5. 查看 LangWatch 仪表板进行监控和可观测性。
+
+![LangWatch dashboard](/img/langwatch-dashboard.png)
+
+## 使用 LangWatch 评估器
+
+在您的流程中，您可以使用 **LangWatch Evaluator** 组件来使用 LangWatch 的评估端点评估模型的性能。
+
+此组件在 **Components** 菜单中的 LangWatch 包中可用。
+有关更多信息，请参阅 [包](/components-bundle-components)。

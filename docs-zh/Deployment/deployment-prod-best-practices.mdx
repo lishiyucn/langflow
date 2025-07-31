@@ -1,0 +1,59 @@
+---
+title: Langflow 架构和 Kubernetes 最佳实践
+slug: /deployment-prod-best-practices
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Langflow 可以在两种不同的环境中部署。
+
+* [**Langflow IDE**](/deployment-kubernetes-dev)：**Langflow IDE** 包含用于可视化开发流程的前端。Langflow 仓库中托管的默认 [docker-compose.yml](https://github.com/langflow-ai/langflow/blob/main/docker_example/docker-compose.yml) 文件构建 Langflow IDE 镜像。Langflow IDE 可以在 [Docker](/deployment-docker) 或 [Kubernetes](/deployment-kubernetes-dev) 上部署。
+* [**Langflow runtime**](/deployment-kubernetes-prod)：**Langflow runtime** 是无头或仅后端模式。服务器将您的流程公开为端点，并且仅运行为您的流程提供服务所需的进程，使用 PostgreSQL 作为数据库以提高可扩展性。如果您不需要用于可视化开发的前端，请使用 Langflow **runtime** 来部署您的流程。Langflow runtime 可以在 [Docker](/deployment-docker) 或 [Kubernetes](/deployment-kubernetes-prod) 上部署。
+
+:::tip
+您可以使用 [LANGFLOW_BACKEND_ONLY](/environment-variables#LANGFLOW_BACKEND_ONLY) 环境变量在无头模式下启动 Langflow。
+:::
+
+在 Kubernetes 上部署具有以下优势：
+
+* **可扩展性**：Kubernetes 允许您扩展 Langflow 服务以满足工作负载的需求。
+* **可用性和弹性**：Kubernetes 提供内置的弹性功能，如自动故障转移和自我修复，以确保 Langflow 服务始终可用。
+* **安全性**：Kubernetes 提供安全功能，如基于角色的访问控制和网络隔离，以保护 Langflow 服务及其数据。
+* **可移植性**：Kubernetes 是一个可移植的平台，这意味着您可以将 Langflow 服务部署到任何 Kubernetes 集群，无论是本地还是云端。
+
+Langflow 可以部署在云部署上，如 **AWS EKS、Google GKE 或 Azure AKS**。有关在 AWS EKS、Google GKE 或 Azure AKS 上部署 Langflow 的更多信息，请参阅 [Langflow Helm charts 仓库](https://github.com/langflow-ai/langflow-helm-charts)。
+
+## Langflow 部署
+
+典型的 Langflow 部署包括：
+
+* **Langflow API 和 UI**：Langflow 服务是 Langflow 平台的核心组件。它提供用于执行流程的 RESTful API。
+* **Kubernetes 集群**：Kubernetes 集群为部署和管理 Langflow 服务及其支持组件提供平台。
+* **持久存储**：持久存储用于存储 Langflow 服务的数据，如模型和训练数据。
+* **Ingress 控制器**：Ingress 控制器为 Langflow 服务的流量提供单一入口点。
+* **负载均衡器**：在多个 Langflow 副本之间平衡流量。
+* **向量数据库**：如果您使用 Langflow 进行 RAG，您可以与 Astra Serverless 中的向量数据库集成。
+
+![Langflow reference architecture on Kubernetes](/img/langflow-reference-architecture.png)
+
+## 环境隔离
+
+建议为 Langflow 部署和运行两个独立的环境，一个环境保留用于开发使用，另一个用于生产使用。
+
+![Langflow environments](/img/langflow-env.png)
+
+* **Langflow 开发环境**必须包含集成开发环境 (IDE) 以获得 Langflow 的完整体验，针对原型设计和测试新流程进行了优化。
+* **Langflow 生产环境**在生产中执行流程逻辑，并将 Langflow 流程作为独立服务启用。
+
+## 为什么有独立部署很重要？
+
+这种分离旨在增强安全性、优化资源分配和简化管理。
+
+* **安全性**
+  * **隔离**：通过分离开发和生产环境，您可以更好地隔离应用程序生命周期的不同阶段。这种隔离可以最大限度地减少与开发相关的问题影响生产环境的风险。
+  * **访问控制**：可以将不同的安全策略和访问控制应用于每个环境。开发人员可能需要在 IDE 中进行更广泛的访问来进行测试和调试，而运行时环境可以通过更严格的安全措施进行锁定。
+  * **减少攻击面**：运行时环境被配置为仅包含必需组件，减少攻击面和潜在漏洞。
+* **资源分配**
+  * **优化资源使用和成本效率**：通过分离两个环境，您可以更有效地分配资源。每个流程可以独立部署，提供细粒度的资源控制。
+  * **可扩展性**：运行时环境可以根据应用程序负载和性能要求独立扩展，而不会影响开发环境。
