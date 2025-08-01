@@ -1,5 +1,5 @@
 ---
-title: Connect to MCP servers from your application
+title: 从应用程序连接到 MCP 服务器
 slug: /mcp-tutorial
 ---
 
@@ -7,41 +7,41 @@ import Icon from "@site/src/components/icon";
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This tutorial shows you how to connect MCP tools to your applications using Langflow's [**MCP Tools**](/mcp-client) component.
+本教程展示了如何使用 Langflow 的 [**MCP Tools**](/mcp-client) 组件将 MCP 工具连接到你的应用程序。
 
-The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) helps agents integrate with LLMs through _MCP clients_ and _MCP servers_.
-Specifically, MCP servers host tools that agents (MCP clients) use to complete specialized tasks.
-MCP servers are connected to MCP clients like Cursor.
-Then, you interact with the client, and the client uses tools from the connected servers as needed to complete your requests.
+[模型上下文协议 (MCP)](https://modelcontextprotocol.io/) 通过 _MCP 客户端_ 和 _MCP 服务器_ 帮助智能体与 LLM 集成。
+具体来说，MCP 服务器托管工具，智能体（MCP 客户端）使用这些工具来完成专门的任务。
+MCP 服务器连接到 MCP 客户端，如 Cursor。
+然后，你与客户端交互，客户端根据需要使用连接服务器的工具来完成你的请求。
 
-You can run Langflow as an MCP client and an MCP server:
+你可以将 Langflow 作为 MCP 客户端和 MCP 服务器运行：
 
-* [Use Langflow as an MCP client](/mcp-client): When run as an MCP client, an **Agent** component in a Langflow flow can use connected components as tools to handle requests.
-You can use existing components as tools, and you can connect any MCP server to your flow to make that server's tools available to the agent.
+* [将 Langflow 用作 MCP 客户端](/mcp-client)：当作为 MCP 客户端运行时，Langflow 流程中的 **Agent** 组件可以使用连接的组件作为工具来处理请求。
+你可以使用现有组件作为工具，也可以将任何 MCP 服务器连接到你的流程，使该服务器的工具可用于智能体。
 
-* [Use Langflow as an MCP server](/mcp-server): When run as an MCP server, your flows become tools that can be used by an MCP client, which could be an external client or another Langflow flow.
+* [将 Langflow 用作 MCP 服务器](/mcp-server)：当作为 MCP 服务器运行时，你的流程变成可以被 MCP 客户端使用的工具，该客户端可以是外部客户端或另一个 Langflow 流程。
 
-In this tutorial, you will use the Langflow **MCP Tools** component to connect multiple MCP servers to your flow, and then you'll use a Python application to run your flow and chat with the agent programmatically.
+在本教程中，你将使用 Langflow **MCP Tools** 组件将多个 MCP 服务器连接到你的流程，然后使用 Python 应用程序运行你的流程并以编程方式与智能体聊天。
 
-## Prerequisites
+## 前提条件
 
-* [A running Langflow instance](/get-started-installation)
-* [A Langflow API key](/configuration-api-keys)
-* [An OpenAI API key](https://platform.openai.com/api-keys)
+* [运行中的 Langflow 实例](/get-started-installation)
+* [Langflow API 密钥](/configuration-api-keys)
+* [OpenAI API 密钥](https://platform.openai.com/api-keys)
 
-This tutorial uses an OpenAI LLM. If you want to use a different provider, you need a valid credential for that provider.
+本教程使用 OpenAI LLM。如果你想使用不同的提供商，你需要该提供商的有效凭据。
 
-## Create an agentic flow
+## 创建智能体流程
 
-1. In Langflow, click **New Flow**, and then select the [**Simple agent**](/simple-agent) template.
+1. 在 Langflow 中，点击 **New Flow**，然后选择 [**Simple agent**](/simple-agent) 模板。
 
-2. In the **Agent** component, enter your OpenAI API key.
+2. 在 **Agent** 组件中，输入你的 OpenAI API 密钥。
 
-    If you want to use a different provider or model, edit the **Model Provider**, **Model Name**, and **API Key** fields accordingly.
+    如果你想使用不同的提供商或模型，请相应地编辑 **Model Provider**、**Model Name** 和 **API Key** 字段。
 
-3. To test the flow, click <Icon name="Play" aria-hidden="true" /> **Playground**, and then ask the LLM `Is it safe to go hiking in the Adirondacks today?`
+3. 要测试流程，请点击 <Icon name="Play" aria-hidden="true" /> **Playground**，然后询问 LLM `今天在阿迪朗达克地区徒步旅行安全吗？`
 
-    This query demonstrates how an LLM, by itself, might not have access to information or functions designed to address specialized queries. In this example, the default OpenAI model provides a vague response, although the agent does know the current date by using its internal `get_current_date` function.
+    这个查询展示了 LLM 本身可能无法访问专门设计用于处理特殊查询的信息或功能。在这个例子中，默认的 OpenAI 模型提供了一个模糊的响应，尽管智能体通过使用其内部的 `get_current_date` 功能知道当前日期。
 
     ```text
     Today is July 11, 2025.
@@ -49,51 +49,51 @@ This tutorial uses an OpenAI LLM. If you want to use a different provider, you n
     Would you like a detailed weather forecast or information on trail conditions for the Adirondacks today?
     ```
 
-    To improve the response, you can connect MCP servers to your flow that provide specialized tools for the agent to use when generating responses. In the next part of this tutorial, you'll connect an MCP server that provides the agent with real-time weather information so that it can generate a more specific response.
+    要改善响应，你可以将 MCP 服务器连接到你的流程，为智能体提供在生成响应时使用的专用工具。在本教程的下一部分中，你将连接一个为智能体提供实时天气信息的 MCP 服务器，以便它能够生成更具体的响应。
 
-## Add an MCP Tools component
+## 添加 MCP Tools 组件
 
-There are many MCP servers available online that offer different tools for different tasks.
-To use an MCP server with an MCP client, you have to make the server available to the client.
-With all MCP clients, there are several ways to do this:
+网上有许多 MCP 服务器可用，为不同的任务提供不同的工具。
+要将 MCP 服务器与 MCP 客户端一起使用，你必须使服务器对客户端可用。
+对于所有 MCP 客户端，有以下几种方法：
 
-* Install the server locally.
-* Use `uvx` or `npx` to fetch and run a server package.
-* Call a server running remotely, like those available on Smithery.
+* 在本地安装服务器。
+* 使用 `uvx` 或 `npx` 获取并运行服务器包。
+* 调用远程运行的服务器，如 Smithery 上可用的服务器。
 
-This tutorial demonstrates how to install a weather server locally with `uv pip install`, and how to use `npx` to run the geolocation server package.
-Your particular MCP server's requirements may vary.
+本教程演示了如何使用 `uv pip install` 在本地安装天气服务器，以及如何使用 `npx` 运行地理位置服务器包。
+你特定的 MCP 服务器的要求可能有所不同。
 
-In Langflow, you use the **MCP Tools** component to connect a specific MCP server to a flow.
-You need one **MCP Tools** component for each MCP server that you want your flow to use.
+在 Langflow 中，你使用 **MCP Tools** 组件将特定的 MCP 服务器连接到流程。
+你需要为你想要流程使用的每个 MCP 服务器提供一个 **MCP Tools** 组件。
 
-1. For this tutorial, install a [weather MCP server](https://github.com/isdaniel/mcp_weather_server) on your local machine with uv and Python:
+1. 对于本教程，请使用 uv 和 Python 在你的本地机器上安装 [天气 MCP 服务器](https://github.com/isdaniel/mcp_weather_server)：
 
     ```shell
     uv pip install mcp_weather_server
     ```
 
-    Make sure you install the server in the same Python environment where Langflow is running:
+    确保在 Langflow 运行的同一 Python 环境中安装服务器：
 
-    * Langflow in a virtual environment: Activate the environment before installing the server.
-    * Langflow Docker image: Install the server inside the Docker container.
-    * Langflow Desktop or system-wide Langflow OSS: Install the server globally or in the same user environment where you run Langflow.
+    * 虚拟环境中的 Langflow：在安装服务器之前激活环境。
+    * Langflow Docker 镜像：在 Docker 容器内安装服务器。
+    * Langflow Desktop 或系统级 Langflow OSS：全局安装服务器或在你运行 Langflow 的同一用户环境中安装。
 
-2. In your **Simple agent** flow, remove the **URL** and **Calculator** tools, and then add the [**MCP Tools**](/mcp-client) component to your workspace.
+2. 在你的 **Simple agent** 流程中，移除 **URL** 和 **Calculator** 工具，然后将 [**MCP Tools**](/mcp-client) 组件添加到你的工作区。
 
-3. Click the **MCP Tools** component, and then click <Icon name="Plus" aria-hidden="true"/> **Add MCP Server**.
+3. 点击 **MCP Tools** 组件，然后点击 <Icon name="Plus" aria-hidden="true"/> **Add MCP Server**。
 
-4. In the **Add MCP Server** pane, provide the server startup command and arguments to connect the weather MCP server to your flow. For this tutorial, use either the **JSON** or **STDIO** option.
+4. 在 **Add MCP Server** 面板中，提供服务器启动命令和参数以将天气 MCP 服务器连接到你的流程。对于本教程，使用 **JSON** 或 **STDIO** 选项中的任一个。
 
-    Langflow runs the command to launch the server when the agent determines that it needs to use a tool provided by that server.
+    当智能体确定它需要使用该服务器提供的工具时，Langflow 运行该命令来启动服务器。
 
-    Notice that both configurations provide the same information but in different formats.
-    This means that if your MCP server repository only provides a JSON file for the server, you can still use those values with the STDIO option.
+    注意，两种配置提供相同的信息，但格式不同。
+    这意味着如果你的 MCP 服务器仓库只为服务器提供 JSON 文件，你仍然可以在 STDIO 选项中使用这些值。
 
     <Tabs>
     <TabItem value="JSON" label="JSON" default>
 
-    To provide the MCP server configuration as a JSON object, select **JSON**, and then paste the server configuration into the **JSON** field:
+    要将 MCP 服务器配置作为 JSON 对象提供，请选择 **JSON**，然后将服务器配置粘贴到 **JSON** 字段中：
 
     ```json
     {
@@ -114,7 +114,7 @@ You need one **MCP Tools** component for each MCP server that you want your flow
     </TabItem>
     <TabItem value="STDIO" label="STDIO">
 
-    To provide the MCP server configuration in a GUI format, select **STDIO**, and then enter the MCP server configuration values into the given fields:
+    要以 GUI 格式提供 MCP 服务器配置，请选择 **STDIO**，然后将 MCP 服务器配置值输入到给定的字段中：
 
     - **Name**: `weather`
     - **Command**: `python`
@@ -125,19 +125,19 @@ You need one **MCP Tools** component for each MCP server that you want your flow
     </TabItem>
     </Tabs>
 
-5. Click **Add Server**, and then wait for the **Actions** list to populate. This means that the MCP server successfully connected.
+5. 点击 **Add Server**，然后等待 **Actions** 列表填充。这意味着 MCP 服务器成功连接。
 
-    With this weather server, the **MCP Tools** component also adds an optional **City** field.
-    For this tutorial, don't enter anything in this field.
-    Instead, you will add a geolocation MCP server in the next step, which the agent will use to detect your location.
+    对于这个天气服务器，**MCP Tools** 组件还添加了一个可选的 **City** 字段。
+    对于本教程，不要在此字段中输入任何内容。
+    相反，你将在下一步中添加一个地理位置 MCP 服务器，智能体将使用它来检测你的位置。
 
-6. Click the **MCP Tools** component, enable **Tool Mode** in the [component's header menu](/concepts-components#component-menus), and then connect the component's **Toolset** port to the **Agent** component's **Tools** port.
+6. 点击 **MCP Tools** 组件，在[组件的标题菜单](/concepts-components#component-menus)中启用 **Tool Mode**，然后将组件的 **Toolset** 端口连接到 **Agent** 组件的 **Tools** 端口。
 
-    At this point your flow has four connected components:
+    此时你的流程有四个连接的组件：
 
-    * The **Chat Input** component is connected to the **Agent** component's **Input** port. This allows to flow to be triggered by an incoming prompt from a user or application.
-    * The **MCP Tools** component with the weather MCP server is connected to the **Agent** component's **Tools** port. The agent may not use this server for every request; the agent only uses this connection if it decides the server can help respond to the prompt.
-    * The **Agent** component's **Output** port is connected to the **Chat Output** component, which returns the final response to the user or application.
+    * **Chat Input** 组件连接到 **Agent** 组件的 **Input** 端口。这允许流程被来自用户或应用程序的入入提示触发。
+    * 带有天气 MCP 服务器的 **MCP Tools** 组件连接到 **Agent** 组件的 **Tools** 端口。智能体可能不会在每个请求中都使用这个服务器；智能体只有在认为服务器可以帮助回应提示时才使用这个连接。
+    * **Agent** 组件的 **Output** 端口连接到 **Chat Output** 组件，该组件将最终响应返回给用户或应用程序。
 
     ![An agent component connected to an MCP weather server](/img/tutorial-mcp-weather.png)
 
@@ -275,11 +275,11 @@ You can use the same input or a new input that prompts the agent to use other to
 
     Remember, the `ip_geolocation` tool used in this tutorial uses your Langflow server's location, which can be different from your actual location.
 
-## Next steps
+## 后续步骤
 
-To continue building on the concepts introduced in this tutorial, see the following:
+要继续构建本教程中介绍的概念，请参阅以下内容：
 
-* [Use Langflow as an MCP client](/mcp-client)
-* [Use Langflow Agents](/agents)
-* [Use Langflow as an MCP server](/mcp-server)
-* [Langflow deployment overview](/deployment-overview)
+* [将 Langflow 用作 MCP 客户端](/mcp-client)
+* [使用 Langflow 智能体](/agents)
+* [将 Langflow 用作 MCP 服务器](/mcp-server)
+* [Langflow 部署概述](/deployment-overview)
