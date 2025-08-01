@@ -6,54 +6,54 @@ slug: /integrations-google-big-query
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Langflow integrates with [Google BigQuery](https://cloud.google.com/bigquery) through the **BigQuery** component in the [**Google** bundle](/bundles-google), allowing you to execute SQL queries and retrieve data from your BigQuery datasets.
+Langflow 通过 [**Google** bundle](/bundles-google) 中的 **BigQuery** 组件与 [Google BigQuery](https://cloud.google.com/bigquery) 集成，允许您执行 SQL 查询并从 BigQuery 数据集检索数据。
 
-## Prerequisites
+## 前提条件
 
-* A [Google Cloud project](https://developers.google.com/workspace/guides/create-project) with the BigQuery API enabled
-* A [service account](https://developers.google.com/workspace/guides/create-credentials#service-account) with the **BigQuery Job User** role
-* A [BigQuery dataset and table](https://cloud.google.com/bigquery/docs/datasets-intro)
+* 已启用 BigQuery API 的 [Google Cloud 项目](https://developers.google.com/workspace/guides/create-project)
+* 具有 **BigQuery Job User** 角色的[服务帐户](https://developers.google.com/workspace/guides/create-credentials#service-account)
+* [BigQuery 数据集和表](https://cloud.google.com/bigquery/docs/datasets-intro)
 
-## Create a service account with BigQuery access
+## 创建具有 BigQuery 访问权限的服务帐户
 
-1. Select and enable your Google Cloud project.
-For more information, see [Create a Google Cloud project](https://developers.google.com/workspace/guides/create-project).
-2. Create a service account in your Google Cloud project.
-For more information, see [Create a service account](https://developers.google.com/workspace/guides/create-credentials#service-account).
-3. Assign the **BigQuery Job User** role to your new account.
-This role allows Langflow to access BigQuery resources with the service account.
-You may also need to allow access to your BigQuery dataset.
-For more information, see [BigQuery access control with IAM](https://cloud.google.com/bigquery/docs/access-control).
-4. To generate a new JSON key for the service account, navigate to your service account.
-5. Click **Add Key**, and then click **Create new key**.
-6. Under **Key type**, select **JSON**, and then click **Create**.
-A JSON private key file is downloaded to your machine.
-Now that you have a service account and a JSON private key, you need to configure the credentials in the Langflow BigQuery component.
+1. 选择并启用您的 Google Cloud 项目。
+有关更多信息，请参阅[创建 Google Cloud 项目](https://developers.google.com/workspace/guides/create-project)。
+2. 在您的 Google Cloud 项目中创建服务帐户。
+有关更多信息，请参阅[创建服务帐户](https://developers.google.com/workspace/guides/create-credentials#service-account)。
+3. 将 **BigQuery Job User** 角色分配给您的新帐户。
+此角色允许 Langflow 使用服务帐户访问 BigQuery 资源。
+您可能还需要允许访问您的 BigQuery 数据集。
+有关更多信息，请参阅[使用 IAM 进行 BigQuery 访问控制](https://cloud.google.com/bigquery/docs/access-control)。
+4. 要为服务帐户生成新的 JSON 密钥，请导航到您的服务帐户。
+5. 点击 **Add Key**，然后点击 **Create new key**。
+6. 在 **Key type** 下，选择 **JSON**，然后点击 **Create**。
+JSON 私钥文件将下载到您的计算机。
+现在您有了服务帐户和 JSON 私钥，您需要在 Langflow BigQuery 组件中配置凭据。
 
-## Configure credentials in the Langflow component
+## 在 Langflow 组件中配置凭据
 
-With your service account configured and your credentials JSON file created, follow these steps to authenticate the Langflow application.
+配置好服务帐户并创建凭据 JSON 文件后，请按照以下步骤验证 Langflow 应用程序。
 
-1. Create a new project in Langflow.
-2. From the **Components** menu, drag and drop the BigQuery component to your workspace.
-3. In the BigQuery component's **Upload Service Account JSON** field, click **Select file**.
-4. In the **My Files** pane, select **Click or drag files here**.
-Your file browser opens.
-5. In your file browser, select the service account JSON file, and then click **Open**.
-6. In the **My Files** pane, select your service account JSON file, and then click **Select files**.
-The BigQuery component can now query your datasets and tables using your service account JSON file.
+1. 在 Langflow 中创建新项目。
+2. 从 **Components** 菜单中，将 BigQuery 组件拖放到您的工作空间。
+3. 在 BigQuery 组件的 **Upload Service Account JSON** 字段中，点击 **Select file**。
+4. 在 **My Files** 面板中，选择 **Click or drag files here**。
+您的文件浏览器将打开。
+5. 在文件浏览器中，选择服务帐户 JSON 文件，然后点击 **Open**。
+6. 在 **My Files** 面板中，选择您的服务帐户 JSON 文件，然后点击 **Select files**。
+BigQuery 组件现在可以使用您的服务帐户 JSON 文件查询您的数据集和表。
 
-## Query a BigQuery dataset
+## 查询 BigQuery 数据集
 
-With your component credentials configured, query your BigQuery datasets and tables to confirm connectivity.
+配置组件凭据后，查询您的 BigQuery 数据集和表以确认连接性。
 
-1. Connect **Chat Input** and **Chat Output** components to the BigQuery component.
+1. 将 **Chat Input** 和 **Chat Output** 组件连接到 BigQuery 组件。
 
-    ![BigQuery component connected to chat input and output](/img/google/integrations-bigquery.png)
+    ![BigQuery 组件连接到聊天输入和输出](/img/google/integrations-bigquery.png)
 
-2. Open the **Playground**, and then submit a valid SQL query.
+2. 打开 **Playground**，然后提交有效的 SQL 查询。
 
-    This example queries a table of Oscar winners stored within a BigQuery dataset called `the_oscar_award`:
+    此示例查询存储在名为 `the_oscar_award` 的 BigQuery 数据集中的奥斯卡获奖者表：
 
     ```sql
     SELECT film, category, year_film
@@ -63,7 +63,7 @@ With your component credentials configured, query your BigQuery datasets and tab
     ```
 
     <details>
-    <summary>Result</summary>
+    <summary>结果</summary>
 
     ```text
     film	category	year_film
@@ -81,4 +81,4 @@ With your component credentials configured, query your BigQuery datasets and tab
 
     </details>
 
-    A successful chat confirms the component can access the BigQuery table.
+    成功的聊天确认组件可以访问 BigQuery 表。

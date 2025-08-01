@@ -5,112 +5,112 @@ slug: /bundles-langchain
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **LangChain** bundle.
+本页面描述了 **LangChain** bundle 中可用的组件。
 
 ## CSV Agent
 
-This component is based on the [**Agent** core component](/agents).
+此组件基于 [**Agent** 核心组件](/agents)。
 
-This component creates a CSV agent from a CSV file and LLM.
-For more information, see the [LangChain CSV agent documentation](https://python.langchain.com/api_reference/experimental/agents/langchain_experimental.agents.agent_toolkits.csv.base.create_csv_agent.html).
+此组件从 CSV 文件和 LLM 创建 CSV 代理。
+有关更多信息，请参阅 [LangChain CSV 代理文档](https://python.langchain.com/api_reference/experimental/agents/langchain_experimental.agents.agent_toolkits.csv.base.create_csv_agent.html)。
 
-### CSV Agent parameters
+### CSV Agent 参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| llm | LanguageModel | Input parameter. The language model to use for the agent. |
-| path | File | Input parameter. The path to the CSV file. |
-| agent_type | String | Input parameter. The type of agent to create. |
-| agent | AgentExecutor | Output parameter. The CSV agent instance. |
+| llm | LanguageModel | 输入参数。代理使用的语言模型。 |
+| path | File | 输入参数。CSV 文件的路径。 |
+| agent_type | String | 输入参数。要创建的代理类型。 |
+| agent | AgentExecutor | 输出参数。CSV 代理实例。 |
 
 ## OpenAI Tools Agent
 
-This component is based on the [**Agent** core component](/agents).
+此组件基于 [**Agent** 核心组件](/agents)。
 
-This component creates an OpenAI Tools Agent.
-For more information, see the [LangChain OpenAI agent documentation](https://api.python.langchain.com/en/latest/agents/langchain.agents.openai_functions_agent.base.create_openai_functions_agent.html).
+此组件创建 OpenAI Tools Agent。
+有关更多信息，请参阅 [LangChain OpenAI 代理文档](https://api.python.langchain.com/en/latest/agents/langchain.agents.openai_functions_agent.base.create_openai_functions_agent.html)。
 
-### OpenAI Tools Agent parameters
+### OpenAI Tools Agent 参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| llm | LanguageModel | Input parameter. The language model to use. |
-| tools | List of Tools | Input parameter. The tools to give the agent access to. |
-| system_prompt | String | Input parameter. The system prompt to provide context to the agent. |
-| input_value | String | Input parameter. The user's input to the agent. |
-| memory | Memory | Input parameter. The memory for the agent to use for context persistence. |
-| max_iterations | Integer | Input parameter. The maximum number of iterations to allow the agent to execute. |
-| verbose | Boolean | Input parameter. This determines whether to print out the agent's intermediate steps. |
-| handle_parsing_errors | Boolean | Input parameter. This determines whether to handle parsing errors in the agent. |
-| agent | AgentExecutor | Output parameter. The OpenAI Tools agent instance. |
-| output | String | Output parameter. The output from executing the agent on the input. |
+| llm | LanguageModel | 输入参数。要使用的语言模型。 |
+| tools | List of Tools | 输入参数。给代理访问的工具。 |
+| system_prompt | String | 输入参数。为代理提供上下文的系统提示。 |
+| input_value | String | 输入参数。用户对代理的输入。 |
+| memory | Memory | 输入参数。代理用于上下文持久性的内存。 |
+| max_iterations | Integer | 输入参数。允许代理执行的最大迭代次数。 |
+| verbose | Boolean | 输入参数。这决定是否打印代理的中间步骤。 |
+| handle_parsing_errors | Boolean | 输入参数。这决定是否处理代理中的解析错误。 |
+| agent | AgentExecutor | 输出参数。OpenAI Tools 代理实例。 |
+| output | String | 输出参数。在输入上执行代理的输出。 |
 
 ## OpenAPI Agent
 
-This component is based on the [**Agent** core component](/agents).
+此组件基于 [**Agent** 核心组件](/agents)。
 
-This component creates an agent for interacting with OpenAPI services.
-For more information, see the [LangChain OpenAPI toolkit documentation](https://python.langchain.com/docs/integrations/tools/openapi/).
+此组件创建用于与 OpenAPI 服务交互的代理。
+有关更多信息，请参阅 [LangChain OpenAPI 工具包文档](https://python.langchain.com/docs/integrations/tools/openapi/)。
 
-### OpenAPI Agent parameters
+### OpenAPI Agent 参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| llm | LanguageModel | Input parameter. The language model to use. |
-| openapi_spec | String | Input parameter. The OpenAPI specification for the service. |
-| base_url | String | Input parameter. The base URL for the API. |
-| headers | Dict | Input parameter. The optional headers for API requests. |
-| agent_executor_kwargs | Dict | Input parameter. The optional parameters for the agent executor. |
-| agent | AgentExecutor | Output parameter.The OpenAPI agent instance. |
+| llm | LanguageModel | 输入参数。要使用的语言模型。 |
+| openapi_spec | String | 输入参数。服务的 OpenAPI 规范。 |
+| base_url | String | 输入参数。API 的基础 URL。 |
+| headers | Dict | 输入参数。API 请求的可选标头。 |
+| agent_executor_kwargs | Dict | 输入参数。代理执行器的可选参数。 |
+| agent | AgentExecutor | 输出参数。OpenAPI 代理实例。 |
 
 ## Prompt Hub
 
-This component fetches prompts from the [LangChain Hub](https://docs.smith.langchain.com/old/category/prompt-hub).
+此组件从 [LangChain Hub](https://docs.smith.langchain.com/old/category/prompt-hub) 获取提示。
 
-Like the [**Prompt Template** core component](/components-prompts), additional fields are added to the component for each variable in the prompt.
-For example, the default prompt `efriis/my-first-prompt` adds fields for `profession` and `question`.
+像 [**Prompt Template** 核心组件](/components-prompts) 一样，会为提示中的每个变量向组件添加额外字段。
+例如，默认提示 `efriis/my-first-prompt` 为 `profession` 和 `question` 添加字段。
 
-### Prompt Hub parameters
+### Prompt Hub 参数
 
-| Name                | Display Name              | Description                              |
+| 名称                | 显示名称              | 描述                              |
 |---------------------|---------------------------|------------------------------------------|
-| langchain_api_key   | Your LangChain API Key    | Input parameter. The LangChain API Key to use. |
-| langchain_hub_prompt| LangChain Hub Prompt      | Input parameter. The LangChain Hub prompt to use.  |
-| prompt              | Build Prompt              | Output parameter. The built prompt message returned by the `build_prompt` method.   |
+| langchain_api_key   | Your LangChain API Key    | 输入参数。要使用的 LangChain API 密钥。 |
+| langchain_hub_prompt| LangChain Hub Prompt      | 输入参数。要使用的 LangChain Hub 提示。  |
+| prompt              | Build Prompt              | 输出参数。由 `build_prompt` 方法返回的构建提示消息。   |
 
 ## SQL Agent
 
-This component is based on the [**Agent** core component](/agents).
+此组件基于 [**Agent** 核心组件](/agents)。
 
-This component creates an agent for interacting with SQL databases.
-For more information, see the [LangChain SQL agent documentation](https://python.langchain.com/docs/tutorials/sql_qa/).
+此组件创建用于与 SQL 数据库交互的代理。
+有关更多信息，请参阅 [LangChain SQL 代理文档](https://python.langchain.com/docs/tutorials/sql_qa/)。
 
-### SQL Agent parameters
+### SQL Agent 参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| llm | LanguageModel | Input parameter. The language model to use. |
-| database | Database | Input parameter. The SQL database connection. |
-| top_k | Integer | Input parameter. The number of results to return from a SELECT query. |
-| use_tools | Boolean | Input parameter. This determines whether to use tools for query execution. |
-| return_intermediate_steps | Boolean | Input parameter. This determines whether to return the agent's intermediate steps. |
-| max_iterations | Integer | Input parameter. The maximum number of iterations to run the agent. |
-| max_execution_time | Integer | Input parameter. The maximum execution time in seconds. |
-| early_stopping_method | String | Input parameter. The method to use for early stopping. |
-| verbose | Boolean | Input parameter. This determines whether to print the agent's thoughts. |
-| agent | AgentExecutor | Output parameter. The SQL agent instance. |
+| llm | LanguageModel | 输入参数。要使用的语言模型。 |
+| database | Database | 输入参数。SQL 数据库连接。 |
+| top_k | Integer | 输入参数。从 SELECT 查询返回的结果数。 |
+| use_tools | Boolean | 输入参数。这决定是否使用工具执行查询。 |
+| return_intermediate_steps | Boolean | 输入参数。这决定是否返回代理的中间步骤。 |
+| max_iterations | Integer | 输入参数。运行代理的最大迭代次数。 |
+| max_execution_time | Integer | 输入参数。最大执行时间（秒）。 |
+| early_stopping_method | String | 输入参数。用于提前停止的方法。 |
+| verbose | Boolean | 输入参数。这决定是否打印代理的思考。 |
+| agent | AgentExecutor | 输出参数。SQL 代理实例。 |
 
 ## SQL Database
 
-The LangChain **SQL Database** component establishes a connection to an SQL database.
+LangChain **SQL Database** 组件建立与 SQL 数据库的连接。
 
-This component is different from the [**SQL Database** core component](/components-data#sql-database), which executes SQL queries on SQLAlchemy-compatible databases.
+此组件与 [**SQL Database** 核心组件](/components-data#sql-database) 不同，后者在 SQLAlchemy 兼容数据库上执行 SQL 查询。
 
 ## Text Splitters
 
-The LangChain bundle includes the following text splitter components:
+LangChain bundle 包含以下文本分割组件：
 
 - **Character Text Splitter**
 - **Language Recursive Text Splitter**
@@ -120,55 +120,55 @@ The LangChain bundle includes the following text splitter components:
 
 ## Tool Calling Agent
 
-This component is based on the [**Agent** core component](/agents).
+此组件基于 [**Agent** 核心组件](/agents)。
 
-This component creates an agent for structured tool calling with various language models.
-For more information, see the [LangChain tool calling documentation](https://python.langchain.com/docs/concepts/tool_calling/).
+此组件创建用于与各种语言模型进行结构化工具调用的代理。
+有关更多信息，请参阅 [LangChain 工具调用文档](https://python.langchain.com/docs/concepts/tool_calling/)。
 
-### Tool Calling Agent parameters
+### Tool Calling Agent 参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| llm | LanguageModel | Input parameter. The language model to use. |
-| tools | List[Tool] | Input parameter. The list of tools available to the agent. |
-| system_message | String | Input parameter. The system message to use for the agent. |
-| return_intermediate_steps | Boolean | Input parameter. This determines whether to return the agent's intermediate steps. |
-| max_iterations | Integer | Input parameter. The maximum number of iterations to run the agent. |
-| max_execution_time | Integer | Input parameter. The maximum execution time in seconds. |
-| early_stopping_method | String | Input parameter. The method to use for early stopping. |
-| verbose | Boolean | Input parameter. This determines whether to print the agent's thoughts. |
-| agent | AgentExecutor | Output parameter. The tool calling agent instance. |
+| llm | LanguageModel | 输入参数。要使用的语言模型。 |
+| tools | List[Tool] | 输入参数。代理可用的工具列表。 |
+| system_message | String | 输入参数。代理使用的系统消息。 |
+| return_intermediate_steps | Boolean | 输入参数。这决定是否返回代理的中间步骤。 |
+| max_iterations | Integer | 输入参数。运行代理的最大迭代次数。 |
+| max_execution_time | Integer | 输入参数。最大执行时间（秒）。 |
+| early_stopping_method | String | 输入参数。用于提前停止的方法。 |
+| verbose | Boolean | 输入参数。这决定是否打印代理的思考。 |
+| agent | AgentExecutor | 输出参数。工具调用代理实例。 |
 
 ## XML Agent
 
-This component is based on the [**Agent** core component](/agents).
+此组件基于 [**Agent** 核心组件](/agents)。
 
-This component creates an XML Agent using LangChain.
-The agent uses XML formatting for tool instructions to the LLM.
-For more information, see the [LangChain XML Agent documentation](https://python.langchain.com/api_reference/langchain/agents/langchain.agents.xml.base.XMLAgent.html).
+此组件使用 LangChain 创建 XML Agent。
+代理使用 XML 格式向 LLM 提供工具指令。
+有关更多信息，请参阅 [LangChain XML Agent 文档](https://python.langchain.com/api_reference/langchain/agents/langchain.agents.xml.base.XMLAgent.html)。
 
-### XML Agent parameters
+### XML Agent 参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| llm | LanguageModel | Input parameter. The language model to use for the agent. |
-| user_prompt | String | Input parameter. The custom prompt template for the agent with XML formatting instructions. |
-| tools | List[Tool] | Input parameter. The list of tools available to the agent. |
-| agent | AgentExecutor | Output parameter. The XML Agent instance. |
+| llm | LanguageModel | 输入参数。代理使用的语言模型。 |
+| user_prompt | String | 输入参数。带有 XML 格式化指令的代理自定义提示模板。 |
+| tools | List[Tool] | 输入参数。代理可用的工具列表。 |
+| agent | AgentExecutor | 输出参数。XML Agent 实例。 |
 
-## Other LangChain components
+## 其他 LangChain 组件
 
-Other components in the LangChain bundle include the following:
+LangChain bundle 中的其他组件包括以下内容：
 
 - **Fake Embeddings**
 - **HTML Link Extractor**
 - **Runnable Executor**
 - **Spider Web Crawler & Scraper**
 
-## Legacy LangChain components
+## 旧版 LangChain 组件
 
-The following LangChain components are considered legacy.
-You can still use these components in your flows, but they are no longer maintained and they can be removed in future releases.
+以下 LangChain 组件被认为是旧版。
+您仍然可以在流中使用这些组件，但它们不再维护，可能在未来的版本中被移除。
 
 * **Conversation Chain**
 * **LLM Checker Chain**
@@ -180,44 +180,44 @@ You can still use these components in your flows, but they are no longer maintai
 <details>
 <summary>JSON Agent</summary>
 
-This component creates a JSON agent from a JSON or YAML file and an LLM.
+此组件从 JSON 或 YAML 文件和 LLM 创建 JSON 代理。
 
-It accepts the following parameters:
+它接受以下参数：
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| llm | LanguageModel | Input parameter. The language model to use for the agent. |
-| path | File | Input parameter. The path to the JSON or YAML file. |
-| agent | AgentExecutor | Output parameter. The JSON agent instance. |
+| llm | LanguageModel | 输入参数。代理使用的语言模型。 |
+| path | File | 输入参数。JSON 或 YAML 文件的路径。 |
+| agent | AgentExecutor | 输出参数。JSON 代理实例。 |
 
 </details>
 
 <details>
 <summary>Vector Store Info/Agent</summary>
 
-This component creates a Vector Store Agent using LangChain.
+此组件使用 LangChain 创建 Vector Store Agent。
 
-It accepts the following parameters:
+它接受以下参数：
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| llm | LanguageModel | Input parameter. The language model to use for the agent. |
-| vectorstore | VectorStoreInfo | Input parameter. The vector store information for the agent to use. |
-| agent | AgentExecutor | Output parameter. The Vector Store Agent instance. |
+| llm | LanguageModel | 输入参数。代理使用的语言模型。 |
+| vectorstore | VectorStoreInfo | 输入参数。代理使用的向量存储信息。 |
+| agent | AgentExecutor | 输出参数。Vector Store Agent 实例。 |
 
 </details>
 
 <details>
 <summary>VectorStoreRouterAgent</summary>
 
-This component creates a Vector Store Router Agent using LangChain.
+此组件使用 LangChain 创建 Vector Store Router Agent。
 
-It accepts the following parameters:
+它接受以下参数：
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| llm | LanguageModel | Input parameter. The language model to use for the agent. |
-| vectorstores | List[VectorStoreInfo] | Input parameter. The list of vector store information for the agent to route between. |
-| agent | AgentExecutor | Output parameter. The Vector Store Router Agent instance. |
+| llm | LanguageModel | 输入参数。代理使用的语言模型。 |
+| vectorstores | List[VectorStoreInfo] | 输入参数。代理路由的向量存储信息列表。 |
+| agent | AgentExecutor | 输出参数。Vector Store Router Agent 实例。 |
 
 </details>

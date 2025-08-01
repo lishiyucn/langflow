@@ -1,73 +1,73 @@
 ---
-title: Import and export flows
+title: 导入和导出流程
 slug: /concepts-flows-import
 ---
 
 import Icon from "@site/src/components/icon";
 
-You can export flows to transfer them between Langflow instances, share them with others, or create backups.
+您可以导出流程以在 Langflow 实例之间传输它们、与他人共享或创建备份。
 
-## Export a flow
+## 导出流程
 
-There are three ways to export a flow:
+有三种导出流程的方法：
 
-* From the **Projects** page, find the flow you want to export, click <Icon name="Ellipsis" aria-hidden="true" /> **More**, and then select **Export**.
-* When editing a flow, click **Share**, and then click **Export**.
-* Use the Langflow API [`/flows/download`](/api-flows#export-flows) endpoint.
+* 从**项目**页面，找到您要导出的流程，单击 <Icon name="Ellipsis" aria-hidden="true" /> **更多**，然后选择**导出**。
+* 编辑流程时，单击**共享**，然后单击**导出**。
+* 使用 Langflow API [`/flows/download`](/api-flows#export-flows) 端点。
 
-An exported flow is downloaded to your local machine as a JSON file named `FLOW_NAME.json`.
-For more information, see [Langflow JSON file contents](#langflow-json-file-contents).
+导出的流程会作为名为 `FLOW_NAME.json` 的 JSON 文件下载到您的本地计算机。
+有关更多信息，请参阅 [Langflow JSON 文件内容](#langflow-json-file-contents)。
 
-### Save with my API keys
+### 保存我的 API 密钥
 
-When exporting from the Langflow UI, you can select **Save with my API keys** to export the flow _and_ any defined API key variables.
-Non-API key variables are included in the export regardless of the **Save with my API keys** setting.
+从 Langflow UI 导出时，您可以选择**保存我的 API 密钥**来导出流程_和_任何已定义的 API 密钥变量。
+无论**保存我的 API 密钥**设置如何，非 API 密钥变量都包含在导出中。
 
 :::warning
-If you directly entered the key value into a component's API key field, then **Save with my API keys** exports the literal key value.
+如果您直接在组件的 API 密钥字段中输入了密钥值，那么**保存我的 API 密钥**会导出字面密钥值。
 
-If your key is stored in a Langflow global variable, **Save with my API keys** exports only the variable name.
+如果您的密钥存储在 Langflow 全局变量中，**保存我的 API 密钥**只导出变量名称。
 :::
 
-When you or another user import the flow to another Langflow instance, that instance must have Langflow global variables with the same names and valid values in order to run the flow successfully.
-If any variables are missing or invalid, those variables must be created or edited after importing the flow.
+当您或其他用户将流程导入到另一个 Langflow 实例时，该实例必须具有相同名称和有效值的 Langflow 全局变量才能成功运行流程。
+如果任何变量缺失或无效，必须在导入流程后创建或编辑这些变量。
 
-### Export all flows
+### 导出所有流程
 
-If you want to export all flows within a project, do either of the following:
+如果您想导出项目中的所有流程，请执行以下操作之一：
 
-* Go to the **Projects** page, find the project you want to export, click <Icon name="Ellipsis" aria-hidden="true" /> **Options**, and then select **Download**.
-* Use the Langflow API [`/projects/download`](/api-projects#export-a-project) endpoint.
+* 转到**项目**页面，找到您要导出的项目，单击 <Icon name="Ellipsis" aria-hidden="true" /> **选项**，然后选择**下载**。
+* 使用 Langflow API [`/projects/download`](/api-projects#export-a-project) 端点。
 
-The project's flows are downloaded as JSON files in a zip archive.
+项目的流程会作为 JSON 文件下载到 zip 压缩包中。
 
-## Import a flow
+## 导入流程
 
-You can import Langflow JSON files from your local machine in the following ways:
+您可以通过以下方式从本地计算机导入 Langflow JSON 文件：
 
-* From the **Projects** page, click <Icon name="Upload" aria-hidden="true"/> **Upload a flow**.
-* Drag and drop Langflow JSON files from your file explorer into your Langflow window to import a flow from any Langflow page.
-* Use the Langflow API [`/flows/upload/`](/api-flows#import-flows) endpoint to upload one JSON file.
-* Use the Langflow API [`/projects/upload`](/api-projects#import-a-project) endpoint to upload a Langflow project zip file.
+* 从**项目**页面，单击 <Icon name="Upload" aria-hidden="true"/> **上传流程**。
+* 将 Langflow JSON 文件从文件资源管理器拖放到 Langflow 窗口中，从任何 Langflow 页面导入流程。
+* 使用 Langflow API [`/flows/upload/`](/api-flows#import-flows) 端点上传一个 JSON 文件。
+* 使用 Langflow API [`/projects/upload`](/api-projects#import-a-project) 端点上传 Langflow 项目 zip 文件。
 
-### Run an imported flow
+### 运行导入的流程
 
-Once imported, your flow is ready to use.
-If the flow contains any global variables, make sure your Langflow instance has global variables with the same names and valid values.
-For more information, see [Save with my API keys](/concepts-flows-import#save-with-my-api-keys).
+导入后，您的流程就可以使用了。
+如果流程包含任何全局变量，请确保您的 Langflow 实例具有相同名称和有效值的全局变量。
+有关更多信息，请参阅[保存我的 API 密钥](/concepts-flows-import#save-with-my-api-keys)。
 
-## Langflow JSON file contents
+## Langflow JSON 文件内容
 
-An exported flow is downloaded to your local machine as a JSON file named `FLOW_NAME.json`.
+导出的流程会作为名为 `FLOW_NAME.json` 的 JSON 文件下载到您的本地计算机。
 
-Langflow JSON files contain [nodes](#nodes) and [edges](#edges) that describe components and connections, and [additional metadata](#additional-metadata-and-project-information) that describe the flow.
+Langflow JSON 文件包含描述组件和连接的[节点](#nodes)和[边](#edges)，以及描述流程的[附加元数据](#additional-metadata-and-project-information)。
 
-For an example Langflow JSON file, examine the [Basic Prompting.json](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/initial_setup/starter_projects/Basic%20Prompting.json) file in the Langflow repository.
+有关 Langflow JSON 文件的示例，请查看 Langflow 仓库中的 [Basic Prompting.json](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/initial_setup/starter_projects/Basic%20Prompting.json) 文件。
 
-### Nodes
+### 节点
 
-Nodes represent the components that make up the flow.
-For example, this object represents a **Chat Input** component:
+节点表示构成流程的组件。
+例如，此对象表示一个 **Chat Input** 组件：
 
 ```json
 {
@@ -107,15 +107,15 @@ For example, this object represents a **Chat Input** component:
 }
 ```
 
-Each node has a unique identifier in the format of `NODE_NAME-UUID`, such as `ChatInput-jFwUm`.
+每个节点都有一个格式为 `NODE_NAME-UUID` 的唯一标识符，例如 `ChatInput-jFwUm`。
 
-Entrypoint nodes, such as the `ChatInput` node, are the first node executed when running a flow.
+入口点节点，例如 `ChatInput` 节点，是运行流程时执行的第一个节点。
 
-### Edges
+### 边
 
-Edges represent the connections between nodes.
+边表示节点之间的连接。
 
-The connection between the `ChatInput` node and the `OpenAIModel` node is represented as an edge:
+`ChatInput` 节点和 `OpenAIModel` 节点之间的连接表示为一条边：
 
 ```json
 {
@@ -142,14 +142,14 @@ The connection between the `ChatInput` node and the `OpenAIModel` node is repres
 }
 ```
 
-This edge shows that the `ChatInput` component outputs a `Message` type to the `target` node, which is the `OpenAIModel` node.
-The `OpenAIModel` component accepts the `Message` type at the `input_value` field.
+此边显示 `ChatInput` 组件将 `Message` 类型输出到目标节点，即 `OpenAIModel` 节点。
+`OpenAIModel` 组件在 `input_value` 字段接受 `Message` 类型。
 
-### Additional metadata and project information
+### 附加元数据和项目信息
 
-Additional information about the flow is stored in the root `data` object.
+有关流程的附加信息存储在根 `data` 对象中。
 
-* Metadata and project information including the name, description, and `last_tested_version` of the flow.
+* 元数据和项目信息，包括流程的名称、描述和 `last_tested_version`。
 ```json
 {
   "name": "Basic Prompting",
@@ -162,7 +162,7 @@ Additional information about the flow is stored in the root `data` object.
 }
 ```
 
-* Visual information about the flow defining the initial position of the flow in the workspace.
+* 有关流程的视觉信息，定义流程在工作区中的初始位置。
 ```json
 "viewport": {
   "x": -37.61270157375441,
@@ -171,9 +171,9 @@ Additional information about the flow is stored in the root `data` object.
 }
 ```
 
-* Notes are comments that help you understand the flow within the workspace.
-They may contain links, code snippets, and other information.
-Notes are written in Markdown and stored as `node` objects.
+* 注释是帮助您在工作区内理解流程的评论。
+它们可能包含链接、代码片段和其他信息。
+注释使用 Markdown 编写并存储为 `node` 对象。
 ```json
 {
   "id": "undefined-kVLkG",
@@ -183,7 +183,7 @@ Notes are written in Markdown and stored as `node` objects.
 }
 ```
 
-## See also
+## 另请参阅
 
-* [Build flows](/concepts-flows)
-* [Share and embed flows](/concepts-publish)
+* [构建流程](/concepts-flows)
+* [共享和嵌入流程](/concepts-publish)

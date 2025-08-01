@@ -1,25 +1,25 @@
 ---
-title: Langflow release notes
+title: Langflow 发布说明
 slug: /release-notes
 ---
 
 
-This page summarizes significant changes to Langflow in each release.
-For all changes, see the [Changelog](https://github.com/langflow-ai/langflow/releases/latest).
+此页面概述了每个版本中 Langflow 的重要更改。
+要查看所有更改，请参阅[更改日志](https://github.com/langflow-ai/langflow/releases/latest)。
 
-Due to strict SemVer requirements, Langflow Desktop can have different patch versions than the core Langflow OSS Python package, but the major and minor versions are aligned.
+由于严格的 SemVer 要求，Langflow Desktop 可能与核心 Langflow OSS Python 包具有不同的补丁版本，但主版本和次版本是对齐的。
 
-## Prepare to upgrade
+## 准备升级
 
 :::important
-Whenever possible, the Langflow team recommends installing new Langflow versions in a new virtual environment or VM before upgrading your primary installation.
-This allows you to [import flows](/concepts-flows-import#import-a-flow) from your existing installation and test them in the new version without disrupting your existing installation.
-In the event of breaking changes or bugs, your existing installation is preserved in a stable state.
+在可能的情况下，Langflow 团队建议在升级主要安装之前，在新的虚拟环境或 VM 中安装新的 Langflow 版本。
+这允许您从现有安装中[导入流程](/concepts-flows-import#import-a-flow)并在新版本中测试它们，而不会干扰您现有的安装。
+在发生破坏性更改或错误的情况下，您现有的安装将保持在稳定状态。
 :::
 
-To avoid the impact of potential breaking changes and test new versions, the Langflow team recommends the following upgrade process:
+为了避免潜在破坏性更改的影响并测试新版本，Langflow 团队建议以下升级过程：
 
-1. Recommended: [Export your projects](/api-projects#export-a-project) to create backups of your flows:
+1. 建议：[导出您的项目](/api-projects#export-a-project) 以创建您的流程备份：
 
     ```bash
     curl -X GET \
@@ -28,108 +28,108 @@ To avoid the impact of potential breaking changes and test new versions, the Lan
       -H "x-api-key: $LANGFLOW_API_KEY"
     ```
 
-   To export flows from the Langflow UI, see [Import and export flows](/concepts-flows-import).
+   要从 Langflow UI 导出流程，请参阅[导入和导出流程](/concepts-flows-import)。
 
-2. Install the new version:
+2. 安装新版本：
 
-   * **Langflow OSS Python package**: Install the new version in a new virtual environment. For instructions, see [Install and run the Langflow OSS Python package](/get-started-installation#install-and-run-the-langflow-oss-python-package).
-   * **Langflow Docker image**: Run the new image in a separate container.
-   * **Langflow Desktop**: To upgrade in place, open Langflow Desktop, and then click **Upgrade Available** in the header. If you want to isolate the new version, you must install Langflow Desktop on a separate physical or virtual machine, and then [import your flows](/concepts-flows-import) to the new installation.
+   * **Langflow OSS Python 包**：在新的虚拟环境中安装新版本。有关说明，请参阅[安装和运行 Langflow OSS Python 包](/get-started-installation#install-and-run-the-langflow-oss-python-package)。
+   * **Langflow Docker 镜像**：在单独的容器中运行新镜像。
+   * **Langflow Desktop**：要就地升级，请打开 Langflow Desktop，然后在标题中点击**可用升级**。如果您想隔离新版本，您必须在单独的物理或虚拟机上安装 Langflow Desktop，然后将您的流程[导入](/concepts-flows-import)到新安装。
 
-3. [Import your flows](/concepts-flows-import) to test them in the new version, [upgrading components](/concepts-components#component-versions) as needed.
+3. [导入您的流程](/concepts-flows-import) 在新版本中测试它们，根据需要[升级组件](/concepts-components#component-versions)。
 
-    When upgrading components, you can use the **Create backup flow before updating** option if you didn't previously export your flows.
+    在升级组件时，如果您之前没有导出流程，可以使用**在更新前创建备份流程**选项。
 
-4. If you installed the new version in isolation, upgrade your primary installation after testing the new version.
+4. 如果您在隔离环境中安装了新版本，请在测试新版本后升级您的主要安装。
 
-    If you made changes to your flows in the isolated installation, you might want to export and import those flows back to your upgraded primary installation so you don't have to repeat the component upgrade process.
+    如果您在隔离安装中对流程进行了更改，您可能希望将这些流程导出并导入回您升级的主要安装，这样您就不必重复组件升级过程。
 
 ## 1.5.0
 
-The following updates are included in this version:
+此版本包含以下更新：
 
-### New features and enhancements
+### 新功能和增强
 
-- Authentication changes
+- 身份验证更改
 
-    To enhance security and ensure proper authentication for automatic login features, most API endpoints now require authentication with a Langflow API key, regardless of the `AUTO_LOGIN` setting.
-    The only exceptions are the MCP endpoints `/v1/mcp`, `/v1/mcp-projects`, and `/v2/mcp`, which never require authentication.
-    For more information, see [API keys](/configuration-api-keys).
+    为了增强安全性并确保自动登录功能的正确身份验证，大多数 API 端点现在都需要使用 Langflow API 密钥进行身份验证，无论 `AUTO_LOGIN` 设置如何。
+    唯一的例外是 MCP 端点 `/v1/mcp`、`/v1/mcp-projects` 和 `/v2/mcp`，它们从不需要身份验证。
+    有关更多信息，请参阅 [API 密钥](/configuration-api-keys)。
 
-- Centralized **Language Model** and **Embedding Model** components
+- 集中化的**语言模型**和**嵌入模型**组件
 
-    The [**Language Model**](/components-models) and [**Embedding Model**](/components-embedding-models) components are now core components for your LLM and embeddings flows. They support multiple models and model providers, and allow you to experiment with different models without swapping out single-provider components.
-    Find them in the **Components** menu in the **Models** category.
+    [**语言模型**](/components-models) 和 [**嵌入模型**](/components-embedding-models) 组件现在是您的 LLM 和嵌入流程的核心组件。它们支持多个模型和模型提供商，并允许您在不更换单一提供商组件的情况下试验不同的模型。
+    在**组件**菜单的**模型**类别中找到它们。
 
-    The single-provider components are still available for your flows in the **Components** menu in the [**Bundles**](/components-bundle-components) section.
+    单一提供商组件仍然可在**组件**菜单的[**包**](/components-bundle-components)部分中用于您的流程。
 
-- MCP server one-click installation
+- MCP 服务器一键安装
 
-    On your Langflow project's **MCP server** page, click **Auto install** to install your Langflow MCP server to MCP clients with just one click.
-    The option to install with a JSON configuration file is available for macOS, Windows, and WSL.
-    For more information, see [Use Langflow as an MCP server](/mcp-server).
+    在您 Langflow 项目的 **MCP 服务器**页面上，点击**自动安装**即可一键将您的 Langflow MCP 服务器安装到 MCP 客户端。
+    使用 JSON 配置文件安装的选项适用于 macOS、Windows 和 WSL。
+    有关更多信息，请参阅[将 Langflow 用作 MCP 服务器](/mcp-server)。
 
-- MCP server management
+- MCP 服务器管理
 
-    You can now add, remove, and edit your MCP servers in the **MCP Tools** components and through your Langflow **Settings** page.
-    For more information, see [Use Langflow as an MCP client](/mcp-client).
+    您现在可以在 **MCP 工具**组件中以及通过您的 Langflow **设置**页面添加、删除和编辑您的 MCP 服务器。
+    有关更多信息，请参阅[将 Langflow 用作 MCP 客户端](/mcp-client)。
 
-- Input schema replaces temporary overrides
+- 输入模式替代临时覆盖
 
-    The **Input schema** pane replaces the need to manage tweak values in the **API access** pane. When you enable a parameter in the **Input schema** pane, the parameter is automatically added to your flow's code snippets, providing ready-to-use templates for making requests in your preferred programming language.
+    **输入模式**窗格替代了在 **API 访问**窗格中管理调整值的需要。当您在**输入模式**窗格中启用参数时，该参数会自动添加到您流程的代码片段中，提供用于以您首选编程语言发出请求的现成模板。
 
-- Tool components are redistributed
+- 工具组件重新分配
 
-    All components in the **Tools** category were moved to other core component categories, [bundles](/components-bundle-components), or marked as legacy.
+    **工具**类别中的所有组件都被移动到其他核心组件类别、[包](/components-bundle-components)或标记为遗留。
 
-    The [**MCP Tools** component](/mcp-client) is now under the **Agents** core components category.
+    [**MCP 工具**组件](/mcp-client)现在位于**代理**核心组件类别下。
 
-    Tools that performed the same function were combined into single components that support multiple providers, such as the [**Web Search** component](/components-data#web-search) and the [**News Search** component](/components-data#news-search).
+    执行相同功能的工具被合并为支持多个提供商的单个组件，例如[**网络搜索**组件](/components-data#web-search)和[**新闻搜索**组件](/components-data#news-search)。
 
-    For more information, see the [Tools components](/components-tools) page.
+    有关更多信息，请参阅[工具组件](/components-tools)页面。
 
-- Stability improvements
+- 稳定性改进
 
-    General stability improvements and bug fixes for enhanced reliability.
-    See an issue? [Raise it on GitHub](https://github.com/langflow-ai/langflow/issues).
+    整体稳定性改进和错误修复以增强可靠性。
+    发现问题？[在 GitHub 上提出](https://github.com/langflow-ai/langflow/issues)。
 
-### New integrations and bundles
+### 新集成和包
 
-- [Cleanlab integration](/integrations-cleanlab)
+- [Cleanlab 集成](/integrations-cleanlab)
 
 ## 1.4.2
 
-The following updates are included in this version:
+此版本包含以下更新：
 
-### New features and enhancements
-- Enhanced file and flow management system with improved bulk capabilities.
+### 新功能和增强
+- 增强的文件和流程管理系统，具有改进的批量功能。
 
-### New integrations and bundles
-- BigQuery component for connecting to BQ datasets.
-- Twelve Labs integration bundle.
-- NVIDIA system assistant component.
+### 新集成和包
+- 用于连接 BQ 数据集的 BigQuery 组件。
+- Twelve Labs 集成包。
+- NVIDIA 系统助手组件。
 
-### Deprecated features
+### 已弃用功能
 
-- Deprecated the Combine text component.
+- 弃用了组合文本组件。
 
 ## 1.4.1
 
-The following updates are included in this version:
+此版本包含以下更新：
 
-### New features and enhancements
+### 新功能和增强
 
-- Added an enhanced "Breaking Changes" feature to help update components during version updates without breaking flows.
+- 添加了增强的“破坏性更改”功能，帮助在版本更新期间更新组件而不破坏流程。
 
 ## 1.4.0
 
-The following updates are included in this version:
+此版本包含以下更新：
 
-### New features and enhancements
+### 新功能和增强
 
-- Introduced MCP server functionality to serve Langflow tools to MCP-compatible clients.
-- Renamed "Folders" to "Projects". The `/folders` endpoints now redirect to `/projects`.
+- 引入了 MCP 服务器功能，为与 MCP 兼容的客户端提供 Langflow 工具。
+- 将“文件夹”重命名为“项目”。`/folders` 端点现在重定向到 `/projects`。
 
-### Deprecated features
+### 已弃用功能
 
-- Deprecated the Google Gmail, Drive, and Search components.
+- 弃用了 Google Gmail、Drive 和搜索组件。

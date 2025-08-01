@@ -1,102 +1,102 @@
 ---
-title: Contribute to Langflow
+title: 为 Langflow 做贡献
 slug: /contributing-how-to-contribute
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This guide is intended to help you start contributing to Langflow.
-As an open-source project in a rapidly developing field, Langflow welcomes contributions, whether it be in the form of a new feature, improved infrastructure, or better documentation.
+本指南旨在帮助您开始为 Langflow 做贡献。
+作为一个在快速发展的领域中的开源项目，Langflow 欢迎贡献，无论是新功能、改进的基础设施还是更好的文档。
 
-To contribute code or documentation to this project, follow the [fork and pull request](https://docs.github.com/en/get-started/quickstart/contributing-to-projects) workflow.
+要为此项目贡献代码或文档，请遵循[分叉和拉取请求](https://docs.github.com/en/get-started/quickstart/contributing-to-projects)工作流。
 
-## Install Langflow from source
+## 从源代码安装 Langflow
 
-Install Langflow from source by forking the repository, and then set up your development environment using Make.
+通过分叉仓库从源代码安装 Langflow，然后使用 Make 设置您的开发环境。
 
-### Prerequisites
+### 先决条件
 
-* [uv](https://docs.astral.sh/uv/getting-started/installation/) version 0.4 or later
+* [uv](https://docs.astral.sh/uv/getting-started/installation/) 0.4 或更高版本
 * [Node.js](https://nodejs.org/en/download/package-manager)
 * [Make](https://www.gnu.org/software/make/#documentation)
 
 :::tip Windows
-For Windows installations, you don't need need Make, and you can find [Windows scripts](https://github.com/langflow-ai/langflow/tree/main/scripts/windows) in the Langflow repository.
+对于 Windows 安装，您不需要 Make，您可以在 Langflow 仓库中找到 [Windows 脚本](https://github.com/langflow-ai/langflow/tree/main/scripts/windows)。
 :::
 
-### Clone the Langflow repository
+### 克隆 Langflow 仓库
 
-1. Fork the [Langflow GitHub repository](https://github.com/langflow-ai/langflow).
+1. 分叉 [Langflow GitHub 仓库](https://github.com/langflow-ai/langflow)。
 
-2. Add the new remote to your local repository on your local machine:
+2. 在您的本地计算机上将新的远程分支添加到本地仓库：
 ```bash
 git remote add FORK_NAME https://github.com/GIT_USERNAME/langflow.git
 ```
-Replace the following:
-* `FORK_NAME`: A name for your fork of the repository
-* `GIT_USERNAME`: Your Git username
+替换以下内容：
+* `FORK_NAME`：您的仓库分叉的名称
+* `GIT_USERNAME`：您的 Git 用户名
 
-### Run Langflow from source
+### 从源代码运行 Langflow
 
-You can run Langflow from source after cloning the repository, even if you're not contributing to the codebase.
+您可以在克隆仓库后从源代码运行 Langflow，即使您不打算为代码库做贡献。
 
 <details>
-<summary>Run from source on macOS/Linux</summary>
+<summary>在 macOS/Linux 上从源代码运行</summary>
 
-In your terminal, navigate to the root of the Langflow directory, and then run `make run_cli`.
+在您的终端中，导航到 Langflow 目录的根目录，然后运行 `make run_cli`。
 
-This command does the following:
+此命令执行以下操作：
 
-- Installs frontend and backend dependencies
-- Builds the frontend static files
-- Starts the application with default settings
+- 安装前端和后端依赖项
+- 构建前端静态文件
+- 使用默认设置启动应用程序
 
-The Langflow frontend is served at `http://localhost:7860`.
+Langflow 前端在 `http://localhost:7860` 上提供服务。
 
 </details>
 
 <details>
-<summary>Run from source with Windows CMD</summary>
+<summary>使用 Windows CMD 从源代码运行</summary>
 
-To run Langflow from source on Windows, you can use the Langflow project's included scripts, or run the commands in the terminal.
+要在 Windows 上从源代码运行 Langflow，您可以使用 Langflow 项目包含的脚本，或在终端中运行命令。
 
-Do one of the following:
+执行以下操作之一：
 
-* To install and run Langflow with the included Windows Batch file, navigate to the `scripts/windows` directory, and then run the `build_and_run.bat` file.
+* 要使用包含的 Windows 批处理文件安装和运行 Langflow，请导航到 `scripts/windows` 目录，然后运行 `build_and_run.bat` 文件。
 
-* To run Langflow from the Windows Command Line:
+* 要从 Windows 命令行运行 Langflow：
 
-    1. Build the Langflow frontend:
+    1. 构建 Langflow 前端：
 
         ```
         cd src/frontend && npm install && npm run build && npm run start
         ```
 
-    2. Copy the contents of the built `src/frontend/build` directory to `src/backend/base/langflow/frontend`.
+    2. 将构建的 `src/frontend/build` 目录的内容复制到 `src/backend/base/langflow/frontend`。
 
-    3. Start Langflow:
+    3. 启动 Langflow：
 
         ```
         uv run langflow run
         ```
 
-The Langflow frontend is served at `http://localhost:7860`.
+Langflow 前端在 `http://localhost:7860` 上提供服务。
 
 </details>
 
 <details>
-<summary>Run from source with Powershell</summary>
+<summary>使用 Powershell 从源代码运行</summary>
 
-To run Langflow from source on Windows, you can use the Langflow project's included scripts, or run the commands in the terminal.
+要在 Windows 上从源代码运行 Langflow，您可以使用 Langflow 项目包含的脚本，或在终端中运行命令。
 
-Do one of the following:
+执行以下操作之一：
 
-* To install and run Langflow with the included scripts, navigate to the `scripts/windows` directory, and then run the `build_and_run.ps1` file.
+* 要使用包含的脚本安装和运行 Langflow，请导航到 `scripts/windows` 目录，然后运行 `build_and_run.ps1` 文件。
 
-* To run Langflow from a Powershell terminal:
+* 要从 Powershell 终端运行 Langflow：
 
-    1. Run the following commands separately to build the Langflow frontend:
+    1. 分别运行以下命令来构建 Langflow 前端：
 
         ```
         cd src/frontend
@@ -105,73 +105,73 @@ Do one of the following:
         npm run start
         ```
 
-    2. Copy the contents of the built `src/frontend/build` directory to `src/backend/base/langflow/frontend`.
+    2. 将构建的 `src/frontend/build` 目录的内容复制到 `src/backend/base/langflow/frontend`。
 
-    3. Start Langflow:
+    3. 启动 Langflow：
 
         ```
         uv run langflow run
         ```
 
-The Langflow frontend is served at `http://localhost:7860`.
+Langflow 前端在 `http://localhost:7860` 上提供服务。
 
 </details>
 
-### Set up your Langflow development environment
+### 设置您的 Langflow 开发环境
 
 <Tabs>
-<TabItem value="linux-macos" label="Linux or macOS" default>
+<TabItem value="linux-macos" label="Linux 或 macOS" default>
 
-1. Set up the Langflow development environment:
+1. 设置 Langflow 开发环境：
 
     ```bash
     make init
     ```
 
-    This command sets up the development environment by doing the following:
+    此命令通过执行以下操作来设置开发环境：
 
-    - Checking for uv and npm.
-    - Installing backend and frontend dependencies.
-    - Installing pre-commit hooks.
+    - 检查 uv 和 npm。
+    - 安装后端和前端依赖项。
+    - 安装预提交钩子。
 
-2. Run the backend and frontend in separate terminals for development:
+2. 在单独的终端中运行后端和前端进行开发：
 
     ```bash
-    # Run backend in development mode (includes hot reload)
+    # 在开发模式下运行后端（包括热重载）
     make backend
     ```
 
     ```bash
-    # In another terminal, run frontend in development mode (includes hot reload)
+    # 在另一个终端中，在开发模式下运行前端（包括热重载）
     make frontend
     ```
 
-    The `make backend` and `make frontend` commands automatically install dependencies, so you don't need to run install commands separately.
+    `make backend` 和 `make frontend` 命令会自动安装依赖项，因此您无需单独运行安装命令。
 
-    The frontend is served at `http://localhost:7860`.
+    前端在 `http://localhost:7860` 上提供服务。
 
-3. Optional: Install pre-commit hooks to help keep your changes clean and well-formatted.
+3. 可选：安装预提交钩子以帮助保持更改整洁且格式良好。
 
-    With pre-commit hooks installed, you must use `uv run git commit` instead of `git commit` directly.
+    安装预提交钩子后，您必须使用 `uv run git commit` 而不是直接使用 `git commit`。
 
-    `make init` installs pre-commit hooks automatically, or you can run the following command to install them manually:
+    `make init` 会自动安装预提交钩子，或者您可以运行以下命令手动安装：
 
     ```bash
     uv sync
     uv run pre-commit install
     ```
 
-4. To test your changes before pushing commits, run `make lint`, `make format`, and `make unit_tests`.
-To run all tests, including coverage, unit, and integration, tests, run `make tests`.
+4. 要在推送提交之前测试更改，请运行 `make lint`、`make format` 和 `make unit_tests`。
+要运行所有测试，包括覆盖率、单元和集成测试，请运行 `make tests`。
 
 </TabItem>
 <TabItem value="Windows" label="Windows">
 
-Since Windows does not include `make`, building and running Langflow from source uses `npm` and `uv`.
+由于 Windows 不包含 `make`，从源代码构建和运行 Langflow 使用 `npm` 和 `uv`。
 
-To set up the Langflow development environment, run the frontend and backend in separate terminals:
+要设置 Langflow 开发环境，请在单独的终端中运行前端和后端：
 
-1. To run the frontend, run the following commands:
+1. 要运行前端，请运行以下命令：
 
     ```bash
     cd src/frontend
@@ -179,89 +179,89 @@ To set up the Langflow development environment, run the frontend and backend in 
     npm run start
     ```
 
-2. In a separate terminal, run the following command to run the backend:
+2. 在单独的终端中，运行以下命令来运行后端：
 
     ```bash
     uv run langflow run --backend-only
     ```
 
-The frontend is served at `http://localhost:7860`.
+前端在 `http://localhost:7860` 上提供服务。
 
 </TabItem>
 </Tabs>
 
-### Debug
+### 调试
 
-The repo includes a `.vscode/launch.json` file for debugging the backend in VSCode, which is faster than debugging with Docker Compose. To debug Langflow with the `launch.json` file in VSCode:
+仓库包含一个用于在 VSCode 中调试后端的 `.vscode/launch.json` 文件，这比使用 Docker Compose 调试更快。要在 VSCode 中使用 `launch.json` 文件调试 Langflow：
 
-For more information, see the [VSCode documentation](https://code.visualstudio.com/docs/debugtest/debugging#_start-a-debugging-session).
+有关更多信息，请参阅 [VSCode 文档](https://code.visualstudio.com/docs/debugtest/debugging#_start-a-debugging-session)。
 
-### Additional contribution guides
+### 其他贡献指南
 
-- [Contribute bundles](./contributing-bundles.mdx)
-- [Contribute components](./contributing-components.mdx)
-- [Contribute tests](./contributing-component-tests.mdx)
-- [Contribute templates](./contributing-templates.mdx)
+- [贡献 bundles](./contributing-bundles.mdx)
+- [贡献组件](./contributing-components.mdx)
+- [贡献测试](./contributing-component-tests.mdx)
+- [贡献模板](./contributing-templates.mdx)
 
-## Contribute documentation
+## 贡献文档
 
-The documentation is built using [Docusaurus](https://docusaurus.io/) and written in [Markdown](https://docusaurus.io/docs/markdown-features).
-For style guidance, see the [Google Developer Documentation Style Guide](https://developers.google.com/style).
+文档使用 [Docusaurus](https://docusaurus.io/) 构建，并用 [Markdown](https://docusaurus.io/docs/markdown-features) 编写。
+有关样式指导，请参阅 [Google 开发者文档样式指南](https://developers.google.com/style)。
 
-1. Install [Node.js](https://nodejs.org/en/download/package-manager) and [Yarn](https://yarnpkg.com/)
+1. 安装 [Node.js](https://nodejs.org/en/download/package-manager) 和 [Yarn](https://yarnpkg.com/)
 
-2. Fork the [Langflow GitHub repository](https://github.com/langflow-ai/langflow).
+2. 分叉 [Langflow GitHub 仓库](https://github.com/langflow-ai/langflow)。
 
-3. Add the new remote to your local repository on your local machine:
+3. 在您的本地计算机上将新的远程分支添加到本地仓库：
 
     ```bash
     git remote add FORK_NAME https://github.com/GIT_USERNAME/langflow.git
     ```
 
-    Replace the following:
+    替换以下内容：
 
-    * `FORK_NAME`: A name for your fork of the repository
-    * `GIT_USERNAME`: Your Git username
+    * `FORK_NAME`：您的仓库分叉的名称
+    * `GIT_USERNAME`：您的 Git 用户名
 
-4. From the root of your local Langflow fork, change to the `/docs` directory:
+4. 从本地 Langflow 分叉的根目录，切换到 `/docs` 目录：
 
     ```bash
     cd docs
     ```
 
-5. Install dependencies and start a local Docusaurus static site with hot reload:
+5. 安装依赖项并启动带有热重载的本地 Docusaurus 静态站点：
 
     ```bash
     yarn install
     yarn start
     ```
 
-    The documentation is served at `localhost:3000`.
+    文档在 `localhost:3000` 上提供服务。
 
-6. To edit and create content, work with the `.mdx` files in the `langflow/docs/docs` directory.
+6. 要编辑和创建内容，请使用 `langflow/docs/docs` 目录中的 `.mdx` 文件。
 
-    Create new files in `.mdx` format.
+    创建 `.mdx` 格式的新文件。
 
-    Navigation is defined in `langflow/docs/sidebars.js`.
+    导航在 `langflow/docs/sidebars.js` 中定义。
 
-    Most pages use a `slug` for shorthand cross-referencing, rather than supplying the full or relative directory path.
-    For example, if a page has a `slug` of `/cool-page`, you can link to it with `[Cool page](/cool-page)` from any other `/docs` page.
+    大多数页面使用 `slug` 进行简写交叉引用，而不是提供完整或相对目录路径。
+    例如，如果页面的 `slug` 为 `/cool-page`，您可以从任何其他 `/docs` 页面使用 `[Cool page](/cool-page)` 链接到它。
 
-7. Recommended: After making some changes, run `yarn build` to build the site locally with more robust logging.
-This can help you find broken links before creating a PR.
+7. 建议：进行一些更改后，运行 `yarn build` 在本地构建站点，提供更强大的日志记录。
+这可以帮助您在创建 PR 之前找到断开的链接。
 
-## Open a pull request
+## 开启拉取请求
 
-To submit a pull request, do the following:
+要提交拉取请求，请执行以下操作：
 
-1. Open a new GitHub pull request with your patch against the `main` branch.
-2. Ensure the PR title follows semantic commit conventions. For example, features are `feat: add new feature` and fixes are `fix: correct issue with X`.
+1. 针对 `main` 分支使用您的补丁打开新的 GitHub 拉取请求。
+2. 确保 PR 标题遵循语义提交约定。例如，功能是 `feat: add new feature`，修复是 `fix: correct issue with X`。
 
-Some additional guidance on pull request titles:
-* Ensure the pull request description clearly describes the problem and solution. If the PR fixes an issue, include a link to the fixed issue in the PR description with `Fixes #1234`.
-* Pull request titles appear in Langflow's release notes, so they should explain what the PR does as explicitly as possible.
-* Pull requests should strive to fix one thing **only**, and should contain a good description of what is being fixed.
+关于拉取请求标题的一些额外指导：
+* 确保拉取请求描述清楚地描述问题和解决方案。如果 PR 修复了一个问题，请在 PR 描述中包含修复问题的链接，格式为 `Fixes #1234`。
+* 拉取请求标题会出现在 Langflow 的发布说明中，因此它们应该尽可能明确地解释 PR 的作用。
+* 拉取请求应该努力只修复**一件事**，并且应该包含对正在修复的内容的良好描述。
 
-3. A Langflow maintainer will review your pull request and may request changes, so ensure you pay attention to your PRs. Thanks for your contribution!
+3. Langflow 维护者将审查您的拉取请求并可能请求更改，因此请确保您关注您的 PR。感谢您的贡献！
 
-For more information, see the [Python Developer's Guide](https://devguide.python.org/getting-started/pull-request-lifecycle/index.html#making-good-commits).
+有关更多信息，请参阅 [Python 开发者指南](https://devguide.python.org/getting-started/pull-request-lifecycle/index.html#making-good-commits)。

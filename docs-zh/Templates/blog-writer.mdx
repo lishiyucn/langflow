@@ -1,33 +1,33 @@
 ---
-title: Blog writer
+title: 博客写作器
 slug: /blog-writer
 ---
 
 import Icon from "@site/src/components/icon";
 
-This flow demonstrates adding an additional `{references}` input to the [Prompt](/components-prompts) component to capture input from the [URL](/components-data#url) and [Parser](/components-processing#parser) components.
+此流程演示了如何向[提示](/components-prompts)组件添加额外的 `{references}` 输入，以捐获来自 [URL](/components-data#url) 和[解析器](/components-processing#parser)组件的输入。
 
-The [Language model](/components-models) component uses this input to generate a blog post according to the `{instructions}` received by the [Prompt](/components-prompts) component.
+[语言模型](/components-models)组件使用此输入根据[提示](/components-prompts)组件接收到的 `{instructions}` 生成博客文章。
 
-## Prerequisites
+## 先决条件
 
-- [A running Langflow instance](/get-started-installation)
-- [An OpenAI API key](https://platform.openai.com/)
+- [正在运行的 Langflow 实例](/get-started-installation)
+- [OpenAI API 密钥](https://platform.openai.com/)
 
-## Create the blog writer flow
+## 创建博客写作器流程
 
-1. From the Langflow dashboard, click **New Flow**.
-2. Select **Blog Writer**.
-3. The **Blog Writer** flow is created.
+1. 从 Langflow 仪表板，点击**新建流程**。
+2. 选择**博客写作器**。
+3. **博客写作器**流程被创建。
 
     ![Blog writer starter flow](/img/starter-flow-blog-writer.png)
 
-    This flow creates a blog article generator with **Prompt**, **Language Model**, and **Chat Output** components, augmented with reference content and instructions from the **URL** and **Text Input** components.
+    此流程使用**提示**、**语言模型**和**聊天输出**组件创建了一个博客文章生成器，并通过 **URL** 和**文本输入**组件的参考内容和指令进行增强。
 
-    The **URL** component extracts raw text and metadata from one or more web links.
-    The **Parser** component converts the data coming from the **URL** component into plain text to feed the prompt.
+    **URL** 组件从一个或多个网络链接中提取原始文本和元数据。
+    **解析器**组件将来自 **URL** 组件的数据转换为纯文本以供给提示。
 
-    To examine the flow's prompt, click the **Template** field of the **Prompt** component.
+    要检查流程的提示，请点击**提示**组件的**模板**字段。
 
     ```text
     Reference 1:
@@ -41,19 +41,19 @@ The [Language model](/components-models) component uses this input to generate a
     Blog:
     ```
 
-    The `{instructions}` value is received from the **Text Input** component, and one or more `{references}` are received from a list of URLs parsed from the **URL** component.
+    `{instructions}` 值来自**文本输入**组件，一个或多个 `{references}` 来自从 **URL** 组件解析的 URL 列表。
 
 
-### Run the blog writer flow
+### 运行博客写作器流程
 
-1. Add your **OpenAI API key** to the **Language model** model component.
-	Optionally, create a [global variable](/configuration-global-variables) for the **OpenAI API key**.
+1. 将您的 **OpenAI API 密钥**添加到**语言模型**模型组件。
+	可选地，为 **OpenAI API 密钥**创建一个[全局变量](/configuration-global-variables)。
 
-	1. In the **OpenAI API Key** field, click <Icon name="Globe" aria-hidden="True" /> **Globe**, and then click **Add New Variable**.
-	2. In the **Variable Name** field, enter `openai_api_key`.
-	3. In the **Value** field, paste your OpenAI API Key (`sk-...`).
-	4. Click **Save Variable**.
+	1. 在 **OpenAI API 密钥**字段中，点击 <Icon name="Globe" aria-hidden="True" /> **地球**，然后点击**添加新变量**。
+	2. 在**变量名称**字段中，输入 `openai_api_key`。
+	3. 在**值**字段中，粘贴您的 OpenAI API 密钥（`sk-...`）。
+	4. 点击**保存变量**。
 
-2. To run the flow, click <Icon name="Play" aria-hidden="true"/> **Playground**, and then click **Run Flow**.
-A blog post about Langflow is generated, with content sourced from `langflow.org` and `docs.langflow.org`.
-3. To write about something different, change the values in the **URL** component and adjust the instructions in the **Text input** component. Try again and see what the LLM constructs.
+2. 要运行流程，请点击 <Icon name="Play" aria-hidden="true"/> **操场**，然后点击**运行流程**。
+将生成一篇关于 Langflow 的博客文章，内容来源于 `langflow.org` 和 `docs.langflow.org`。
+3. 要写关于不同主题的内容，请更改 **URL** 组件中的值，并调整**文本输入**组件中的指令。再试一次，看看 LLM 构建了什么。

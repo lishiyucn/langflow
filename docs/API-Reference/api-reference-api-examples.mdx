@@ -1,32 +1,32 @@
 ---
-title: Get started with the Langflow API
+title: Langflow API 入门指南
 slug: /api-reference-api-examples
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-You can use the Langflow API for programmatic interactions with Langflow, such as the following:
+您可以使用 Langflow API 与 Langflow 进行程序化交互，例如：
 
-* Create and edit flows, including file management for flows.
-* Develop applications that use your flows.
-* Develop custom components.
-* Build Langflow as a dependency of a larger project.
-* Contribute to the overall Langflow project.
+* 创建和编辑流程，包括流程的文件管理。
+* 开发使用您的流程的应用程序。
+* 开发自定义组件。
+* 将 Langflow 构建为更大项目的依赖项。
+* 为整个 Langflow 项目做贡献。
 
-To view and test all available endpoints, you can access the Langflow API's OpenAPI specification at your Langflow deployment's `/docs` endpoint, such as `http://localhost:7860/docs`.
+要查看和测试所有可用的端点，您可以在 Langflow 部署的 `/docs` 端点访问 Langflow API 的 OpenAPI 规范，例如 `http://localhost:7860/docs`。
 
-:::tip Try it
-For an example of the Langflow API in a script, see the [Langflow quickstart](/get-started-quickstart).
+:::tip 试一试
+有关在脚本中使用 Langflow API 的示例，请参阅 [Langflow 快速入门](/get-started-quickstart)。
 
-The quickstart demonstrates how to get automatically generated code snippets for your flows, use a script to run a flow, and extract data from the Langfow API response.
+快速入门演示了如何为您的流程获取自动生成的代码片段、使用脚本运行流程以及从 Langflow API 响应中提取数据。
 :::
 
-## Form Langflow API requests
+## 构建 Langflow API 请求
 
-While individual options vary by endpoint, all Langflow API requests share some commonalities, like a URL, method, parameters, and authentication.
+虽然各个端点的选项有所不同，但所有 Langflow API 请求都具有一些共同点，如 URL、方法、参数和身份验证。
 
-As an example of a Langflow API request, the following curl command calls the `/v1/run` endpoint, and it passes a runtime override (`tweaks`) to the flow's Chat Output component:
+作为 Langflow API 请求的示例，以下 curl 命令调用 `/v1/run` 端点，并向流程的聊天输出组件传递运行时覆盖（`tweaks`）：
 
 ```bash
 curl --request POST \
@@ -45,52 +45,52 @@ curl --request POST \
 }'
 ```
 
-### Base URL
+### 基础 URL
 
-By default, local deployments serve the Langflow API at `http://localhost:7860/api`.
+默认情况下，本地部署在 `http://localhost:7860/api` 提供 Langflow API。
 
-Remotely hosted Langflow deployments are available at the domain set by the hosting service, such as `http://IP_OR_DNS/api` or `http://IP_OR_DNS:LANGFLOW_PORT/api`.
+远程托管的 Langflow 部署可在托管服务设置的域名访问，例如 `http://IP_OR_DNS/api` 或 `http://IP_OR_DNS:LANGFLOW_PORT/api`。
 
-You can configure the Langflow port number in the `LANGFLOW_PORT` [environment variable](/environment-variables).
+您可以在 `LANGFLOW_PORT` [环境变量](/environment-variables) 中配置 Langflow 端口号。
 
 * `https://UUID.ngrok.app/api`
 * `http://IP_OR_DNS/api`
 * `http://IP_OR_DNS:LANGFLOW_PORT/api`
 
-### Authentication
+### 身份验证
 
-In Langflow versions 1.5 and later, most API endpoints require a Langflow API key, even when `AUTO_LOGIN` is set to `True`.
-The only exceptions are the MCP endpoints `/v1/mcp`, `/v1/mcp-projects`, and `/v2/mcp`, which never require authentication.
+在 Langflow 1.5 及更高版本中，大多数 API 端点都需要 Langflow API 密钥，即使 `AUTO_LOGIN` 设置为 `True`。
+唯一的例外是 MCP 端点 `/v1/mcp`、`/v1/mcp-projects` 和 `/v2/mcp`，它们从不需要身份验证。
 
-To authenticate a Langflow API request, provide a Langflow API key in either an `x-api-key` header or query parameter.
-For more information, see [API keys](/configuration-api-keys).
+要验证 Langflow API 请求，请在 `x-api-key` 头或查询参数中提供 Langflow API 密钥。
+有关更多信息，请参阅 [API 密钥](/configuration-api-keys)。
 
-As with any API, follow industry best practices for storing and referencing sensitive credentials.
-For example, you can [set environment variables](#set-environment-variables) for your API keys, and then reference those environment variables in your API requests.
+与任何 API 一样，请遵循行业最佳实践来存储和引用敏感凭据。
+例如，您可以为 API 密钥[设置环境变量](#set-environment-variables)，然后在 API 请求中引用这些环境变量。
 
-### Methods, paths, and parameters
+### 方法、路径和参数
 
-Langflow API requests use various methods, paths, path parameters, query parameters, and body parameters.
-The specific requirements and options depend on the endpoint that you want to call.
+Langflow API 请求使用各种方法、路径、路径参数、查询参数和主体参数。
+具体的要求和选项取决于您要调用的端点。
 
-For example, to create a flow, you pass a JSON-formatted flow definition to `POST /v1/flows`.
-Then, to run your flow, you call `POST /v1/run/$FLOW_ID` with optional run parameters in the request body.
+例如，要创建流程，您需要将 JSON 格式的流程定义传递给 `POST /v1/flows`。
+然后，要运行您的流程，您需要调用 `POST /v1/run/$FLOW_ID`，并在请求主体中包含可选的运行参数。
 
-### API versions
+### API 版本
 
-The Langflow API serves `/v1` and `/v2` endpoints.
+Langflow API 提供 `/v1` 和 `/v2` 端点。
 
-Some endpoints only exist under a single version and some exist under both the `/v1` and `/v2` versions.
+某些端点仅存在于单个版本下，而某些端点同时存在于 `/v1` 和 `/v2` 版本下。
 
-If a request fails or has an unexpected result, make sure your endpoint path has the correct version.
+如果请求失败或有意外结果，请确保您的端点路径具有正确的版本。
 
-## Set environment variables
+## 设置环境变量
 
-You can store commonly used values in environment variables to facilitate reuse, simplify token rotation, and securely reference sensitive values.
+您可以将常用值存储在环境变量中，以便于重用、简化令牌轮换并安全地引用敏感值。
 
-You can use any method you prefer to set environment variables, such as `export`, `.env`, `zshrc`, or `.curlrc`.
-Then, reference those environment variables in your API requests.
-For example:
+您可以使用任何您喜欢的方法来设置环境变量，如 `export`、`.env`、`zshrc` 或 `.curlrc`。
+然后，在您的 API 请求中引用这些环境变量。
+例如：
 
 ```bash
 # Set environment variables
@@ -117,17 +117,17 @@ curl --request POST \
 }'
 ```
 
-Commonly used values in Langflow API requests include your [Langflow server URL](#base-url), [Langflow API keys](/configuration-api-keys), flow IDs, and [project IDs](/api-projects#read-projects).
+Langflow API 请求中常用的值包括您的 [Langflow 服务器 URL](#base-url)、[Langflow API 密钥](/configuration-api-keys)、流程 ID 和[项目 ID](/api-projects#read-projects)。
 
-You can retrieve flow IDs from the [**API access** pane](/concepts-publish#api-access), in a flow's URL, and with [`GET /flows`](/api-flows#read-flows).
+您可以从 [**API 访问** 窗格](/concepts-publish#api-access)、流程的 URL 以及 [`GET /flows`](/api-flows#read-flows) 中检索流程 ID。
 
-## Try some Langflow API requests
+## 尝试一些 Langflow API 请求
 
-Once you have your Langflow server URL, try calling these endpoints that return Langflow metadata.
+一旦您有了 Langflow 服务器 URL，请尝试调用这些返回 Langflow 元数据的端点。
 
-### Get version
+### 获取版本
 
-Returns the current Langflow API version:
+返回当前的 Langflow API 版本：
 
 ```bash
 curl -X GET \
@@ -149,9 +149,9 @@ curl -X GET \
 
 </details>
 
-### Get configuration
+### 获取配置
 
-Returns configuration details for your Langflow deployment:
+返回您的 Langflow 部署的配置详细信息：
 
 ```bash
 curl -X GET \
@@ -178,9 +178,9 @@ curl -X GET \
 
 </details>
 
-### Get all components
+### 获取所有组件
 
-Returns a dictionary of all Langflow components:
+返回所有 Langflow 组件的字典：
 
 ```bash
 curl -X GET \
@@ -189,9 +189,9 @@ curl -X GET \
   -H "x-api-key: $LANGFLOW_API_KEY"
 ```
 
-## Next steps
+## 下一步
 
-- Use the Langflow API to [run a flow](/api-flows-run).
-- Use the Langflow API to [upload files](/api-files).
-- Use the Langflow API to [get flow logs](/api-logs).
-- Explore all endpoints in the [Langflow API specification](/api).
+- 使用 Langflow API [运行流程](/api-flows-run)。
+- 使用 Langflow API [上传文件](/api-files)。
+- 使用 Langflow API [获取流程日志](/api-logs)。
+- 在 [Langflow API 规范](/api) 中探索所有端点。

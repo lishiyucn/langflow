@@ -5,21 +5,21 @@ slug: /bundles-exa
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Exa** bundle.
+本页面描述了 **Exa** bundle 中可用的组件。
 
 ## Exa Search
 
-This component provides an [Exa Search](https://exa.ai/) toolkit for search and content retrieval by a [Langflow agent](/agents) or [MCP client](/mcp-client).
+此组件为 [Langflow 代理](/agents) 或 [MCP 客户端](/mcp-client) 提供 [Exa Search](https://exa.ai/) 工具包，用于搜索和内容检索。
 
-The output is exclusively [`Tools`](/data-types#tool).
+输出专门为 [`Tools`](/data-types#tool)。
 
-### Exa Search parameters
+### Exa Search 参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| Exa Search API Key (`metaphor_api_key`) | SecretString | Input parameter. An API key for Exa Search. |
-| Use Autoprompt (`use_autoprompt`) | Boolean | Input parameter. Whether to use the autoprompt feature. Default: true. |
-| Search Number of Results (`search_num_results`) | Integer | Input parameter. The number of results to return for search. Default: 5. |
-| Similar Number of Results (`similar_num_results`) | Integer | Input parameter. The number of similar results to return. Default: 5. |
+| Exa Search API Key (`metaphor_api_key`) | SecretString | 输入参数。Exa Search 的 API 密钥。 |
+| Use Autoprompt (`use_autoprompt`) | Boolean | 输入参数。是否使用自动提示功能。默认：true。 |
+| Search Number of Results (`search_num_results`) | Integer | 输入参数。搜索返回的结果数量。默认：5。 |
+| Similar Number of Results (`similar_num_results`) | Integer | 输入参数。返回的相似结果数量。默认：5。 |

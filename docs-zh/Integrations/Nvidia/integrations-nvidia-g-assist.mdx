@@ -4,34 +4,34 @@ slug: /integrations-nvidia-g-assist
 ---
 
 :::important
-This component is available only for Langflow users with NVIDIA GPUs on Windows systems.
+此组件仅适用于在 Windows 系统上拥有 NVIDIA GPU 的 Langflow 用户。
 :::
 
-The **NVIDIA G-Assist** component enables interaction with NVIDIA GPU drivers through natural language prompts.
+**NVIDIA G-Assist** 组件通过自然语言提示实现与 NVIDIA GPU 驱动程序的交互。
 
-For example, prompt G-Assist with `"What is my current GPU temperature?"` or `"Show me the available GPU memory"` to get information, and then tell G-Assist to modify your GPU settings.
+例如，使用 `"我当前的 GPU 温度是多少？"` 或 `"显示可用的 GPU 内存"` 提示 G-Assist 来获取信息，然后告诉 G-Assist 修改您的 GPU 设置。
 
-For more information, see the [NVIDIA G-assist project repository](https://github.com/NVIDIA/g-assist).
+有关更多信息，请参阅 [NVIDIA G-assist 项目仓库](https://github.com/NVIDIA/g-assist)。
 
-## Prerequisites
+## 先决条件
 
-* Windows operating system
+* Windows 操作系统
 * NVIDIA GPU
-* `gassist.rise` package installed. This package is already installed with Langflow.
+* 已安装 `gassist.rise` 包。此包已随 Langflow 一起安装。
 
-## Use the G-Assist component in a flow
-1. Create a flow with a **Chat input** component, a **G-Assist** component, and a **Chat output** component.
-2. Connect the **Chat input** component to the **G-Assist** component's **Prompt** input, and then connect the **G-Assist** component's output to the **Chat output** component.
-3. Open the **Playground**, and then ask a question about your GPU. For example, "What is my current GPU temperature?".
-The **G-Assist** component queries your GPU, and the response appears in the **Playground**.
+## 在流中使用 G-Assist 组件
+1. 创建一个包含 **Chat input** 组件、**G-Assist** 组件和 **Chat output** 组件的流。
+2. 将 **Chat input** 组件连接到 **G-Assist** 组件的 **Prompt** 输入，然后将 **G-Assist** 组件的输出连接到 **Chat output** 组件。
+3. 打开 **Playground**，然后问一个关于您的 GPU 的问题。例如，“我当前的 GPU 温度是多少？”。
+**G-Assist** 组件查询您的 GPU，响应将出现在 **Playground** 中。
 
-### Inputs
+### 输入
 
-The **NVIDIA G-Assist** component accepts a single input:
-- `prompt`: A human-readable prompt processed by NVIDIA G-Assist.
+**NVIDIA G-Assist** 组件接受一个输入：
+- `prompt`：由 NVIDIA G-Assist 处理的人类可读提示。
 
-### Outputs
+### 输出
 
-The **NVIDIA G-Assist** component outputs a [Message](/data-types#message) object that contains:
-- `text`: The response from NVIDIA G-Assist containing the completed operation result.
-- The NVIDIA G-Assist message response is wrapped in a Langflow [Message](/data-types#message) object.
+**NVIDIA G-Assist** 组件输出一个 [Message](/data-types#message) 对象，包含：
+- `text`：来自 NVIDIA G-Assist 的响应，包含完成的操作结果。
+- NVIDIA G-Assist 消息响应被包装在 Langflow [Message](/data-types#message) 对象中。

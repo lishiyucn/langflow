@@ -1,34 +1,34 @@
 ---
-title: Memory chatbot
+title: 记忆聊天机器人
 slug: /memory-chatbot
 ---
 
 import Icon from "@site/src/components/icon";
 
 :::info
-The **Chat memory** component is also known as the **Message history** component.
+**聊天记忆**组件也被称为**消息历史**组件。
 :::
 
-This flow extends the [basic prompting flow](/basic-prompting) with a [Message history](/components-helpers#message-history) component that stores previous chat messages and uses them to provide context for the current conversation.
+该流程在[基础提示流程](/basic-prompting)的基础上添加了[消息历史](/components-helpers#message-history)组件，用于存储之前的聊天消息并将其用作当前对话的上下文。
 
-## Prerequisites
+## 前提条件
 
-- [A running Langflow instance](/get-started-installation)
-- [An OpenAI API key](https://platform.openai.com/)
+- [运行中的 Langflow 实例](/get-started-installation)
+- [OpenAI API 密钥](https://platform.openai.com/)
 
-## Create the memory chatbot flow
+## 创建记忆聊天机器人流程
 
-1. From the Langflow dashboard, click **New Flow**.
-2. Select **Memory Chatbot**.
-3. The **Memory Chatbot** flow is created.
+1. 在 Langflow 仪表板中，点击**新建流程**。
+2. 选择**记忆聊天机器人**。
+3. **记忆聊天机器人**流程已创建。
 
 ![Memory chatbot flow](/img/starter-flow-memory-chatbot.png)
 
-This flow adds a **Message history** component to the Basic Prompting flow.
-This component retrieves previous messages and sends them to the **Prompt** component to fill a part of the **Template** with context.
+该流程在基础提示流程中添加了**消息历史**组件。
+该组件检索之前的消息并将其发送到**提示**组件，用上下文填充**模板**的一部分。
 
-To examine the template, click the **Template** field in the **Prompt** component.
-The **Prompt** instructs the **Language model** component how to respond to input.
+要查看模板，请点击**提示**组件中的**模板**字段。
+**提示**指导**语言模型**组件如何响应输入。
 
 ```text
 You are a helpful assistant that answers questions.
@@ -40,13 +40,13 @@ History:
 {memory}
 ```
 
-The `{memory}` code in the prompt creates a new input port in the component called **memory**.
-The **Message history** component is connected to this port to store chat messages from the **Playground**, and provide the **Language model** component with a memory of previous chat messages.
+提示中的 `{memory}` 代码在组件中创建了一个名为 **memory** 的新输入端口。
+**消息历史**组件连接到此端口，用于存储来自**游乐场**的聊天消息，并为**语言模型**组件提供之前聊天消息的记忆。
 
-## Run the memory chatbot flow
+## 运行记忆聊天机器人流程
 
-1. Open the **Playground**.
-2. Enter multiple questions. For example, try entering this conversation:
+1. 打开**游乐场**。
+2. 输入多个问题。例如，尝试输入以下对话：
 
 ```text
 Hi, my name is Luca.
@@ -55,21 +55,21 @@ What is my name?
 What is the second subject I asked you about?
 ```
 
-The chatbot remembers your name and previous questions.
+聊天机器人会记住您的姓名和之前的问题。
 
-3. To view the **Message Logs** pane, in the **Playground** pane, click <Icon name="Ellipsis" aria-hidden="true"/> **Options**, and then click **Message logs**.
-The **Message Logs** pane displays all previous messages.
+3. 要查看**消息日志**面板，在**游乐场**面板中，点击 <Icon name="Ellipsis" aria-hidden="true"/> **选项**，然后点击**消息日志**。
+**消息日志**面板显示所有之前的消息。
 
 ![Message logs pane](/img/messages-logs.png)
 
-## Use Session ID with the memory chatbot flow
+## 在记忆聊天机器人流程中使用会话 ID
 
-`session_id` is a unique identifier in Langflow that stores conversation sessions between the AI and a user. A `session_id` is created when a conversation is initiated, and then associated with all subsequent messages during that session.
+`session_id` 是 Langflow 中用于存储 AI 与用户之间对话会话的唯一标识符。当对话开始时会创建一个 `session_id`，然后与该会话期间的所有后续消息关联。
 
-In the **Memory Chatbot** flow you created, the **Message history** component references past interactions by **Session ID**. You can demonstrate this by modifying the **Session ID** value to switch between conversation histories.
+在您创建的**记忆聊天机器人**流程中，**消息历史**组件通过**会话 ID** 引用过去的交互。您可以通过修改**会话 ID** 值来在不同的对话历史之间切换，以演示此功能。
 
-1. In the **Session ID** field of the **Message history** and **Chat Input** components, add a **Session ID** value like `MySessionID`.
-2. Now, once you send a new message the **Playground**, you should have a new session created in the **Message Logs** pane.
-3. Note how your conversation is being stored in different memory sessions.
+1. 在**消息历史**和**聊天输入**组件的**会话 ID** 字段中，添加一个**会话 ID** 值，如 `MySessionID`。
+2. 现在，一旦您在**游乐场**中发送新消息，您应该会在**消息日志**面板中看到创建了新会话。
+3. 注意您的对话是如何存储在不同的记忆会话中的。
 
-To learn more about memory in Langflow, see [Memory](/memory).
+要了解更多关于 Langflow 中记忆功能的信息，请参阅[记忆](/memory)。

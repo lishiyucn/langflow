@@ -1,39 +1,39 @@
 ---
-title: Trigger flows with webhooks
+title: 使用 Webhook 触发流程
 slug: /webhook
 ---
 
 import Icon from "@site/src/components/icon";
 
-You can use the **Webhook** component to start a flow run in response to an external event.
+您可以使用 **Webhook** 组件来响应外部事件启动流程运行。
 
-With the **Webhook** component, a flow can receive data directly from external sources. Then, the flow can parse the data and pass it to other components in the flow to initiate other actions, such as calling APIs, writing to databases, and chatting with LLMs.
-If the input is not valid JSON, the **Webhook** component wraps it in a `payload` object so that it can be accepted as input to trigger the flow.
+使用 **Webhook** 组件，流程可以直接从外部源接收数据。然后，流程可以解析数据并将其传递给流程中的其他组件，以启动其他操作，例如调用 API、写入数据库和与 LLM 聊天。
+如果输入不是有效的 JSON，**Webhook** 组件会将其包装在 `payload` 对象中，以便可以作为输入接受来触发流程。
 
-The **Webhook** component provides a versatile entrypoint that can make your flows more event-driven and integrated with your entire stack of applications and services.
-For example:
+**Webhook** 组件提供了一个多功能的入口点，可以使您的流程更加事件驱动，并与您的整个应用程序和服务栈集成。
+例如：
 
-* Use an LLM to analyze the sentiment and content of customer feedback or survey responses.
-* Receive notifications from a monitoring system, and then trigger automated responses based on alert type and severity.
-* Integrate with e-commerce platforms to process orders and update inventory.
+* 使用 LLM 分析客户反馈或调查响应的情感和内容。
+* 接收来自监控系统的通知，然后根据警报类型和严重程度触发自动响应。
+* 与电子商务平台集成以处理订单和更新库存。
 
-## Configure the Webhook component
+## 配置 Webhook 组件
 
-To use the **Webhook** component in a flow, do the following:
+要在流程中使用 **Webhook** 组件，请执行以下操作：
 
-1. In Langflow, open the flow where you want to use the **Webhook** component.
+1. 在 Langflow 中，打开您想要使用 **Webhook** 组件的流程。
 
-2. Add a [**Webhook** component](/components-data#webhook) and a [**Parser** component](/components-processing#parser) to your flow.
+2. 向您的流程添加一个 [**Webhook** 组件](/components-data#webhook)和一个 [**Parser** 组件](/components-processing#parser)。
 
-    These two components are commonly paired together because the **Parser** component extracts relevant data from the raw payload received by the **Webhook** component.
+    这两个组件通常配对使用，因为 **Parser** 组件从 **Webhook** 组件接收的原始负载中提取相关数据。
 
-3. Connect the **Webhook** component's **Data** output to the **Parser** component's **Data** input.
+3. 将 **Webhook** 组件的 **Data** 输出连接到 **Parser** 组件的 **Data** 输入。
 
-4. In the **Parser** component's **Template** field, enter a template to parse the raw payload into structured text.
+4. 在 **Parser** 组件的 **Template** 字段中，输入一个模板来将原始负载解析为结构化文本。
 
-    In the template, use variables for payload keys in the same way you would define variables in a [**Prompt Template** component](/components-prompts).
+    在模板中，使用负载键的变量，就像您在 [**Prompt Template** 组件](/components-prompts)中定义变量一样。
 
-    For example, assume that you expect your **Webhook** component to receive the following JSON data:
+    例如，假设您期望您的 **Webhook** 组件接收以下 JSON 数据：
 
     ```json
     {
@@ -43,25 +43,25 @@ To use the **Webhook** component in a flow, do the following:
     }
     ```
 
-    Then, you can use curly braces to reference the JSON keys anywhere in your parser template:
+    然后，您可以在解析器模板中的任何位置使用大括号引用 JSON 键：
 
     ```text
     ID: {id} - Name: {name} - Email: {email}
     ```
 
-5. Connect the **Parser** component's **Parsed Text** output to the next logical component in your flow, such as a **Chat Input** component.
+5. 将 **Parser** 组件的 **Parsed Text** 输出连接到流程中的下一个逻辑组件，例如 **Chat Input** 组件。
 
-    If you want to test only the **Webhook** and **Parser** components, you can connect the **Parsed Text** output directly to a **Chat Output** component's **Text** input. Then, you can see the parsed data in the **Playground** after you run the flow.
+    如果您只想测试 **Webhook** 和 **Parser** 组件，可以将 **Parsed Text** 输出直接连接到 **Chat Output** 组件的 **Text** 输入。然后，您可以在运行流程后在 **Playground** 中看到解析后的数据。
 
-6. From the **Webhook** component's **Endpoint** field, copy the API endpoint that you will use to send data to the **Webhook** component and trigger the flow.
+6. 从 **Webhook** 组件的 **Endpoint** 字段中，复制您将用于向 **Webhook** 组件发送数据并触发流程的 API 端点。
 
-    Alternatively, to get a complete `POST /v1/webhook/$FLOW_ID` code snippet, open the flow's [**API access** pane](/concepts-publish#api-access), and then click the **Webhook cURL** tab.
-    You can also modify the default curl command in the **Webhook** component's **cURL** field.
-    If this field isn't visible by default, click the **Webhook** component, and then click <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+    或者，要获取完整的 `POST /v1/webhook/$FLOW_ID` 代码片段，请打开流程的 [**API access** 面板](/concepts-publish#api-access)，然后单击 **Webhook cURL** 选项卡。
+    您还可以在 **Webhook** 组件的 **cURL** 字段中修改默认的 curl 命令。
+    如果此字段默认不可见，请单击 **Webhook** 组件，然后在[组件标题菜单](/concepts-components#component-menus)中单击 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls**。
 
-7. Send a POST request with `data` to the flow's `webhook` endpoint to trigger the flow.
+7. 向流程的 `webhook` 端点发送带有 `data` 的 POST 请求以触发流程。
 
-    The following example sends a payload containing `id`, `name`, and `email` strings:
+    以下示例发送包含 `id`、`name` 和 `email` 字符串的负载：
 
     ```bash
     curl -X POST "http://localhost:7860/api/v1/webhook/FLOW_ID" \
@@ -70,8 +70,8 @@ To use the **Webhook** component in a flow, do the following:
         -d '{"id": "12345", "name": "alex", "email": "alex@email.com"}'
     ```
 
-    A successful response indicates that Langflow started the flow.
-    The response doesn't include the output for the entire flow, only an indication that the flow started.
+    成功的响应表示 Langflow 启动了流程。
+    响应不包括整个流程的输出，只是表示流程已启动。
 
     ```json
     {
@@ -80,43 +80,43 @@ To use the **Webhook** component in a flow, do the following:
     }
     ```
 
-8. To view the flow's most recent parsed payload, click the **Parser** component, and then click <Icon name="TextSearch" aria-hidden="true"/> **Inspect output**.
-For the preceding example, the parsed payload would be a string like `ID: 12345 - Name: alex - Email: alex@email.com`.
+8. 要查看流程最近解析的负载，请单击 **Parser** 组件，然后单击 <Icon name="TextSearch" aria-hidden="true"/> **Inspect output**。
+对于前面的示例，解析的负载将是类似 `ID: 12345 - Name: alex - Email: alex@email.com` 的字符串。
 
-## Trigger flows with Composio webhooks
+## 使用 Composio Webhook 触发流程
 
-Typically, you won't manually trigger the **Webhook** component.
-To learn about triggering flows with payloads from external applications, see the video tutorial [How to Use Webhooks in Langflow](https://www.youtube.com/watch?v=IC1CAtzFRE0).
+通常，您不会手动触发 **Webhook** 组件。
+要了解如何使用来自外部应用程序的负载触发流程，请观看视频教程 [How to Use Webhooks in Langflow](https://www.youtube.com/watch?v=IC1CAtzFRE0)。
 
-## Troubleshoot flows with Webhook components
+## 使用 Webhook 组件排除流程故障
 
-Use the following information to help address common issues that can occur with the **Webhook** component.
+使用以下信息来帮助解决 **Webhook** 组件可能出现的常见问题。
 
-### Validate data received by the Webhook component
+### 验证 Webhook 组件接收的数据
 
-To troubleshoot a flow with a **Webhook** component and verify that the component is receiving data, you can create a small flow that outputs only the parsed payload:
+要排除带有 **Webhook** 组件的流程故障并验证组件是否正在接收数据，您可以创建一个仅输出解析负载的小流程：
 
-1. Create a flow with **Webhook**, **Parser**, and **Chat Output** components.
-2. Connect the **Webhook** component's **Data** output to the **Parser** component's **Data** input.
-3. Connect the **Parser** component's **Parsed Text** output to the **Chat Output** component's **Text** input.
-4. Edit the **Parser** component to set **Mode** to **Stringify**.
+1. 创建一个包含 **Webhook**、**Parser** 和 **Chat Output** 组件的流程。
+2. 将 **Webhook** 组件的 **Data** 输出连接到 **Parser** 组件的 **Data** 输入。
+3. 将 **Parser** 组件的 **Parsed Text** 输出连接到 **Chat Output** 组件的 **Text** 输入。
+4. 编辑 **Parser** 组件，将 **Mode** 设置为 **Stringify**。
 
-    This mode passes the data received by the **Webhook** component as a string that is printed by the **Chat Output** component.
+    此模式将 **Webhook** 组件接收的数据作为字符串传递，由 **Chat Output** 组件打印。
 
-5. Click **Share**, select **API access**, and then copy the **Webhook cURL** code snippet.
-6. Optional: Edit the `data` in the code snippet if you want to pass a different payload.
-7. Send the POST request to trigger the flow.
-8. Click **Playground** to verify that the **Chat Output** component printed the JSON data from your POST request.
+5. 单击 **Share**，选择 **API access**，然后复制 **Webhook cURL** 代码片段。
+6. 可选：如果您想传递不同的负载，请编辑代码片段中的 `data`。
+7. 发送 POST 请求以触发流程。
+8. 单击 **Playground** 以验证 **Chat Output** 组件是否打印了来自您的 POST 请求的 JSON 数据。
 
-### Parser component build failure
+### Parser 组件构建失败
 
-The **Parser** component can fail to build if it doesn't receive data from the **Webhook** component or if there is a problem with the incoming data.
+如果 **Parser** 组件没有从 **Webhook** 组件接收到数据或传入数据有问题，则可能无法构建。
 
-If this occurs, try changing the **Parser** component's **Mode** to **Stringify** so that the component outputs the parsed payload as a single string.
-Then, you can examine the string output and troubleshoot your parsing template, or work with the parsed data in string form.
+如果发生这种情况，请尝试将 **Parser** 组件的 **Mode** 更改为 **Stringify**，以便组件将解析的负载输出为单个字符串。
+然后，您可以检查字符串输出并排除解析模板的故障，或以字符串形式处理解析的数据。
 
-## See also
+## 另请参阅
 
-- [Get started with the Langflow API](/api-reference-api-examples)
-- [Webhook component](/components-data#webhook)
-- [Flow trigger endpoints](/api-flows-run)
+- [Langflow API 入门指南](/api-reference-api-examples)
+- [Webhook 组件](/components-data#webhook)
+- [流程触发端点](/api-flows-run)

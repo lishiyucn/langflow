@@ -1,40 +1,40 @@
 ---
-title: Contribute component tests
+title: 贡献组件测试
 slug: /contributing-component-tests
 ---
 
-This guide outlines how to structure and implement tests for application components to ensure consistency and adequate coverage.
+本指南概述了如何构建和实现应用程序组件测试，以确保一致性和充分的覆盖率。
 
-## File naming
+## 文件命名
 
-* The test file should follow the same directory structure as the component being tested, but should be placed in the corresponding unit tests folder.
+* 测试文件应该遵循与被测试组件相同的目录结构，但应放置在相应的单元测试文件夹中。
 
 For example, if the file path for the component is `src/backend/base/langflow/components/prompts/`, then the test file should be located at `src/backend/tests/unit/components/prompts`.
 
-* The test file name should use snake case and follow the pattern `test_<file_name>.py`.
+* 测试文件名应使用蛇形命名法并遵循 `test_<file_name>.py` 模式。
 
 For example, if the file to be tested is `PromptComponent.py`, then the test file should be named `test_prompt_component.py`.
 
-## File structure
+## 文件结构
 
-* Each test file should group tests into classes by component. There should be no standalone test functions in the file— only test methods within classes.
-* Class names should follow the pattern `Test<ClassName>`.
+* 每个测试文件应按组件将测试分组到类中。文件中不应有独立的测试函数——只有类中的测试方法。
+* 类名应遵循 `Test<ClassName>` 模式。
 For example, if the component being tested is `PromptComponent`, then the test class should be named `TestPromptComponent`.
 
-## Imports, inheritance, and mandatory methods
+## 导入、继承和强制方法
 
-To standardize component tests, base test classes have been created and should be imported and inherited by all component test classes. These base classes are located in the file `src/backend/tests/unit/base.py`.
+为了标准化组件测试，已创建基础测试类，应被所有组件测试类导入和继承。这些基础类位于文件 `src/backend/tests/unit/base.py` 中。
 
-To import the base test classes:
+导入基础测试类：
 
 ```python
 from tests.base import ComponentTestBaseWithClient
 from tests.base import ComponentTestBaseWithoutClient
 ```
 
-These base classes enforce mandatory methods that the component test classes must implement. The base classes ensure that components built in previous versions continues to work in the current version. By inheriting from one of these base classes, the developer must define the following methods decorated with `@pytest.fixture`:
+这些基础类强制要求组件测试类必须实现的强制方法。基础类确保在以前版本中构建的组件在当前版本中继续工作。通过继承这些基础类之一，开发者必须定义以下用 `@pytest.fixture` 装饰的方法：
 
-* `component_class:` Returns the class of the component to be tested. For example:
+* `component_class:` 返回要测试的组件类。例如：
 
 ```python
 @pytest.fixture
@@ -42,7 +42,7 @@ def component_class(self):
     return PromptComponent
 ```
 
-* `default_kwargs:` Returns a dictionary with the default arguments required to instantiate the component. For example:
+* `default_kwargs:` 返回包含实例化组件所需默认参数的字典。例如：
 
 ```python
 @pytest.fixture
@@ -50,7 +50,7 @@ def default_kwargs(self):
     return {"template": "Hello {name}!", "name": "John", "_session_id": "123"}
 ```
 
-* `file_names_mapping:` Returns a list of dictionaries representing the relationship between `version`, `module`, and `file_name` that the tested component has had over time. This can be left empty if it is an unreleased component. For example:
+* `file_names_mapping:` 返回表示被测试组件随时间变化的 `version`、`module` 和 `file_name` 之间关系的字典列表。如果是未发布的组件，可以留空。例如：
 
 ```python
 @pytest.fixture
@@ -64,30 +64,30 @@ def file_names_mapping(self):
     ]
 ```
 
-## Testing component functionalities
+## 测试组件功能
 
-Once the basic structure of the test file is defined, implement test methods for the component's functionalities. The following guidelines must be followed:
+一旦定义了测试文件的基本结构，就要为组件的功能实现测试方法。必须遵循以下准则：
 
-1. Test method names should be descriptive, use snake case, and follow the pattern `test_<case_name>`.
-2. Each test should follow the **Arrange, Act, Assert** pattern:
-    1. **Arrange**: Prepare the data.
-    2. **Act**: Execute the component.
-    3. **Assert**: Verify the result.
+1. 测试方法名应具有描述性，使用蛇形命名法，并遵循 `test_<case_name>` 模式。
+2. 每个测试应遵循 **Arrange, Act, Assert** 模式：
+    1. **Arrange（准备）**：准备数据。
+    2. **Act（执行）**：执行组件。
+    3. **Assert（断言）**：验证结果。
 
-### Example
+### 示例
 
-1. **Arrange**: Prepare the data.
+1. **Arrange（准备）**：准备数据。
 
-It is **recommended** to use the fixtures defined in the basic structure, but not mandatory.
+**建议**使用基本结构中定义的夹具，但不是强制的。
 
 ```python
 def test_post_code_processing(self, component_class, default_kwargs):
     component = component_class(**default_kwargs)
 ```
 
-2. **Act**: Execute the component.
+2. **Act（执行）**：执行组件。
 
-Call the `.to_frontend_node()` method of the component prepared during the **Arrange** step.
+调用在 **Arrange** 步骤中准备的组件的 `.to_frontend_node()` 方法。
 
 ```python
 def test_post_code_processing(self, component_class, default_kwargs):
@@ -96,9 +96,9 @@ def test_post_code_processing(self, component_class, default_kwargs):
     frontend_node = component.to_frontend_node()
 ```
 
-3. **Assert**: Verify the result.
+3. **Assert（断言）**：验证结果。
 
-After executing the `.to_frontend_node()` method, the resulting data is available for verification in the dictionary `frontend_node["data"]["node"]`. Assertions should be clear and cover the expected outcomes.
+执行 `.to_frontend_node()` 方法后，结果数据可在字典 `frontend_node["data"]["node"]` 中进行验证。断言应该清晰并涵盖预期结果。
 
 ```python
 def test_post_code_processing(self, component_class, default_kwargs):

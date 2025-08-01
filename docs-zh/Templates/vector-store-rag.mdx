@@ -5,87 +5,87 @@ slug: /vector-store-rag
 
 import Icon from "@site/src/components/icon";
 
-Retrieval Augmented Generation, or RAG, is a pattern for training LLMs on your data and querying it.
+检索增强生成（Retrieval Augmented Generation，简称 RAG）是一种使用您的数据训练大语言模型（LLM）并进行查询的模式。
 
-RAG is backed by a **vector store**, a vector database which stores embeddings of the ingested data.
+RAG 基于**向量存储**支持，这是一个存储已摄取数据嵌入向量的向量数据库。
 
-This enables **vector search**, a more powerful and context-aware search.
+这使得**向量搜索**成为可能，这是一种更强大、更具上下文感知能力的搜索方式。
 
-We've chosen [Astra DB](https://astra.datastax.com/signup?utm_source=langflow-pre-release&utm_medium=referral&utm_campaign=langflow-announcement&utm_content=create-a-free-astra-db-account) as the vector database for this starter flow, but you can follow along with any of Langflow's vector database options.
-
-
-## Prerequisites
-
-- [A running Langflow instance](/get-started-installation)
-- [An OpenAI API key](https://platform.openai.com/)
-- [An Astra DB vector database](https://docs.datastax.com/en/astra-db-serverless/get-started/quickstart.html) with the following:
-	- An Astra DB application token scoped to read and write to the database
-	- A collection created in [Astra](https://docs.datastax.com/en/astra-db-serverless/databases/manage-collections.html#create-collection) or a new collection created in the **Astra DB** component
+我们为这个入门流程选择了 [Astra DB](https://astra.datastax.com/signup?utm_source=langflow-pre-release&utm_medium=referral&utm_campaign=langflow-announcement&utm_content=create-a-free-astra-db-account) 作为向量数据库，但您也可以使用 Langflow 的任何其他向量数据库选项。
 
 
-## Open Langflow and start a new project
+## 前提条件
 
-1. From the Langflow dashboard, click **New Flow**.
-2. Select **Vector Store RAG**.
-3. The **Vector Store RAG** flow is created.
+- [正在运行的 Langflow 实例](/get-started-installation)
+- [OpenAI API 密钥](https://platform.openai.com/)
+- [Astra DB 向量数据库](https://docs.datastax.com/en/astra-db-serverless/get-started/quickstart.html)，包含以下内容：
+	- 具有数据库读写权限的 Astra DB 应用程序令牌
+	- 在 [Astra](https://docs.datastax.com/en/astra-db-serverless/databases/manage-collections.html#create-collection) 中创建的集合，或在 **Astra DB** 组件中创建的新集合
 
-## Build the vector RAG flow
 
-The vector store RAG flow is built of two separate flows for ingestion and query.
+## 打开 Langflow 并开始新项目
+
+1. 在 Langflow 仪表板中，点击**新建流程**。
+2. 选择**向量存储 RAG**。
+3. **向量存储 RAG** 流程已创建。
+
+## 构建向量 RAG 流程
+
+向量存储 RAG 流程由两个独立的流程组成，分别用于数据摄取和查询。
 
 ![Vector RAG starter flow with Astra DB](/img/starter-flow-vector-rag.png)
 
-The **Load Data Flow** (bottom of the screen) creates a searchable index to be queried for contextual similarity.
-This flow populates the vector store with data from a local file.
-It ingests data from a local file, splits it into chunks, indexes it in Astra DB, and computes embeddings for the chunks using the **Embeddings model** component.
+**加载数据流程**（屏幕底部）创建一个可搜索的索引，用于查询上下文相似性。
+此流程使用本地文件中的数据填充向量存储。
+它从本地文件摄取数据，将其分割成块，在 Astra DB 中进行索引，并使用**嵌入模型**组件为这些块计算嵌入向量。
 
-The **Retriever Flow** (top of the screen) embeds the user's queries into vectors, which are compared to the vector store data from the **Load Data Flow** for contextual similarity.
+**检索器流程**（屏幕顶部）将用户的查询嵌入为向量，然后将这些向量与**加载数据流程**中的向量存储数据进行比较，以找到上下文相似性。
 
-- **Chat Input** receives user input from the **Playground**.
-- **Embeddings model** converts the user query into vector form.
-- **Astra DB** performs similarity search using the query vector.
-- **Parser** processes the retrieved chunks.
-- **Prompt** combines the user query with relevant context.
-- **Language model** generates the response using the prompt and the OpenAI LLM.
-- **Chat Output** returns the response to the **Playground**.
+- **聊天输入**接收来自**运行环境**的用户输入。
+- **嵌入模型**将用户查询转换为向量形式。
+- **Astra DB** 使用查询向量执行相似性搜索。
+- **解析器**处理检索到的数据块。
+- **提示词**将用户查询与相关上下文相结合。
+- **语言模型**使用提示词和 OpenAI LLM 生成响应。
+- **聊天输出**将响应返回到**运行环境**。
 
-1. Add your **OpenAI API key** to the **Language model** component.
+1. 将您的 **OpenAI API 密钥**添加到**语言模型**组件中。
 
-	Optionally, create a [global variable](/configuration-global-variables) for the **OpenAI API key**.
+	您可以选择为 **OpenAI API 密钥**创建一个[全局变量](/configuration-global-variables)。
 
-	1. In the **OpenAI API Key** field, click <Icon name="Globe" aria-hidden="True" /> **Globe**, and then click **Add New Variable**.
-	2. In the **Variable Name** field, enter `openai_api_key`.
-	3. In the **Value** field, paste your OpenAI API Key (`sk-...`).
-	4. Click **Save Variable**.
-2. Configure the **Astra DB** component.
-	1. In the **Astra DB Application Token** field, add your **Astra DB** application token.
-	The component connects to your database and populates the menus with existing databases and collections.
-	2. Select your **Database**.
-	If you don't have a collection, select **New database**.
-	Complete the **Name**, **Cloud provider**, and **Region** fields, and then click **Create**. **Database creation takes a few minutes**.
-	3. Select your **Collection**. Collections are created in your [Astra DB deployment](https://astra.datastax.com) for storing vector data.
+	1. 在 **OpenAI API Key** 字段中，点击 <Icon name="Globe" aria-hidden="True" /> **地球图标**，然后点击**添加新变量**。
+	2. 在**变量名称**字段中，输入 `openai_api_key`。
+	3. 在**值**字段中，粘贴您的 OpenAI API 密钥（`sk-...`）。
+	4. 点击**保存变量**。
+2. 配置 **Astra DB** 组件。
+	1. 在 **Astra DB Application Token** 字段中，添加您的 **Astra DB** 应用程序令牌。
+	该组件会连接到您的数据库并在菜单中填充现有的数据库和集合。
+	2. 选择您的**数据库**。
+	如果您没有集合，请选择**新建数据库**。
+	填写**名称**、**云提供商**和**区域**字段，然后点击**创建**。**数据库创建需要几分钟时间**。
+	3. 选择您的**集合**。集合在您的 [Astra DB 部署](https://astra.datastax.com)中创建，用于存储向量数据。
 	:::info
-	If you select a collection embedded with Nvidia through Astra's vectorize service, the **Embedding Model** port is removed, because you have already generated embeddings for this collection with the Nvidia `NV-Embed-QA` model. The component fetches the data from the collection, and uses the same embeddings for queries.
+	如果您选择了通过 Astra 的向量化服务使用 Nvidia 嵌入的集合，**嵌入模型**端口将被移除，因为您已经使用 Nvidia `NV-Embed-QA` 模型为此集合生成了嵌入向量。该组件从集合中获取数据，并使用相同的嵌入向量进行查询。
 	:::
 
-3. If you don't have a collection, create a new one within the component.
-	1. Select **New collection**.
-	2. Complete the **Name**, **Embedding generation method**, **Embedding model**, and **Dimensions** fields, and then click **Create**.
+3. 如果您没有集合，请在该组件内创建一个新集合。
+	1. 选择**新建集合**。
+	2. 填写**名称**、**嵌入生成方法**、**嵌入模型**和**维度**字段，然后点击**创建**。
 
-		Your choice for the **Embedding generation method** and **Embedding model** depends on whether you want to use embeddings generated by a provider through Astra's vectorize service, or generated by a component in Langflow.
+		您对**嵌入生成方法**和**嵌入模型**的选择取决于您是想使用通过 Astra 向量化服务由提供商生成的嵌入向量，还是由 Langflow 中的组件生成的嵌入向量。
 
-		* To use embeddings generated by a provider through Astra's vectorize service, select the model from the **Embedding generation method** dropdown menu, and then select the model from the **Embedding model** dropdown menu.
-		* To use embeddings generated by a component in Langflow, select **Bring your own** for both the **Embedding generation method** and **Embedding model** fields. In this starter project, the option for the embeddings method and model is the **OpenAI Embeddings** component connected to the **Astra DB** component.
-		* The **Dimensions** value must match the dimensions of your collection. This field is **not required** if you use embeddings generated through Astra's vectorize service. You can find this value in the **Collection** in your [Astra DB deployment](https://astra.datastax.com).
+		* 要使用通过 Astra 向量化服务由提供商生成的嵌入向量，请从**嵌入生成方法**下拉菜单中选择模型，然后从**嵌入模型**下拉菜单中选择模型。
+		* 要使用由 Langflow 组件生成的嵌入向量，请在**嵌入生成方法**和**嵌入模型**字段中都选择**自带模型**。在这个入门项目中，嵌入方法和模型的选项是连接到 **Astra DB** 组件的 **OpenAI Embeddings** 组件。
+		* **维度**值必须与您集合的维度匹配。如果您使用通过 Astra 向量化服务生成的嵌入向量，则**不需要**此字段。您可以在 [Astra DB 部署](https://astra.datastax.com)的**集合**中找到此值。
 
-		For more information, see the [DataStax Astra DB Serverless documentation](https://docs.datastax.com/en/astra-db-serverless/databases/embedding-generation.html).
+		更多信息请参见 [DataStax Astra DB Serverless 文档](https://docs.datastax.com/en/astra-db-serverless/databases/embedding-generation.html)。
 
 
-If you used Langflow's **Global Variables** feature, the RAG application flow components are already configured with the necessary credentials.
+如果您使用了 Langflow 的**全局变量**功能，RAG 应用程序流程组件已经配置了必要的凭据。
 
-## Run the Vector Store RAG flow
+## 运行向量存储 RAG 流程
 
-1. To run the flow, click <Icon name="Play" aria-hidden="true"/> **Playground**.
-In the **Playground**, you can chat with the LLM that uses context from the database you created.
-2. Enter a message and press <kbd>Enter</kbd>. Try something like, "What topics do you know about?"
-3. The bot will respond with a summary of the data you've embedded.
+1. 要运行流程，请点击 <Icon name="Play" aria-hidden="true"/> **运行环境**。
+在**运行环境**中，您可以与使用您创建的数据库上下文的 LLM 进行聊天。
+2. 输入消息并按 <kbd>Enter</kbd> 键。尝试输入类似"你了解哪些主题？"的内容。
+3. 机器人将响应您嵌入数据的摘要。

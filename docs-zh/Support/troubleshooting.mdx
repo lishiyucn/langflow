@@ -1,59 +1,59 @@
 ---
-title: Troubleshoot Langflow
+title: Langflow 故障排除
 slug: /troubleshoot
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This page provides troubleshooting advice for issues you might encounter when using Langflow or contributing to Langflow.
+本页面为您在使用 Langflow 或为 Langflow 做贡献时可能遇到的问题提供故障排除建议。
 
-## Missing components
+## 缺少组件
 
-As Langflow development continues, components are often recategorized or deprecated for better alignment or to prepare for new components.
+随着 Langflow 开发的继续，组件经常被重新分类或弃用，以便更好地对齐或为新组件做准备。
 
-If a component appears to be missing from the expected location on the **Components** menu, try the following:
+如果组件似乎从**组件**菜单上的预期位置消失，请尝试以下操作：
 
-* Search for the component or check other component categories, including [**Bundles**](/components-bundle-components).
-* [Expose legacy components](/concepts-components#component-menus), which are hidden by default.
-* Check the [Changelog](https://github.com/langflow-ai/langflow/releases/latest) for component changes in recent releases.
-* Make sure the component isn't already present in your flow if it is a single-use component.
+* 搜索组件或检查其他组件类别，包括[**包**](/components-bundle-components)。
+* [显示遗留组件](/concepts-components#component-menus)，它们默认是隐藏的。
+* 检查[更改日志](https://github.com/langflow-ai/langflow/releases/latest)以了解最近版本中的组件更改。
+* 如果它是单次使用组件，请确保该组件尚未存在于您的流程中。
 
-If you still cannot locate the component, see [Langflow GitHub Issues and Discussions](/contributing-github-issues).
+如果您仍然无法找到该组件，请参阅 [Langflow GitHub 问题和讨论](/contributing-github-issues)。
 
-## No input in the Playground
+## Playground 中没有输入
 
-If there is no message input field in the **Playground**, make sure your flow has a [**Chat Input** component](/components-io#chat-io) that is connected, directly or indirectly, to the **Input** port of a **Language Model** or **Agent** component.
+如果**Playground** 中没有消息输入字段，请确保您的流程有一个[**聊天输入**组件](/components-io#chat-io)，它直接或间接连接到**语言模型**或**代理**组件的**输入**端口。
 
-Because the **Playground** is designed for flows that use an LLM in a query-and-response format, such as chatbots and agents, a flow must have **Chat Input**, **Language Model**/**Agent**, and **Chat Output** components to be fully supported by the **Playground**'s chat interface.
+因为 **Playground** 是为使用 LLM 进行查询和响应格式的流程而设计的，例如聊天机器人和代理，流程必须具有**聊天输入**、**语言模型**/**代理**和**聊天输出**组件才能完全支持 **Playground** 的聊天界面。
 
-For more information, see [Test flows in the **Playground**](/concepts-playground).
+有关更多信息，请参阅[在 **Playground** 中测试流程](/concepts-playground)。
 
-## Missing key, no key found, or invalid API key
+## 缺少密钥、未找到密钥或无效的 API 密钥
 
-If you get an API key error when running a flow, try the following:
+如果在运行流程时收到 API 密钥错误，请尝试以下操作：
 
-* For all components that require credentials, make sure those components have a valid credential in the component's settings, such as the **API key** field.
-* If you store your credentials in [Langflow global variables](/configuration-global-variables), make sure you selected the correct global variable and that the variable contains a valid credential.
-* Make sure the provided credentials are active, have the required permissions, and, if applicable, have sufficient funds in the account to execute the required action. For example, model providers require credits to use their LLMs.
+* 对于需要凭据的所有组件，请确保这些组件在组件设置中具有有效的凭据，例如 **API 密钥**字段。
+* 如果您将凭据存储在 [Langflow 全局变量](/configuration-global-variables)中，请确保您选择了正确的全局变量，并且该变量包含有效的凭据。
+* 确保提供的凭据处于活动状态，具有所需的权限，并且如果适用，帐户中有足够的资金来执行所需操作。例如，模型提供商需要信用额度来使用他们的 LLM。
 
-## Langflow installation issues
+## Langflow 安装问题
 
-The following issues can occur when installing Langflow.
+安装 Langflow 时可能出现以下问题。
 
-### Langflow installation freezes at pip dependency resolution
+### Langflow 安装在 pip 依赖项解析时冻结
 
-Installing Langflow OSS with `pip install langflow` slowly fails with this error message:
+使用 `pip install langflow` 安装 Langflow OSS 时缓慢失败，并显示此错误消息：
 
 ```text
 pip is looking at multiple versions of <<library>> to determine which version is compatible with other requirements. This could take a while.
 ```
 
-To work around this issue, install Langflow with `uv` instead of `pip`, as explained in [Install and run the Langflow OSS Python package](/get-started-installation#install-and-run-the-langflow-oss-python-package).
+要解决此问题，请使用 `uv` 而不是 `pip` 安装 Langflow，如[安装和运行 Langflow OSS Python 包](/get-started-installation#install-and-run-the-langflow-oss-python-package)中所述。
 
-### Linux installation fails to build required package
+### Linux 安装无法构建所需的包
 
-When you try to install Langflow OSS on Linux, installation fails because of outdated or missing packages:
+当您尝试在 Linux 上安装 Langflow OSS 时，由于过时或缺少的包而安装失败：
 
 ```bash
 Resolved 455 packages in 18.92s
@@ -62,129 +62,129 @@ Resolved 455 packages in 18.92s
   ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
 ```
 
-To resolve this error, install the required build dependencies, and then retry the Langflow installation:
+要解决此错误，请安装所需的构建依赖项，然后重试 Langflow 安装：
 
 ```bash
 sudo apt-get update
 sudo apt-get install build-essential python3-dev
 ```
 
-If upgrading your packages doesn't fix the issue, install `gcc` separately, and then retry the Langflow installation:
+如果升级包没有解决问题，请单独安装 `gcc`，然后重试 Langflow 安装：
 
 ```bash
 sudo apt-get install gcc
 ```
 
-### Installation failure from `webrtcvad` package
+### `webrtcvad` 包安装失败
 
-If you experience an error from the `webrtcvad` package, run `uv pip install webrtcvad-wheels` in your virtual environment, and then retry the Langflow installation.
+如果您遇到来自 `webrtcvad` 包的错误，请在您的虚拟环境中运行 `uv pip install webrtcvad-wheels`，然后重试 Langflow 安装。
 
-### C++ build tools required for Langflow Desktop on Windows
+### Windows 上的 Langflow Desktop 需要 C++ 构建工具
 
-Microsoft Windows installations of Langflow Desktop require a C++ compiler that may not be present on your system. If you receive a `C++ Build Tools Required!` error, follow the on-screen prompt to install Microsoft C++ Build Tools, or [install Microsoft Visual Studio](https://visualstudio.microsoft.com/downloads/).
+Microsoft Windows 安装的 Langflow Desktop 需要系统上可能不存在的 C++ 编译器。如果您收到 `C++ Build Tools Required!` 错误，请按照屏幕提示安装 Microsoft C++ Build Tools，或[安装 Microsoft Visual Studio](https://visualstudio.microsoft.com/downloads/)。
 
-## Langflow startup issues
+## Langflow 启动问题
 
-The following issues can occur when attempting to start Langflow.
+尝试启动 Langflow 时可能出现以下问题。
 
-### No `langflow.__main__` module
+### 没有 `langflow.__main__` 模块
 
-When you try to run Langflow with the command `langflow run`, you encounter the following error:
+当您尝试使用命令 `langflow run` 运行 Langflow 时，遇到以下错误：
 
 ```bash
 > No module named 'langflow.__main__'
 ```
 
-To resolve this issue, try the following:
+要解决此问题，请尝试以下操作：
 
-1. Run `uv run langflow run` instead of `langflow run`.
-2. If that doesn't work, reinstall the latest Langflow version with `uv pip install langflow -U`.
-3. If that doesn't work, reinstall Langflow and its dependencies with `uv pip install langflow --pre -U --force-reinstall`.
+1. 运行 `uv run langflow run` 而不是 `langflow run`。
+2. 如果这不起作用，请使用 `uv pip install langflow -U` 重新安装最新的 Langflow 版本。
+3. 如果这不起作用，请使用 `uv pip install langflow --pre -U --force-reinstall` 重新安装 Langflow 及其依赖项。
 
 ### Langflow runTraceback
 
-When you try to run Langflow using the command `langflow run`, you encounter the following error:
+当您尝试使用命令 `langflow run` 运行 Langflow 时，您遇到以下错误：
 
 ```bash
 > langflow runTraceback (most recent call last): File ".../langflow", line 5, in <module>  from langflow.__main__ import mainModuleNotFoundError: No module named 'langflow.__main__'
 ```
 
-There are two possible reasons for this error:
+此错误有两个可能的原因：
 
-* **Multiple Langflow installations**: You installed Langflow using `pip install langflow` but you already had a previous version of Langflow installed in your system. In this case, you might be running the wrong executable.
+* **多个 Langflow 安装**：您使用 `pip install langflow` 安装了 Langflow，但您的系统中已经安装了以前版本的 Langflow。在这种情况下，您可能运行的是错误的可执行文件。
 
-    To solve this issue, run the correct executable by running `python -m langflow run` instead of `langflow run`.
+    要解决此问题，请通过运行 `python -m langflow run` 而不是 `langflow run` 来运行正确的可执行文件。
 
-    If that doesn't work, try uninstalling and reinstalling Langflow with `uv pip install langflow --pre -U`.
+    如果这不起作用，请尝试使用 `uv pip install langflow --pre -U` 卸载并重新安装 Langflow。
 
-* **Version conflict during installation**: Some version conflicts might have occurred during the installation process. To resolve this issue, reinstall Langflow and its dependencies by running `python -m pip install langflow --pre -U --force-reinstall`.
+* **安装过程中的版本冲突**：安装过程中可能发生了一些版本冲突。要解决此问题，请通过运行 `python -m pip install langflow --pre -U --force-reinstall` 重新安装 Langflow 及其依赖项。
 
-### Environment variables not available from terminal
+### 终端中的环境变量不可用
 
-Environment variables set in your terminal are not automatically available to GUI-based applications like Langflow Desktop when launched through the Finder or the Start Menu.
-To set environment variables for Langflow Desktop, see [Set environment variables for Langflow Desktop](/environment-variables#set-environment-variables-for-langflow-desktop).
+在您的终端中设置的环境变量不会自动可用于通过 Finder 或开始菜单启动的基于 GUI 的应用程序，如 Langflow Desktop。
+要为 Langflow Desktop 设置环境变量，请参阅[为 Langflow Desktop 设置环境变量](/environment-variables#set-environment-variables-for-langflow-desktop)。
 
-### Package is not installed
+### 包未安装
 
-In Langflow OSS, you can follow the error message's instructions to install the missing dependency.
+在 Langflow OSS 中，您可以按照错误消息的说明安装缺少的依赖项。
 
-To manage dependencies in Langflow Desktop, see [Install custom dependencies in Langflow Desktop](/install-custom-dependencies#langflow-desktop).
+要在 Langflow Desktop 中管理依赖项，请参阅[在 Langflow Desktop 中安装自定义依赖项](/install-custom-dependencies#langflow-desktop)。
 
-## Langflow upgrade issues
+## Langflow 升级问题
 
-The following issues can occur when upgrading your Langflow version.
+升级 Langflow 版本时可能出现以下问题。
 
-For information about managing Langflow versions, see [Install Langflow](/get-started-installation).
+有关管理 Langflow 版本的信息，请参阅[安装 Langflow](/get-started-installation)。
 
-### Something went wrong running migrations
+### 运行迁移时出错
 
-The following error can occur during Langflow upgrades when the new version can't override `langflow-pre.db` in the Langflow cache folder:
+以下错误可能在 Langflow 升级期间发生，当新版本无法覆盖 Langflow 缓存文件夹中的 `langflow-pre.db` 时：
 
 ```bash
 > Something went wrong running migrations. Please, run 'langflow migration --fix'
 ```
 
-To resolve this error, clear the cache by deleting the contents of the Langflow cache folder.
+要解决此错误，请通过删除 Langflow 缓存文件夹的内容来清除缓存。
 
 :::important
-Clearing the cache erases your settings.
-If you want to retain your settings files, create a backup of those files before clearing the cache folder.
+清除缓存会删除您的设置。
+如果您想保留设置文件，请在清除缓存文件夹之前创建这些文件的备份。
 :::
 
-The cache folder location depends on your OS:
+缓存文件夹的位置取决于您的操作系统：
 
 - **Linux**: `home/<username>/.cache/langflow/`
 - **WSL2 on Windows**: `home/<username>/.cache/langflow/`
 - **macOS**: `/Users/<username>/Library/Caches/langflow/`
 
-## Langflow uninstall issues
+## Langflow 卸载问题
 
-The following issues can occur when uninstalling Langflow.
+卸载 Langflow 时可能出现以下问题。
 
-### Dot directory isn't deleted when uninstalling Langflow Desktop on macOS
+### 在 macOS 上卸载 Langflow Desktop 时不会删除点目录
 
-On macOS, uninstalling Langflow Desktop deletes the `.app` file but doesn't delete files in `~/.langflow`, which includes files generated during usage like cache and settings.
+在 macOS 上，卸载 Langflow Desktop 会删除 `.app` 文件，但不会删除 `~/.langflow` 中的文件，其中包括使用期间生成的文件，如缓存和设置。
 
-If you reinstall Langflow Desktop, it starts with the existing data from the previous installation.
+如果您重新安装 Langflow Desktop，它将使用先前安装的现有数据启动。
 
-To fully remove a Langflow Desktop macOS installation, you must also delete `~/.langflow`:
+要完全删除 Langflow Desktop macOS 安装，您还必须删除 `~/.langflow`：
 
     ```bash
     rm -rf .langflow
     ```
 
-## MCP server issues
+## MCP 服务器问题
 
-- [Use MCP Inspector to test and debug flows](/mcp-server#test-and-debug-flows)
-- [Troubleshooting MCP server](/mcp-server#troubleshooting-mcp-server)
+- [使用 MCP Inspector 测试和调试流程](/mcp-server#test-and-debug-flows)
+- [MCP 服务器故障排除](/mcp-server#troubleshooting-mcp-server)
 
-## Custom components and integrations issues
+## 自定义组件和集成问题
 
-For troubleshooting advice for a third-party integration, see the information about that integration in the Langflow documentation and the provider's documentation.
+有关第三方集成的故障排除建议，请参阅 Langflow 文档和提供商文档中有关该集成的信息。
 
-If you are building a custom component, see [Error handling and logging for custom Python components](/components-custom-components#error-handling-and-logging).
+如果您正在构建自定义组件，请参阅[自定义 Python 组件的错误处理和日志记录](/components-custom-components#error-handling-and-logging)。
 
-## See also
+## 另请参阅
 
-- [Langflow GitHub Issues and Discussions](/contributing-github-issues)
-- [Langflow telemetry](/contributing-telemetry)
+- [Langflow GitHub 问题和讨论](/contributing-github-issues)
+- [Langflow 遥测](/contributing-telemetry)

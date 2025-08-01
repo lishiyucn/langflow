@@ -5,62 +5,62 @@ slug: /bundles-ollama
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[包](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Ollama** bundle.
+本页面描述了 **Ollama** 包中可用的组件。
 
-For more information about Ollama features and functionality used by Ollama components, see the [Ollama documentation](https://ollama.com/).
+有关 Ollama 组件使用的 Ollama 功能和特性的更多信息，请参阅 [Ollama 文档](https://ollama.com/)。
 
-## Ollama text generation
+## Ollama 文本生成
 
-This component generates text using [Ollama's language models](https://ollama.com/library).
+此组件使用 [Ollama 的语言模型](https://ollama.com/library) 生成文本。
 
-To use the **Ollama** component in a flow, connect Langflow to your locally running Ollama server and select a model:
+要在流程中使用 **Ollama** 组件，请将 Langflow 连接到您本地运行的 Ollama 服务器并选择模型：
 
-1. Add the **Ollama** component to your flow.
+1. 将 **Ollama** 组件添加到您的流程中。
 
-2. In the **Base URL** field, enter the address for your locally running Ollama server.
+2. 在 **基础 URL** 字段中，输入您本地运行的 Ollama 服务器的地址。
 
-    This value is set as the `OLLAMA_HOST` environment variable in Ollama.
-    The default base URL is `http://127.0.0.1:11434`.
+    此值在 Ollama 中设置为 `OLLAMA_HOST` 环境变量。
+    默认基础 URL 是 `http://127.0.0.1:11434`。
 
-3. Once the connection is established, select a model in the **Model Name** field, such as `llama3.2:latest`.
+3. 连接建立后，在 **模型名称** 字段中选择模型，如 `llama3.2:latest`。
 
-    To refresh the server's list of models, click <Icon name="RefreshCw" aria-hidden="true"/> **Refresh**.
+    要刷新服务器的模型列表，请点击 <Icon name="RefreshCw" aria-hidden="true"/> **刷新**。
 
-4. Optional: To configure additional parameters, such as temperature or max tokens, click <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+4. 可选：要配置其他参数，如温度或最大令牌数，请点击[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控件**。
 
-5. Connect the **Ollama** component to other components in the flow, depending on how you want to use the model.
+5. 根据您想要如何使用模型，将 **Ollama** 组件连接到流程中的其他组件。
 
-    Language model components can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)). Use the **Language Model** output when you want to use an Ollama model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component. For more information, see [**Language Model** components](/components-models).
+    语言模型组件可以输出 **模型响应**（[`Message`](/data-types#message)）或**语言模型**（[`LanguageModel`](/data-types#languagemodel)）。当您想要将 Ollama 模型用作其他 LLM 驱动组件（如 **语言模型** 或 **智能函数** 组件）的 LLM 时，请使用 **语言模型** 输出。有关更多信息，请参阅 [**语言模型** 组件](/components-models)。
 
-    In the following example, the flow uses `LanguageModel` output to use an Ollama model as the LLM for an [**Agent** component](/components-agents).
+    在下面的示例中，流程使用 `LanguageModel` 输出将 Ollama 模型用作[**代理** 组件](/components-agents)的 LLM。
 
-    ![Ollama component used as the LLM in an agentic flow](/img/component-ollama-model.png)
+    ![在代理流程中用作 LLM 的 Ollama 组件](/img/component-ollama-model.png)
 
-## Ollama Embeddings
+## Ollama 嵌入
 
-The **Ollama Embeddings** component generates embeddings using [Ollama embedding models](https://ollama.com/search?c=embedding).
+**Ollama 嵌入** 组件使用 [Ollama 嵌入模型](https://ollama.com/search?c=embedding) 生成嵌入。
 
-To use this component in a flow, connect Langflow to your locally running Ollama server and select an embeddings model:
+要在流程中使用此组件，请将 Langflow 连接到您本地运行的 Ollama 服务器并选择嵌入模型：
 
-1. Add the **Ollama Embeddings** component to your flow.
+1. 将 **Ollama 嵌入** 组件添加到您的流程中。
 
-2. In the **Ollama Base URL** field, enter the address for your locally running Ollama server.
+2. 在 **Ollama 基础 URL** 字段中，输入您本地运行的 Ollama 服务器的地址。
 
-    This value is set as the `OLLAMA_HOST` environment variable in Ollama.
-    The default base URL is `http://127.0.0.1:11434`.
+    此值在 Ollama 中设置为 `OLLAMA_HOST` 环境变量。
+    默认基础 URL 是 `http://127.0.0.1:11434`。
 
-3. Once the connection is established, select a model in the **Ollama Model** field, such as `all-minilm:latest`.
+3. 连接建立后，在 **Ollama 模型** 字段中选择模型，如 `all-minilm:latest`。
 
-    To refresh the server's list of models, click <Icon name="RefreshCw" aria-hidden="true"/> **Refresh**.
+    要刷新服务器的模型列表，请点击 <Icon name="RefreshCw" aria-hidden="true"/> **刷新**。
 
-4. Optional: To configure additional parameters, such as temperature or max tokens, click <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
-Available parameters depend on the selected model.
+4. 可选：要配置其他参数，如温度或最大令牌数，请点击[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控件**。
+可用参数取决于所选模型。
 
-5. Connect the **Ollama Embeddings** component to other components in the flow.
-For more information about using embedding model components in flows, see [**Embedding Model** components](/components-embedding-models).
+5. 将 **Ollama 嵌入** 组件连接到流程中的其他组件。
+有关在流程中使用嵌入模型组件的更多信息，请参阅[**嵌入模型** 组件](/components-embedding-models)。
 
-    This example connects the **Ollama Embeddings** component to generate embeddings for text chunks extracted from a PDF file, and then stores the embeddings and chunks in a Chroma DB vector store.
+    此示例连接 **Ollama 嵌入** 组件为从 PDF 文件提取的文本块生成嵌入，然后将嵌入和块存储在 Chroma DB 向量存储中。
 
-    ![Ollama Embeddings component in an embedding generation flow](/img/component-ollama-embeddings-chromadb.png)
+    ![嵌入生成流程中的 Ollama 嵌入组件](/img/component-ollama-embeddings-chromadb.png)

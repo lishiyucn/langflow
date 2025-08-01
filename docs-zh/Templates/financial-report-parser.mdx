@@ -1,50 +1,50 @@
 ---
-title: Financial report parser
+title: 财务报告解析器
 slug: /financial-report-parser
 ---
 
 import Icon from "@site/src/components/icon";
 
-This flow demonstrates how to parse LLM responses into a structured format.
+此流程演示如何将 LLM 响应解析为结构化格式。
 
-In this example, the [Chat Input](/components-io#chat-input) component is pre-loaded with a sample financial report to demonstrate extracting `Gross Profit`, `EBITDA`, and `Net Income`.
-The [Structured output](/components-processing#structured-output) component is used to extract the financial data from the report, and the [Parser](/components-processing#parser) component is used to convert the extracted data into a structured format.
+在此示例中，[聊天输入](/components-io#chat-input)组件预加载了一个示例财务报告，用于演示提取 `Gross Profit`（毛利润）、`EBITDA`（息税折旧摊销前利润）和 `Net Income`（净收入）。
+[结构化输出](/components-processing#structured-output)组件用于从报告中提取财务数据，[解析器](/components-processing#parser)组件用于将提取的数据转换为结构化格式。
 
-## Prerequisites
+## 前提条件
 
-- [A running Langflow instance](/get-started-installation)
-- [An OpenAI API key](https://platform.openai.com/)
+- [运行中的 Langflow 实例](/get-started-installation)
+- [OpenAI API 密钥](https://platform.openai.com/)
 
-## Create the financial report parser flow
+## 创建财务报告解析器流程
 
-1. From the Langflow dashboard, click **New Flow**.
-2. Select **Financial Report Parser**.
+1. 从 Langflow 仪表板，点击 **新建流程**。
+2. 选择 **财务报告解析器**。
 
-The **Financial Report Parser** flow is created.
+**财务报告解析器** 流程已创建。
 
-![Financial report parser flow](/img/starter-flow-financial-report-parser.png)
+![财务报告解析器流程](/img/starter-flow-financial-report-parser.png)
 
-## Run the financial report parser flow
+## 运行财务报告解析器流程
 
-1. Add your **OpenAI API key** to the **Language model** model component.
-	Optionally, create a [global variable](/configuration-global-variables) for the **OpenAI API key**.
+1. 将你的 **OpenAI API 密钥** 添加到 **语言模型** 模型组件。
+	可选择为 **OpenAI API 密钥** 创建一个[全局变量](/configuration-global-variables)。
 
-	1. In the **OpenAI API Key** field, click <Icon name="Globe" aria-hidden="True" /> **Globe**, and then click **Add New Variable**.
-	2. In the **Variable Name** field, enter `openai_api_key`.
-	3. In the **Value** field, paste your OpenAI API Key (`sk-...`).
-	4. Click **Save Variable**.
-2. To run the flow, click <Icon name="Play" aria-hidden="true"/> **Playground**, and then click **Send**.
-The **Chat Input** component is pre-loaded with a sample financial report for demonstration purposes.
-The **Playground** returns a structured response:
+	1. 在 **OpenAI API 密钥** 字段中，点击 <Icon name="Globe" aria-hidden="True" /> **Globe**，然后点击 **添加新变量**。
+	2. 在 **变量名称** 字段中，输入 `openai_api_key`。
+	3. 在 **值** 字段中，粘贴你的 OpenAI API 密钥（`sk-...`）。
+	4. 点击 **保存变量**。
+2. 要运行流程，点击 <Icon name="Play" aria-hidden="true"/> **Playground**，然后点击 **发送**。
+**聊天输入** 组件预加载了一个示例财务报告用于演示目的。
+**Playground** 返回一个结构化响应：
 
 ```text
 EBITDA: $900 million , Net Income: $500 million , GROSS_PROFIT: $1.2 billion
 ```
 
-Inspect the flow to understand how this information was extracted.
+检查流程以了解这些信息是如何提取的。
 
-3. To inspect the output schema table, in the **Structured Output** component, click **Open table**.
-The **Structured Output** component uses the attached **OpenAI** model component as its "brain" to extract financial data into a [DataFrame](/data-types#dataframe) with this defined schema.
+3. 要检查输出模式表，在 **结构化输出** 组件中，点击 **打开表格**。
+**结构化输出** 组件使用附加的 **OpenAI** 模型组件作为其"大脑"，将财务数据按照定义的模式提取到 [DataFrame](/data-types#dataframe) 中。
 ```text
 | Name         | Description           | Type | Multiple |
 |--------------|-----------------------|------|----------|
@@ -53,9 +53,9 @@ The **Structured Output** component uses the attached **OpenAI** model component
 | GROSS_PROFIT | description of field  | text | False    |
 ```
 
-4. To inspect the template that contains the extracted data, in the **Parser** component, click <Icon name="Scan" aria-hidden="true"/> **Scan** in the **Template** field.
-The **Parser** component converts the extracted data into formatted messages for chat consumption.
-Each variable receives its value from the structured outputs.
+4. 要检查包含提取数据的模板，在 **解析器** 组件中，点击 **模板** 字段中的 <Icon name="Scan" aria-hidden="true"/> **扫描**。
+**解析器** 组件将提取的数据转换为格式化消息以供聊天使用。
+每个变量都从结构化输出中接收其值。
 ```text
 EBITDA: {EBITDA}  ,  Net Income: {NET_INCOME} , GROSS_PROFIT: {GROSS_PROFIT}
 ```

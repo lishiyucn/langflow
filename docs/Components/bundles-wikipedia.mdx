@@ -5,39 +5,39 @@ slug: /bundles-wikipedia
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components)包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Wikipedia** bundle.
+本页介绍了 **Wikipedia** 组件包中可用的组件。
 
 :::tip
-Wikipedia components are useful [tools for agents](/agents-tools) that need reliable sources for information retrieval, such as tutoring chatbots or generic research assistants.
+Wikipedia 组件是需要可靠信息检索来源的[代理工具](/agents-tools)的有用工具，例如辅导聊天机器人或通用研究助手。
 
-Rather than broad internet searches or recall from internal model data, these components provide specific data returned from Wikipedia API requests.
+这些组件不是广泛的互联网搜索或从内部模型数据中回忆，而是提供从 Wikipedia API 请求返回的特定数据。
 :::
 
 ## Wikidata API
 
-This component performs a similarity search using the [Wikidata API](https://www.wikidata.org/wiki/Wikidata:REST_API).
+该组件使用 [Wikidata API](https://www.wikidata.org/wiki/Wikidata:REST_API) 执行相似性搜索。
 
-It accepts a string text query, and it outputs a [`DataFrame`](/data-types#dataframe) containing the search results.
+它接受字符串文本查询，并输出包含搜索结果的 [`DataFrame`](/data-types#dataframe)。
 
 ## Wikipedia API
 
-This component searches and retrieves information from Wikipedia with the [WikiMedia API](https://www.mediawiki.org/wiki/API:Main_page) search endpoints, and then outputs the response as a [`DataFrame`](/data-types#dataframe).
+该组件使用 [WikiMedia API](https://www.mediawiki.org/wiki/API:Main_page) 搜索端点从 Wikipedia 搜索和检索信息，然后将响应输出为 [`DataFrame`](/data-types#dataframe)。
 
-### Wikipedia API parameters
+### Wikipedia API 参数
 
-Some **Wikipedia API** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+一些 **Wikipedia API** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| input_value | String | Input parameter. The search query input. |
-| lang | String | Input parameter. The language code for Wikipedia. Default: `en`. |
-| k | Integer | Input parameter. The number of results to return. |
-| load_all_available_meta | Boolean | Input parameter. Whether to load all available metadata. |
-| doc_content_chars_max | Integer | Input parameter. The maximum number of characters for document content. |
+| input_value | String | 输入参数。搜索查询输入。 |
+| lang | String | 输入参数。Wikipedia 的语言代码。默认值：`en`。 |
+| k | Integer | 输入参数。要返回的结果数量。 |
+| load_all_available_meta | Boolean | 输入参数。是否加载所有可用的元数据。 |
+| doc_content_chars_max | Integer | 输入参数。文档内容的最大字符数。 |
 
-## See also
+## 另请参阅
 
-* [**API Request** component](/components-data#api-request)
+* [**API Request** 组件](/components-data#api-request)

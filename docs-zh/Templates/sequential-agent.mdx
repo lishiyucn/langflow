@@ -1,42 +1,42 @@
 ---
-title: Sequential tasks agent
+title: 顺序任务智能体
 slug: /sequential-agent
 ---
 
-This flow demonstrates using multiple [Agent](/agents) components in a single flow.
+此流程演示了如何在单个流程中使用多个[智能体](/agents)组件。
 
-Each agent is connected to a unique tool, with **Prompt** components connected to the **Agent Instructions** fields to control the agent's behavior.
+每个智能体都连接到一个独特的工具，**提示词**组件连接到**智能体指令**字段来控制智能体的行为。
 
-Each successive agent in the flow builds on the work of the previous agent, creating a chain of reasoning for solving complex problems.
+流程中的每个后续智能体都基于前一个智能体的工作，创建一个解决复杂问题的推理链。
 
-## Prerequisites
+## 前置条件
 
-- [A running Langflow instance](/get-started-installation)
-- [An OpenAI API key](https://platform.openai.com/)
-- [A Tavily AI API key](https://www.tavily.com/)
+- [运行中的 Langflow 实例](/get-started-installation)
+- [OpenAI API 密钥](https://platform.openai.com/)
+- [Tavily AI API 密钥](https://www.tavily.com/)
 
-## Open Langflow and create a new flow
+## 打开 Langflow 并创建新流程
 
-1. Click **New Flow**, and then select **Sequential Tasks Agent**.
-This opens a starter template with the necessary components to run the flow.
+1. 点击**新建流程**，然后选择**顺序任务智能体**。
+这将打开一个包含运行流程所需组件的启动模板。
 
 ![Starter flow for Sequential Tasks Agent](/img/starter-flow-sequential-agent.png)
 
-The Sequential Tasks Agent flow consists of these components:
+顺序任务智能体流程由以下组件组成：
 
-* The **Agent** components use the connected LLM to analyze the user's input and select among the connected tools to complete the tasks.
-* The **Chat Input** component accepts user input to the chat.
-* The **Prompt** component combines the user input with a user-defined prompt.
-* The **Chat Output** component prints the flow's output to the chat.
-* The **YFinance** tool component provides access to financial data from Yahoo Finance.
-* The **Tavily AI Search** tool component performs AI-powered web searches.
-* The **Calculator** tool component performs mathematical calculations.
+* **智能体**组件使用连接的 LLM 来分析用户输入，并在连接的工具中进行选择以完成任务。
+* **聊天输入**组件接受用户向聊天输入的内容。
+* **提示词**组件将用户输入与用户定义的提示词结合起来。
+* **聊天输出**组件将流程的输出打印到聊天中。
+* **YFinance** 工具组件提供对 Yahoo Finance 财务数据的访问。
+* **Tavily AI 搜索**工具组件执行 AI 驱动的网络搜索。
+* **计算器**工具组件执行数学计算。
 
-## Run the Sequential Tasks Agent flow
+## 运行顺序任务智能体流程
 
-1. Add your OpenAI API key to the **Agent** components.
-2. Add your Tavily API key to the **Tavily** component.
-3. Click **Playground** to start a chat session with the template's default question.
+1. 将您的 OpenAI API 密钥添加到**智能体**组件中。
+2. 将您的 Tavily API 密钥添加到 **Tavily** 组件中。
+3. 点击**演练场**以使用模板的默认问题开始聊天会话。
 
 ```text
 Should I invest in Tesla (TSLA) stock right now?
@@ -44,11 +44,11 @@ Please analyze the company's current position, market trends,
 financial health, and provide a clear investment recommendation.
 ```
 
-This question provides clear instructions to the agents about how to proceed and what question to answer.
+这个问题为智能体提供了关于如何进行以及要回答什么问题的明确指示。
 
-4. In the **Playground**, inspect the answers to see how the agents use the **Tavily AI Search** tool to research the query, the **YFinance** tool to analyze the stock data, and the **Calculator** to determine if the stock is a wise investment.
-5. Ask similar questions to see how the agents use the tools to answer your queries.
+4. 在**演练场**中，检查答案以查看智能体如何使用 **Tavily AI 搜索**工具来研究查询，使用 **YFinance** 工具来分析股票数据，以及使用**计算器**来确定股票是否是明智的投资。
+5. 提出类似的问题，看看智能体如何使用工具来回答您的查询。
 
-## Next steps
+## 下一步
 
-To create your own multi-agent flow, see [Create a problem solving agent](/agents).
+要创建您自己的多智能体流程，请参阅[创建问题解决智能体](/agents)。

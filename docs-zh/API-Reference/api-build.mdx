@@ -1,5 +1,5 @@
 ---
-title: Build endpoints
+title: Build 端点
 slug: /api-build
 ---
 
@@ -7,22 +7,22 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 :::important
-The `/build` endpoints are used by Langflow's frontend Workspace and Playground code.
-These endpoints are part of the internal Langflow codebase.
+`/build` 端点被 Langflow 的前端工作区和演示场代码使用。
+这些端点是 Langflow 内部代码库的一部分。
 
-Don't use these endpoints to run flows in applications that use your Langflow flows.
-To run flows in your apps, see [Flow trigger endpoints](/api-flows-run).
+不要在使用 Langflow 流程的应用程序中使用这些端点来运行流程。
+要在你的应用中运行流程，请参阅 [流程触发端点](/api-flows-run)。
 :::
 
-The `/build` endpoints support Langflow's frontend code for building flows in the Langflow Workspace.
-You can use these endpoints to build vertices and flows, as well as execute flows with streaming event responses.
-You might need to use or understand these endpoints when contributing to the Langflow codebase.
+`/build` 端点支持 Langflow 前端代码在 Langflow 工作区中构建流程。
+你可以使用这些端点来构建顶点和流程，以及执行带有流式事件响应的流程。
+当为 Langflow 代码库做贡献时，你可能需要使用或了解这些端点。
 
-## Build flow and stream events
+## 构建流程和流式事件
 
-This endpoint builds and executes a flow, returning a job ID that can be used to stream execution events.
+此端点构建并执行一个流程，返回一个可用于流式传输执行事件的作业 ID。
 
-1. Send a POST request to the `/build/$FLOW_ID/flow` endpoint:
+1. 向 `/build/$FLOW_ID/flow` 端点发送 POST 请求：
 
     ```shell
     curl -X POST \
@@ -38,7 +38,7 @@ This endpoint builds and executes a flow, returning a job ID that can be used to
     ```
 
     <details>
-    <summary>Result</summary>
+    <summary>结果</summary>
 
     ```json
     {
@@ -48,7 +48,7 @@ This endpoint builds and executes a flow, returning a job ID that can be used to
 
     </details>
 
-2. After receiving a job ID from the build endpoint, use the `/build/$JOB_ID/events` endpoint to stream the execution results:
+2. 从构建端点接收到作业 ID 后，使用 `/build/$JOB_ID/events` 端点来流式传输执行结果：
 
     ```shell
     curl -X GET \
@@ -58,22 +58,22 @@ This endpoint builds and executes a flow, returning a job ID that can be used to
     ```
 
     <details>
-    <summary>Result</summary>
+    <summary>结果</summary>
 
     ```json
     {"event": "vertices_sorted", "data": {"ids": ["ChatInput-XtBLx"], "to_run": ["Prompt-x74Ze", "ChatOutput-ylMzN", "ChatInput-XtBLx", "OpenAIModel-d1wOZ"]}}
 
     {"event": "add_message", "data": {"timestamp": "2025-03-03T17:42:23", "sender": "User", "sender_name": "User", "session_id": "d2bbd92b-187e-4c84-b2d4-5df365704201", "text": "Tell me a story", "files": [], "error": false, "edit": false, "properties": {"text_color": "", "background_color": "", "edited": false, "source": {"id": null, "display_name": null, "source": null}, "icon": "", "allow_markdown": false, "positive_feedback": null, "state": "complete", "targets": []}, "category": "message", "content_blocks": [], "id": "28879bd8-6a68-4dd5-b658-74d643a4dd92", "flow_id": "d2bbd92b-187e-4c84-b2d4-5df365704201"}}
 
-    // ... Additional events as the flow executes ...
+    // ... 流程执行时的其他事件 ...
 
     {"event": "end", "data": {}}
     ```
 
     </details>
 
-The `/build/$FLOW_ID/events` endpoint accepts an optional `stream` query parameter that defaults to `true`.
-To disable streaming and get all events at once, set `stream` to `false`.
+`/build/$FLOW_ID/events` 端点接受一个可选的 `stream` 查询参数，默认值为 `true`。
+要禁用流式传输并一次获取所有事件，请将 `stream` 设置为 `false`。
 
 ```shell
 curl -X GET \
@@ -82,30 +82,30 @@ curl -X GET \
   -H "x-api-key: $LANGFLOW_API_KEY"
 ```
 
-## Build headers
+## Build 请求头
 
-| Header | Info | Example |
+| 请求头 | 信息 | 示例 |
 |--------|------|---------|
-| Content-Type | Required. Specifies the JSON format. | "application/json" |
-| accept | Optional. Specifies the response format. | "application/json" |
-| x-api-key | Optional. Required only if authentication is enabled. | "sk-..." |
+| Content-Type | 必需。指定 JSON 格式。 | "application/json" |
+| accept | 可选。指定响应格式。 | "application/json" |
+| x-api-key | 可选。仅在启用身份验证时需要。 | "sk-..." |
 
-## Build parameters
+## Build 参数
 
-| Parameter | Type | Description |
+| 参数 | 类型 | 描述 |
 |-----------|------|-------------|
-| inputs | object | Optional. Input values for flow components. |
-| data | object | Optional. Flow data to override stored configuration. |
-| files | array[string] | Optional. List of file paths to use. |
-| start_component_id | string | Optional. ID of the component where the execution should start. Component `id` values can be found in [Langflow JSON files](/concepts-flows-import#langflow-json-file-contents) |
-| stop_component_id | string | Optional. ID of the component where the execution should stop. Component `id` values can be found in [Langflow JSON files](/concepts-flows-import#langflow-json-file-contents).|
-| log_builds | boolean | Optional. Control build logging. Default: `true`. |
+| inputs | object | 可选。流程组件的输入值。 |
+| data | object | 可选。用于覆盖存储配置的流程数据。 |
+| files | array[string] | 可选。要使用的文件路径列表。 |
+| start_component_id | string | 可选。执行应该开始的组件 ID。组件 `id` 值可以在 [Langflow JSON 文件](/concepts-flows-import#langflow-json-file-contents) 中找到 |
+| stop_component_id | string | 可选。执行应该停止的组件 ID。组件 `id` 值可以在 [Langflow JSON 文件](/concepts-flows-import#langflow-json-file-contents) 中找到。|
+| log_builds | boolean | 可选。控制构建日志记录。默认值：`true`。 |
 
-### Set start and stop points
+### 设置开始和停止点
 
-The `/build` endpoint accepts optional values for `start_component_id` and `stop_component_id` to control where the flow run starts and stops.
-Setting `stop_component_id` for a component triggers the same behavior as clicking the **Play** button on that component, where all dependent components leading up to that component are also run.
-For example, to stop flow execution at the OpenAI model component, run the following command:
+`/build` 端点接受 `start_component_id` 和 `stop_component_id` 的可选值来控制流程运行的开始和停止位置。
+为组件设置 `stop_component_id` 会触发与点击该组件上的**播放**按钮相同的行为，即所有导向该组件的依赖组件也会运行。
+例如，要在 OpenAI 模型组件处停止流程执行，请运行以下命令：
 
 ```shell
 curl -X POST \
@@ -116,10 +116,10 @@ curl -X POST \
   -d '{"stop_component_id": "OpenAIModel-Uksag"}'
 ```
 
-### Override flow parameters
+### 覆盖流程参数
 
-The `/build` endpoint also accepts inputs for `data` directly, instead of using the values stored in the Langflow database.
-This is useful for running flows without having to pass custom values through the UI.
+`/build` 端点还直接接受 `data` 的输入，而不是使用存储在 Langflow 数据库中的值。
+这对于运行流程而无需通过 UI 传递自定义值很有用。
 
 ```shell
 curl -X POST \
@@ -133,14 +133,14 @@ curl -X POST \
       "edges": []
     },
     "inputs": {
-      "input_value": "Your custom input here",
+      "input_value": "在这里输入你的自定义输入",
       "session": "session_id"
     }
   }'
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 { "job_id": "0bcc7f23-40b4-4bfa-9b8a-a44181fd1175" }
@@ -148,8 +148,8 @@ curl -X POST \
 
 </details>
 
-## See also
+## 另请参阅
 
-- [Get Vertex builds](/api-monitor#get-vertex-builds)
-- [Delete Vertex builds](/api-monitor#delete-vertex-builds)
+- [获取 Vertex 构建](/api-monitor#get-vertex-builds)
+- [删除 Vertex 构建](/api-monitor#delete-vertex-builds)
 - [Session ID](/session-id)

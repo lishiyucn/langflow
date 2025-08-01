@@ -1,120 +1,120 @@
 ---
-title:  Integrate NVIDIA Retriever Extraction with Langflow
+title:  将 NVIDIA Retriever Extraction 与 Langflow 集成
 slug: /integrations-nvidia-ingest
 ---
 
 :::note
-NVIDIA Retriever Extraction is also known as NV-Ingest and NeMo Retriever Extraction.
+NVIDIA Retriever Extraction 也被称为 NV-Ingest 和 NeMo Retriever Extraction。
 :::
 
-The **NVIDIA Retriever Extraction** component integrates with the [NVIDIA nv-ingest](https://github.com/NVIDIA/nv-ingest) microservice for data ingestion, processing, and extraction of text files.
+**NVIDIA Retriever Extraction** 组件与 [NVIDIA nv-ingest](https://github.com/NVIDIA/nv-ingest) 微服务集成，用于数据摄取、处理和文本文件提取。
 
-The `nv-ingest` service supports multiple extraction methods for PDF, DOCX, and PPTX file types, and includes pre-  and post-processing services like splitting, chunking, and embedding generation. The extractor service's High Resolution mode uses the `nemoretriever-parse` extraction method for better quality extraction from scanned PDF documents. This feature is only available for PDF files.
+`nv-ingest` 服务支持 PDF、DOCX 和 PPTX 文件类型的多种提取方法，并包括预处理和后处理服务，如分割、分块和嵌入生成。提取器服务的高分辨率模式使用 `nemoretriever-parse` 提取方法，可以更高质量地从扫描的 PDF 文档中提取内容。此功能仅适用于 PDF 文件。
 
-The **NVIDIA Retriever Extraction** component imports the NVIDIA `Ingestor` client, ingests files with requests to the NVIDIA ingest endpoint, and outputs the processed content as a list of [Data](/data-types#data) objects. `Ingestor` accepts additional configuration options for data extraction from other text formats. To configure these options, see the [component parameters](/integrations-nvidia-ingest#parameters).
+**NVIDIA Retriever Extraction** 组件导入 NVIDIA `Ingestor` 客户端，通过向 NVIDIA ingest 端点发送请求来摄取文件，并将处理后的内容输出为 [Data](/data-types#data) 对象列表。`Ingestor` 接受额外的配置选项，用于从其他文本格式中提取数据。要配置这些选项，请参阅[组件参数](/integrations-nvidia-ingest#parameters)。
 
-## Prerequisites
+## 先决条件
 
-* An NVIDIA Ingest endpoint. For more information on setting up an NVIDIA Ingest endpoint, see the [NVIDIA Ingest quickstart](https://github.com/NVIDIA/nv-ingest?tab=readme-ov-file#quickstart).
+* 一个 NVIDIA Ingest 端点。有关设置 NVIDIA Ingest 端点的更多信息，请参阅 [NVIDIA Ingest 快速入门](https://github.com/NVIDIA/nv-ingest?tab=readme-ov-file#quickstart)。
 
-* The **NVIDIA Retriever Extraction** component requires the installation of additional dependencies to your Langflow environment. To install the dependencies in a virtual environment, run the following commands.
+* **NVIDIA Retriever Extraction** 组件需要在您的 Langflow 环境中安装额外的依赖项。要在虚拟环境中安装依赖项，请运行以下命令。
 
-  * If you have the Langflow repository cloned and installed from source:
+  * 如果您已从源代码克隆并安装了 Langflow 仓库：
   ```bash
   source **YOUR_LANGFLOW_VENV**/bin/activate
   uv sync --extra nv-ingest
   uv run langflow run
   ```
 
-  * If you are installing Langflow from the Python Package Index:
+  * 如果您正在从 Python Package Index 安装 Langflow：
   ```bash
   source **YOUR_LANGFLOW_VENV**/bin/activate
   uv pip install --prerelease=allow 'langflow[nv-ingest]'
   uv run langflow run
   ```
 
-## Use the NVIDIA Retriever Extraction component in a flow
+## 在流程中使用 NVIDIA Retriever Extraction 组件
 
-The **NVIDIA Retriever Extraction** component accepts **Message** inputs and outputs **Data**. The component calls an NVIDIA Ingest microservice's endpoint to ingest a local file and extract the text.
+**NVIDIA Retriever Extraction** 组件接受 **Message** 输入并输出 **Data**。该组件调用 NVIDIA Ingest 微服务的端点来摄取本地文件并提取文本。
 
-To use the NVIDIA Retriever Extraction component in your flow, follow these steps:
-1. In the component library, click the **NVIDIA Retriever Extraction** component, and then drag it onto the canvas.
-2. In the **Base URL** field, enter the URL of the NVIDIA Ingest endpoint.
-Optionally, add the endpoint URL as a **Global variable**:
-    1. Click **Settings**, and then click **Global Variables**.
-    2. Click **Add New**.
-    3. Name your variable. Paste your endpoint in the **Value** field.
-    4. In the **Apply To Fields** field, select the field you want to globally apply this variable to. In this case, select **NVIDIA Base URL**.
-    5. Click **Save Variable**.
-3. Click the **Select files** button to select which file you want to ingest.
-4. Select which text type to extract from the file.
-The component supports text, charts, tables, images, and infographics.
-Optionally, for PDF files, enable High Resolution mode for better quality extraction from scanned documents.
-5. Select whether to split the text into chunks.
-Modify the splitting parameters in the component's **Configuration** tab.
-6. Click **Run** to ingest the file.
-7. To confirm the component is ingesting the file, open the **Logs** pane to view the output of the flow.
-8. To store the processed data in a vector database, add an **AstraDB Vector** component to your flow, and connect the **NVIDIA Retriever Extraction** component to the **AstraDB Vector** component with a **Data** output.
+要在您的流程中使用 NVIDIA Retriever Extraction 组件，请按照以下步骤：
+1. 在组件库中，点击 **NVIDIA Retriever Extraction** 组件，然后将其拖动到画布上。
+2. 在 **Base URL** 字段中，输入 NVIDIA Ingest 端点的 URL。
+可选地，将端点 URL 添加为 **全局变量**：
+    1. 点击 **Settings**，然后点击 **Global Variables**。
+    2. 点击 **Add New**。
+    3. 为您的变量命名。在 **Value** 字段中粘贴您的端点。
+    4. 在 **Apply To Fields** 字段中，选择您想要全局应用此变量的字段。在这种情况下，选择 **NVIDIA Base URL**。
+    5. 点击 **Save Variable**。
+3. 点击 **Select files** 按钮选择要摄取的文件。
+4. 选择要从文件中提取的文本类型。
+该组件支持文本、图表、表格、图像和信息图。
+可选地，对于 PDF 文件，启用高分辨率模式以更高质量地从扫描文档中提取内容。
+5. 选择是否将文本分割成块。
+在组件的 **Configuration** 标签中修改分割参数。
+6. 点击 **Run** 来摄取文件。
+7. 要确认组件正在摄取文件，打开 **Logs** 窗格查看流程的输出。
+8. 要将处理后的数据存储在向量数据库中，将 **AstraDB Vector** 组件添加到您的流程中，并使用 **Data** 输出将 **NVIDIA Retriever Extraction** 组件连接到 **AstraDB Vector** 组件。
 
 ![NVIDIA Retriever Extraction component flow](nvidia-component-ingest-astra.png)
 
-9. Run the flow.
-Inspect your Astra DB vector database to view the processed data.
+9. 运行流程。
+检查您的 Astra DB 向量数据库以查看处理后的数据。
 
-## NVIDIA Retriever Extraction component parameters {#parameters}
+## NVIDIA Retriever Extraction 组件参数 {#parameters}
 
-The **NVIDIA Retriever Extraction** component has the following parameters.
+**NVIDIA Retriever Extraction** 组件具有以下参数。
 
-For more information, see the [NV-Ingest documentation](https://nvidia.github.io/nv-ingest/user-guide/).
+有关更多信息，请参阅 [NV-Ingest 文档](https://nvidia.github.io/nv-ingest/user-guide/)。
 
-### Inputs
+### 输入
 
 | Name | Display Name | Info |
 |------|--------------|------|
-| base_url | NVIDIA Ingestion URL | The URL of the NVIDIA Ingestion API. |
-| path | Path | File path to process. |
-| extract_text | Extract Text | Extract text from documents. Default: `True`. |
-| extract_charts | Extract Charts | Extract text from charts. Default: `False`. |
-| extract_tables | Extract Tables | Extract text from tables. Default: `True`. |
-| extract_images | Extract Images | Extract images from document. Default: `True`. |
-| extract_infographics | Extract Infographics | Extract infographics from document. Default: `False`. |
-| text_depth | Text Depth | The level at which text is extracted. Options: 'document', 'page', 'block', 'line', 'span'. Default: `page`. |
-| split_text | Split Text | Split text into smaller chunks. Default: `True`. |
-| chunk_size | Chunk Size | The number of tokens per chunk. Default: `500`. |
-| chunk_overlap | Chunk Overlap | Number of tokens to overlap from previous chunk. Default: `150`. |
-| filter_images | Filter Images | Filter images (see advanced options for filtering criteria). Default: `False`. |
-| min_image_size | Minimum Image Size Filter | Minimum image width/length in pixels. Default: `128`. |
-| min_aspect_ratio | Minimum Aspect Ratio Filter | Minimum allowed aspect ratio (width / height). Default: `0.2`. |
-| max_aspect_ratio | Maximum Aspect Ratio Filter | Maximum allowed aspect ratio (width / height). Default: `5.0`. |
-| dedup_images | Deduplicate Images | Filter duplicated images. Default: `True`. |
-| caption_images | Caption Images | Generate captions for images using the NVIDIA captioning model. Default: `True`. |
-| high_resolution | High Resolution (PDF only) | Process PDF in high-resolution mode for better quality extraction from scanned PDF. Default: `False`. |
+| base_url | NVIDIA Ingestion URL | NVIDIA Ingestion API 的 URL。 |
+| path | Path | 要处理的文件路径。 |
+| extract_text | Extract Text | 从文档中提取文本。默认值：`True`。 |
+| extract_charts | Extract Charts | 从图表中提取文本。默认值：`False`。 |
+| extract_tables | Extract Tables | 从表格中提取文本。默认值：`True`。 |
+| extract_images | Extract Images | 从文档中提取图像。默认值：`True`。 |
+| extract_infographics | Extract Infographics | 从文档中提取信息图。默认值：`False`。 |
+| text_depth | Text Depth | 提取文本的级别。选项：'document'、'page'、'block'、'line'、'span'。默认值：`page`。 |
+| split_text | Split Text | 将文本分割成更小的块。默认值：`True`。 |
+| chunk_size | Chunk Size | 每个块的令牌数。默认值：`500`。 |
+| chunk_overlap | Chunk Overlap | 与前一个块重叠的令牌数。默认值：`150`。 |
+| filter_images | Filter Images | 过滤图像（有关过滤条件，请参阅高级选项）。默认值：`False`。 |
+| min_image_size | Minimum Image Size Filter | 图像的最小宽度/长度（像素）。默认值：`128`。 |
+| min_aspect_ratio | Minimum Aspect Ratio Filter | 最小允许的宽高比（宽度/高度）。默认值：`0.2`。 |
+| max_aspect_ratio | Maximum Aspect Ratio Filter | 最大允许的宽高比（宽度/高度）。默认值：`5.0`。 |
+| dedup_images | Deduplicate Images | 过滤重复图像。默认值：`True`。 |
+| caption_images | Caption Images | 使用 NVIDIA 字幕模型为图像生成字幕。默认值：`True`。 |
+| high_resolution | High Resolution (PDF only) | 在高分辨率模式下处理 PDF，以更高质量地从扫描的 PDF 中提取内容。默认值：`False`。 |
 
-### Outputs
+### 输出
 
-The **NVIDIA Retriever Extraction** component outputs a list of [Data](/data-types#data) objects where each object contains:
-- `text`: The extracted content.
-  - For text documents: The extracted text content.
-  - For tables and charts: The extracted table/chart content.
-  - For images: The image caption.
-  - For infographics: The extracted infographic content.
-- `file_path`: The source file name and path.
-- `document_type`: The type of the document, which can be `text`, `structured`, or `image`.
-- `description`: Additional description of the content.
+**NVIDIA Retriever Extraction** 组件输出一个 [Data](/data-types#data) 对象列表，其中每个对象包含：
+- `text`: 提取的内容。
+  - 对于文本文档：提取的文本内容。
+  - 对于表格和图表：提取的表格/图表内容。
+  - 对于图像：图像字幕。
+  - 对于信息图：提取的信息图内容。
+- `file_path`: 源文件名和路径。
+- `document_type`: 文档的类型，可以是 `text`、`structured` 或 `image`。
+- `description`: 内容的附加描述。
 
-The output varies based on the `document_type`:
+输出根据 `document_type` 而变化：
 
-- Documents with `document_type: "text"` contain:
-  - Raw text content extracted from documents, for example, paragraphs from PDFs or DOCX files.
-  - Content stored directly in the `text` field.
-  - Content extracted using the `extract_text` parameter.
+- 具有 `document_type: "text"` 的文档包含：
+  - 从文档中提取的原始文本内容，例如从 PDF 或 DOCX 文件中的段落。
+  - 直接存储在 `text` 字段中的内容。
+  - 使用 `extract_text` 参数提取的内容。
 
-- Documents with `document_type: "structured"` contain:
-  - Text extracted from tables, charts, and infographics and processed to preserve structural information.
-  - Content extracted using the `extract_tables`, `extract_charts`, and `extract_infographics` parameters.
-  - Content stored in the `text` field after being processed from the `table_content` metadata.
+- 具有 `document_type: "structured"` 的文档包含：
+  - 从表格、图表和信息图中提取的文本，经过处理以保留结构信息。
+  - 使用 `extract_tables`、`extract_charts` 和 `extract_infographics` 参数提取的内容。
+  - 从 `table_content` 元数据处理后存储在 `text` 字段中的内容。
 
-- Documents with `document_type: "image"` contain:
-  - Image content extracted from documents.
-  - Caption text stored in the `text` field when `caption_images` is enabled.
-  - Content extracted using the `extract_images` parameter.
+- 具有 `document_type: "image"` 的文档包含：
+  - 从文档中提取的图像内容。
+  - 当启用 `caption_images` 时，存储在 `text` 字段中的字幕文本。
+  - 使用 `extract_images` 参数提取的内容。

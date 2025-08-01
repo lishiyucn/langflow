@@ -1,37 +1,37 @@
 ---
-title: Files endpoints
+title: 文件端点
 slug: /api-files
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Use the `/files` endpoints to move files between your local machine and Langflow.
+使用 `/files` 端点在您的本地机器和 Langflow 之间传输文件。
 
-## Differences between `/v1/files` and `/v2/files`
+## `/v1/files` 和 `/v2/files` 之间的区别
 
-There are two versions of the `/files` endpoints.
+有两个版本的 `/files` 端点。
 
-`/v2/files` offers the following improvements over `/v1/files`:
+`/v2/files` 相比 `/v1/files` 提供了以下改进：
 
-- `/v2` files are organized by `user_id` instead of `flow_id`.
-  This means files are owned by users, and they aren't attached to specific flows.
-  You can upload a file to Langflow one time, and use it with multiple flows.
-- `/v2` files are tracked in the Langflow database.
-- `/v2` supports bulk upload and delete.
-- `/v2` responses contain more descriptive metadata.
+- `/v2` 文件按 `user_id` 而不是 `flow_id` 组织。
+  这意味着文件由用户拥有，不附加到特定流程。
+  您可以向 Langflow 上传一次文件，并在多个流程中使用它。
+- `/v2` 文件在 Langflow 数据库中进行跟踪。
+- `/v2` 支持批量上传和删除。
+- `/v2` 响应包含更详细的元数据。
 
-However, `/v2/files` doesn't support image files.
-To send image files to your flows through the API, use [Upload image files (v1)](#upload-image-files-v1).
+但是，`/v2/files` 不支持图像文件。
+要通过 API 向您的流程发送图像文件，请使用 [上传图像文件 (v1)](#upload-image-files-v1)。
 
-## Files/V1 endpoints
+## Files/V1 端点
 
-Use the `/files` endpoints to move files between your local machine and Langflow.
+使用 `/files` 端点在您的本地机器和 Langflow 之间传输文件。
 
-### Upload file (v1)
+### 上传文件 (v1)
 
-Upload a file to the `v1/files/upload/$FLOW_ID` endpoint:
-Replace **FILE_NAME** with the uploaded file name.
+将文件上传到 `v1/files/upload/$FLOW_ID` 端点：
+将 **FILE_NAME** 替换为上传的文件名。
 
 ```bash
 curl -X POST \
@@ -42,11 +42,11 @@ curl -X POST \
   -F "file=@FILE_NAME.txt"
 ```
 
-Replace `FILE_NAME.txt` with the name and extension of the file you want to upload.
-Not all file types are supported.
+将 `FILE_NAME.txt` 替换为您要上传的文件的名称和扩展名。
+并非所有文件类型都受支持。
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -57,14 +57,14 @@ Not all file types are supported.
 
 </details>
 
-### Upload image files (v1)
+### 上传图像文件 (v1)
 
-Send image files to Langflow to use them in flows.
+将图像文件发送到 Langflow 以在流程中使用它们。
 
-The default file limit is 100 MB.
-To change this limit, set the `LANGFLOW_MAX_FILE_SIZE_UPLOAD` [environment variable](/environment-variables).
+默认文件限制为 100 MB。
+要更改此限制，请设置 `LANGFLOW_MAX_FILE_SIZE_UPLOAD` [环境变量](/environment-variables)。
 
-1. Attach the image to a `POST /v1/files/upload/$FLOW_ID` request with `--form` (`-F`) and the file path:
+1. 使用 `--form` (`-F`) 和文件路径将图像附加到 `POST /v1/files/upload/$FLOW_ID` 请求：
 
     ```bash
     curl -X POST "$LANGFLOW_URL/api/v1/files/upload/$FLOW_ID" \
@@ -73,8 +73,8 @@ To change this limit, set the `LANGFLOW_MAX_FILE_SIZE_UPLOAD` [environment varia
       -F "file=@PATH/TO/FILE.png"
     ```
 
-    A successful request returns the `file_path` for the image in the Langflow file management system in the format `FLOW_ID/TIMESTAMP_FILENAME.TYPE`.
-    For example:
+    成功的请求返回 Langflow 文件管理系统中图像的 `file_path`，格式为 `FLOW_ID/TIMESTAMP_FILENAME.TYPE`。
+    例如：
 
     ```json
     {
@@ -83,10 +83,10 @@ To change this limit, set the `LANGFLOW_MAX_FILE_SIZE_UPLOAD` [environment varia
     }
     ```
 
-2. Use the returned `file_path` to send the image file to other components that can accept file input. Where you specify the file path depends on the component type.
+2. 使用返回的 `file_path` 将图像文件发送到可以接受文件输入的其他组件。指定文件路径的位置取决于组件类型。
 
-    The following example runs a [Basic Prompting flow](/basic-prompting), passing the image file and the query `describe this image` as input for the **Chat Input** component.
-    In this case, the file path is specified in `tweaks`.
+    以下示例运行 [基础提示流程](/basic-prompting)，将图像文件和查询 `describe this image` 作为 **Chat Input** 组件的输入。
+    在这种情况下，文件路径在 `tweaks` 中指定。
 
     ```bash
     curl -X POST \
@@ -106,13 +106,13 @@ To change this limit, set the `LANGFLOW_MAX_FILE_SIZE_UPLOAD` [environment varia
     ```
 
     :::tip
-    For help with tweaks, use the **Input Schema** in a flow's [**API access** pane](/concepts-publish#api-access).
-    Setting tweaks with **Input Schema** also automatically populates the required component IDs.
+    有关调整的帮助，请使用流程的 [**API 访问** 面板](/concepts-publish#api-access) 中的 **输入架构**。
+    使用 **输入架构** 设置调整还会自动填充所需的组件 ID。
     :::
 
-### List files (v1)
+### 列出文件 (v1)
 
-List all files associated with a specific flow.
+列出与特定流程关联的所有文件。
 
 ```bash
 curl -X GET \
@@ -122,7 +122,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -132,9 +132,9 @@ curl -X GET \
 
 </details>
 
-### Download file (v1)
+### 下载文件 (v1)
 
-Download a specific file from a flow.
+从流程中下载特定文件。
 
 ```bash
 curl -X GET \
@@ -145,17 +145,17 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```text
-File contents downloaded to downloaded_file.txt
+文件内容已下载到 downloaded_file.txt
 ```
 
 </details>
 
-### Delete file (v1)
+### 删除文件 (v1)
 
-Delete a specific file from a flow.
+从流程中删除特定文件。
 
 ```bash
 curl -X DELETE \
@@ -165,30 +165,30 @@ curl -X DELETE \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
-  "message": "File 2024-12-30_15-19-43_your_file.txt deleted successfully"
+  "message": "文件 2024-12-30_15-19-43_your_file.txt 已成功删除"
 }
 ```
 
 </details>
 
-## Files/V2 endpoints
+## Files/V2 端点
 
-Use the `/files` endpoints to move files between your local machine and Langflow.
+使用 `/files` 端点在您的本地机器和 Langflow 之间传输文件。
 
-The `/v2/files` endpoints can be authenticated by an API key or JWT.
-To create a Langflow API key and export it as an environment variable, see [Get started with the Langflow API](/api-reference-api-examples).
+`/v2/files` 端点可以通过 API 密钥或 JWT 进行身份验证。
+要创建 Langflow API 密钥并将其导出为环境变量，请参阅 [Langflow API 入门](/api-reference-api-examples)。
 
-### Upload file (v2)
+### 上传文件 (v2)
 
-Upload a file to your user account. The file can be used across multiple flows.
+将文件上传到您的用户账户。该文件可以在多个流程中使用。
 
-The file is uploaded in the format `USER_ID/FILE_ID.FILE_EXTENSION`, such as `07e5b864-e367-4f52-b647-a48035ae7e5e/d44dc2e1-9ae9-4cf6-9114-8d34a6126c94.pdf`.
+文件以 `USER_ID/FILE_ID.FILE_EXTENSION` 格式上传，例如 `07e5b864-e367-4f52-b647-a48035ae7e5e/d44dc2e1-9ae9-4cf6-9114-8d34a6126c94.pdf`。
 
-1. To retrieve your current `user_id`, call the `/whoami` endpoint:
+1. 要检索您当前的 `user_id`，请调用 `/whoami` 端点：
 
     ```bash
     curl -X GET \
@@ -198,7 +198,7 @@ The file is uploaded in the format `USER_ID/FILE_ID.FILE_EXTENSION`, such as `07
     ```
 
     <details>
-    <summary>Result</summary>
+    <summary>结果</summary>
 
     ```
     {"id":"07e5b864-e367-4f52-b647-a48035ae7e5e","username":"langflow","profile_image":null,"store_api_key":null,"is_active":true,"is_superuser":true,"create_at":"2025-05-08T17:59:07.855965","updated_at":"2025-05-28T19:00:42.556460","last_login_at":"2025-05-28T19:00:42.554338","optins":{"github_starred":false,"dialog_dismissed":true,"discord_clicked":false,"mcp_dialog_dismissed":true}}
@@ -206,8 +206,8 @@ The file is uploaded in the format `USER_ID/FILE_ID.FILE_EXTENSION`, such as `07
 
     </details>
 
-2. In the POST request to `v2/files`, replace **@FILE_NAME.EXTENSION** with the uploaded file name and its extension.
-You must include the ampersand (`@`) in the request to instruct curl to upload the contents of the file, not the string `FILE_NAME.EXTENSION`.
+2. 在对 `v2/files` 的 POST 请求中，将 **@FILE_NAME.EXTENSION** 替换为上传的文件名及其扩展名。
+您必须在请求中包含 @ 符号 (`@`) 以指示 curl 上传文件内容，而不是字符串 `FILE_NAME.EXTENSION`。
 
     ```bash
     curl -X POST \
@@ -218,7 +218,7 @@ You must include the ampersand (`@`) in the request to instruct curl to upload t
       -F "file=@FILE_NAME.EXTENSION"
     ```
 
-    The file is uploaded in the format `USER_ID/FILE_ID.FILE_EXTENSION`, and the API returns metadata about the uploaded file:
+    文件以 `USER_ID/FILE_ID.FILE_EXTENSION` 格式上传，API 返回上传文件的元数据：
 
     ```json
     {
@@ -230,23 +230,23 @@ You must include the ampersand (`@`) in the request to instruct curl to upload t
     }
     ```
 
-### Send files to your flows (v2)
+### 将文件发送到您的流程 (v2)
 
 :::important
-The `/v2/files` endpoint does not support sending **image** files to flows.
-To send **image** files to your flows through the API, follow the procedure in [Upload image files (v1)](#upload-image-files-v1).
+`/v2/files` 端点不支持向流程发送 **图像** 文件。
+要通过 API 向您的流程发送 **图像** 文件，请按照 [上传图像文件 (v1)](#upload-image-files-v1) 中的过程进行。
 :::
 
-Send a file to your flow for analysis using the [File](/components-data#file) component and the API.
-Your flow must contain a [File](/components-data#file) component to receive the file.
+使用 [File](/components-data#file) 组件和 API 将文件发送到您的流程进行分析。
+您的流程必须包含 [File](/components-data#file) 组件来接收文件。
 
-The default file limit is 100 MB. To configure this value, change the `LANGFLOW_MAX_FILE_SIZE_UPLOAD` environment variable.
-For more information, see [Supported environment variables](/environment-variables#supported-variables).
+默认文件限制为 100 MB。要配置此值，请更改 `LANGFLOW_MAX_FILE_SIZE_UPLOAD` 环境变量。
+有关更多信息，请参阅 [支持的环境变量](/environment-variables#supported-variables)。
 
-1. To send a file to your flow with the API, POST the file to the `/api/v2/files` endpoint.
+1. 要使用 API 将文件发送到您的流程，请将文件 POST 到 `/api/v2/files` 端点。
 
-    Replace **FILE_NAME.EXTENSION** with the name and extension of the file you want to upload.
-    This is the same step described in [Upload file (v2)](#upload-file-v2), but since you need the filename to upload to your flow, it is included here.
+    将 **FILE_NAME.EXTENSION** 替换为您要上传的文件的名称和扩展名。
+    这与 [上传文件 (v2)](#upload-file-v2) 中描述的步骤相同，但由于您需要文件名来上传到流程，因此在此处包含。
 
     ```bash
     curl -X POST \
@@ -257,7 +257,7 @@ For more information, see [Supported environment variables](/environment-variabl
       -F "file=@FILE_NAME.EXTENSION"
     ```
 
-    The file is uploaded in the format `USER_ID/FILE_ID.FILE_EXTENSION`, and the API returns metadata about the uploaded file:
+    文件以 `USER_ID/FILE_ID.FILE_EXTENSION` 格式上传，API 返回上传文件的元数据：
 
     ```json
     {
@@ -269,11 +269,11 @@ For more information, see [Supported environment variables](/environment-variabl
     }
     ```
 
-2. To use this file in your flow, add a [File](/components-data#file) component to load a file into the flow.
-3. To load the file into your flow, send it to the **File** component.
+2. 要在流程中使用此文件，请添加 [File](/components-data#file) 组件将文件加载到流程中。
+3. 要将文件加载到流程中，请将其发送到 **File** 组件。
 
-    To retrieve the **File** component's full name with the UUID attached, call the [Read flow](/api-flows#read-flow) endpoint, and then include your **File** component and the file path as a tweak with the `/v1/run` POST request.
-    In this example, the file uploaded to `/v2/files` is included with the `/v1/run` POST request.
+    要检索附加了 UUID 的 **File** 组件的完整名称，请调用 [读取流程](/api-flows#read-flow) 端点，然后在 `/v1/run` POST 请求中将您的 **File** 组件和文件路径作为调整包含。
+    在此示例中，上传到 `/v2/files` 的文件包含在 `/v1/run` POST 请求中。
 
     ```text
     curl --request POST \
@@ -295,16 +295,16 @@ For more information, see [Supported environment variables](/environment-variabl
     ```
 
     <details>
-    <summary>Result</summary>
+    <summary>结果</summary>
 
     ```text
-    "text":"This document provides important safety information and instructions for selecting, installing, and operating Briggs & Stratton engines. It includes warnings and guidelines to prevent injury, fire, or damage, such as choosing the correct engine model, proper installation procedures, safe fuel handling, and correct engine operation. The document emphasizes following all safety precautions and using authorized parts to ensure safe and effective engine use."
+    "text":"本文档提供有关选择、安装和操作 Briggs & Stratton 发动机的重要安全信息和说明。它包括防止伤害、火灾或损坏的警告和指导，例如选择正确的发动机型号、正确的安装程序、安全的燃料处理和正确的发动机操作。该文档强调遵循所有安全预防措施并使用授权零件以确保安全有效的发动机使用。"
     ```
     </details>
 
-### List files (v2)
+### 列出文件 (v2)
 
-List all files associated with your user account.
+列出与您的用户账户关联的所有文件。
 
 ```bash
 curl -X GET \
@@ -314,7 +314,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 [
@@ -330,11 +330,11 @@ curl -X GET \
 
 </details>
 
-### Download file (v2)
+### 下载文件 (v2)
 
-Download a specific file by its ID and file extension.
+通过 ID 和文件扩展名下载特定文件。
 
-You must specify the file type you expect in the `--output` value.
+您必须在 `--output` 值中指定您期望的文件类型。
 
 ```bash
 curl -X GET \
@@ -345,17 +345,17 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```text
-File contents downloaded to downloaded_file.txt
+文件内容已下载到 downloaded_file.txt
 ```
 
 </details>
 
-### Edit file name (v2)
+### 编辑文件名 (v2)
 
-Change a file name.
+更改文件名。
 
 ```bash
 curl -X PUT \
@@ -365,7 +365,7 @@ curl -X PUT \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -379,9 +379,9 @@ curl -X PUT \
 
 </details>
 
-### Delete file (v2)
+### 删除文件 (v2)
 
-Delete a specific file by its ID.
+通过 ID 删除特定文件。
 
 ```bash
 curl -X DELETE \
@@ -391,19 +391,19 @@ curl -X DELETE \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
-  "message": "File deleted successfully"
+  "message": "文件已成功删除"
 }
 ```
 
 </details>
 
-### Delete all files (v2)
+### 删除所有文件 (v2)
 
-Delete all files associated with your user account.
+删除与您的用户账户关联的所有文件。
 
 ```bash
 curl -X DELETE \
@@ -413,16 +413,16 @@ curl -X DELETE \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
-  "message": "All files deleted successfully"
+  "message": "所有文件已成功删除"
 }
 ```
 
 </details>
 
-## Create upload file (Deprecated)
+## 创建上传文件（已弃用）
 
-This endpoint is deprecated. Use the `/files` endpoints instead.
+此端点已弃用。请改用 `/files` 端点。

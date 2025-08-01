@@ -1,62 +1,62 @@
 ---
-title: Create custom Python components
+title: 创建自定义 Python 组件
 slug: /components-custom-components
 ---
 
-Custom components extend Langflow's functionality through Python classes that inherit from `Component`. This enables integration of new features, data manipulation, external services, and specialized tools.
+自定义组件通过继承自 `Component` 的 Python 类扩展 Langflow 的功能。这使得能够集成新功能、数据操作、外部服务和专用工具。
 
-In Langflow's node-based environment, each node is a "component" that performs discrete functions. Custom components are Python classes which define:
+在 Langflow 基于节点的环境中，每个节点都是一个执行独立功能的"组件"。自定义组件是定义以下内容的 Python 类：
 
-* **Inputs** — Data or parameters your component requires.
-* **Outputs** — Data your component provides to downstream nodes.
-* **Logic** — How you process inputs to produce outputs.
+* **输入** — 您的组件需要的数据或参数。
+* **输出** — 您的组件向下游节点提供的数据。
+* **逻辑** — 您如何处理输入以产生输出。
 
-The benefits of creating custom components include unlimited extensibility, reusability, automatic UI field generation based on inputs, and type-safe connections between nodes.
+创建自定义组件的好处包括无限的可扩展性、可重用性、基于输入的自动 UI 字段生成，以及节点之间的类型安全连接。
 
-Create custom components for performing specialized tasks, calling APIs, or adding advanced logic.
+创建自定义组件用于执行专门任务、调用 API 或添加高级逻辑。
 
-Custom components in Langflow are built upon:
+Langflow 中的自定义组件基于：
 
-* The Python class that inherits from `Component`.
-* Class-level attributes that identify and describe the component.
-* Input and output lists that determine data flow.
-* Internal variables for logging and advanced logic.
+* 继承自 `Component` 的 Python 类。
+* 标识和描述组件的类级属性。
+* 确定数据流的输入和输出列表。
+* 用于日志记录和高级逻辑的内部变量。
 
-## Class-level attributes
+## 类级属性
 
-Define these attributes to control a custom component's appearance and behavior:
+定义这些属性来控制自定义组件的外观和行为：
 
 ```python
 class MyCsvReader(Component):
-    display_name = "CSV Reader"      # Shown in node header
-    description = "Reads CSV files"  # Tooltip text
-    icon = "file-text"              # Visual identifier
-    name = "CSVReader"              # Unique internal ID
-    documentation = "http://docs.example.com/csv_reader"  # Optional
+    display_name = "CSV Reader"      # 在节点标题中显示
+    description = "Reads CSV files"  # 工具提示文本
+    icon = "file-text"              # 视觉标识符
+    name = "CSVReader"              # 唯一的内部 ID
+    documentation = "http://docs.example.com/csv_reader"  # 可选
 ```
 
-* **display_name**: A user-friendly label in the node header.
-* **description**: A brief summary shown in tooltips.
-* **icon**: A visual identifier from Langflow's icon library.
-* **name**: A unique internal identifier.
-* **documentation**: An optional link to external docs.
+* **display_name**：节点标题中的用户友好标签。
+* **description**：工具提示中显示的简要摘要。
+* **icon**：来自 Langflow 图标库的视觉标识符。
+* **name**：唯一的内部标识符。
+* **documentation**：指向外部文档的可选链接。
 
-:::tip Icon usage
-Langflow uses [Lucide](https://lucide.dev/icons) for icons. To assign an icon to your component, set the icon attribute to the name of a Lucide icon as a string, such as `icon = "file-text"`. Langflow renders icons from the Lucide library automatically.
+:::tip 图标使用
+Langflow 使用 [Lucide](https://lucide.dev/icons) 作为图标。要为您的组件分配图标，请将图标属性设置为 Lucide 图标的名称作为字符串，例如 `icon = "file-text"`。Langflow 自动从 Lucide 库渲染图标。
 :::
 
-### Structure of a custom component
+### 自定义组件的结构
 
-A **Langflow custom component** goes beyond a simple class with inputs and outputs. It includes an internal structure with optional lifecycle steps, output generation, front-end interaction, and logic organization.
+**Langflow 自定义组件**不仅仅是具有输入和输出的简单类。它包括具有可选生命周期步骤、输出生成、前端交互和逻辑组织的内部结构。
 
-A basic component:
+基本组件：
 
-* Inherits from `langflow.custom.Component`.
-* Declares metadata like `display_name`, `description`, `icon`, and more.
-* Defines `inputs` and `outputs` lists.
-* Implements methods matching output specifications.
+* 继承自 `langflow.custom.Component`。
+* 声明元数据，如 `display_name`、`description`、`icon` 等。
+* 定义 `inputs` 和 `outputs` 列表。
+* 实现匹配输出规范的方法。
 
-A minimal custom component skeleton contains the following:
+最小的自定义组件骨架包含以下内容：
 
 ```python
 from langflow.custom import Component
@@ -74,49 +74,49 @@ class MyComponent(Component):
     def some_output_method(self):
         return ...
 ```
-### Internal Lifecycle and Execution Flow
+### 内部生命周期和执行流程
 
-Langflow's engine manages:
+Langflow 的引擎管理：
 
-* **Instantiation**:  A component is created and internal structures are initialized.
-* **Assigning Inputs**: Values from the UI or connections are assigned to component fields.
-* **Validation and Setup**: Optional hooks like `_pre_run_setup`.
-* **Outputs Generation**: `run()` or `build_results()` triggers output methods.
+* **实例化**：创建组件并初始化内部结构。
+* **分配输入**：来自 UI 或连接的值被分配给组件字段。
+* **验证和设置**：可选钩子，如 `_pre_run_setup`。
+* **输出生成**：`run()` 或 `build_results()` 触发输出方法。
 
-**Optional Hooks**:
+**可选钩子**：
 
-* `initialize_data` or `_pre_run_setup` can run setup logic before the component's main execution.
-* `__call__`, `run()`, or `_run()` can be overridden to customize how the component is called or to define custom execution logic.
+* `initialize_data` 或 `_pre_run_setup` 可以在组件主要执行之前运行设置逻辑。
+* `__call__`、`run()` 或 `_run()` 可以被重写以自定义组件的调用方式或定义自定义执行逻辑。
 
-### Inputs and outputs
+### 输入和输出
 
-Custom component inputs are defined with properties like:
+自定义组件输入使用以下属性定义：
 
-* `name`, `display_name`
-* Optional: `info`, `value`, `advanced`, `is_list`, `tool_mode`, `real_time_refresh`
+* `name`、`display_name`
+* 可选：`info`、`value`、`advanced`、`is_list`、`tool_mode`、`real_time_refresh`
 
-For example:
+例如：
 
-* `StrInput`: simple text input.
-* `DropdownInput`: selectable options.
-* `HandleInput`: specialized connections.
+* `StrInput`：简单的文本输入。
+* `DropdownInput`：可选择的选项。
+* `HandleInput`：专门的连接。
 
-Custom component `Output` properties define:
+自定义组件 `Output` 属性定义：
 
-* `name`, `display_name`, `method`
-* Optional: `info`
+* `name`、`display_name`、`method`
+* 可选：`info`
 
-For more information, see [Custom component inputs and outputs](/components-custom-components#custom-component-inputs-and-outputs).
+有关更多信息，请参阅[自定义组件输入和输出](/components-custom-components#custom-component-inputs-and-outputs)。
 
-### Associated Methods
+### 关联方法
 
-Each output is linked to a method:
+每个输出都链接到一个方法：
 
-* The output method name must match the method name.
-* The method typically returns objects like Message, Data, or DataFrame.
-* The method can use inputs with `self.<input_name>`.
+* 输出方法名称必须与方法名称匹配。
+* 该方法通常返回 Message、Data 或 DataFrame 等对象。
+* 该方法可以使用 `self.<input_name>` 访问输入。
 
-For example:
+例如：
 
 ```python
 Output(
@@ -133,11 +133,11 @@ def read_file(self) -> Data:
     return Data(data={"content": content})
 ```
 
-### Components with multiple outputs
+### 具有多个输出的组件
 
-A component can define multiple outputs.
-Each output can have a different corresponding method.
-For example:
+一个组件可以定义多个输出。
+每个输出可以有不同的对应方法。
+例如：
 
 ```python
 outputs = [
@@ -146,19 +146,19 @@ outputs = [
 ]
 ```
 
-#### Output Grouping Behavior with `group_outputs`
+#### 使用 `group_outputs` 的输出分组行为
 
-By default, components in Langflow that define multiple outputs will display them as a dropdown in the UI. This behavior is controlled by the `group_outputs` parameter.
+默认情况下，在 Langflow 中定义多个输出的组件将在 UI 中将它们显示为下拉列表。此行为由 `group_outputs` 参数控制。
 
-- `group_outputs=False` (default):  
-  When a component has more than one output and `group_outputs` is not specified (or set to `False`), the outputs are grouped into a dropdown. The user can choose only one output at a time from the UI.
+- `group_outputs=False`（默认）：
+  当组件有多个输出且未指定 `group_outputs`（或设置为 `False`）时，输出会被分组到下拉列表中。用户一次只能从 UI 中选择一个输出。
 
-- `group_outputs=True`:  
-  All outputs will be shown simultaneously in the UI. This is useful when the component is expected to return multiple values that should be used in parallel downstream.
+- `group_outputs=True`：
+  所有输出将同时在 UI 中显示。当组件预期返回应在下游并行使用的多个值时，这很有用。
 
-#### Example: 
+#### 示例：
 
-1. `group_outputs=False` (default behavior)
+1. `group_outputs=False`（默认行为）
 
 ```python
 outputs = [
@@ -175,9 +175,9 @@ outputs = [
 ]
 ```
 
-In this example, both outputs will be available via a dropdown selection in the UI.
+在此示例中，两个输出都将通过 UI 中的下拉选择可用。
 
-Note: Since `group_outputs=False` is the default behavior, it does not need to be explicitly set in the component.
+注意：由于 `group_outputs=False` 是默认行为，因此不需要在组件中显式设置。
 
 2. `group_outputs=True`
 
@@ -198,19 +198,19 @@ outputs = [
 ]
 ```
 
-Here, both outputs will appear independently and be selectable directly in the UI.
+在此示例中，两个输出都将独立显示并可在 UI 中直接选择。
 
-#### When to Use
+#### 何时使用
 
-- Use `group_outputs=False` when the component is expected to return only one of the outputs depending on the flow logic.
+- 当组件预期根据流程逻辑仅返回其中一个输出时，使用 `group_outputs=False`。
 
-- Use `group_outputs=True` when the component should expose multiple outputs simultaneously, such as structured data and a table that are meant to be used in parallel.
+- 当组件应同时暴露多个输出时，使用 `group_outputs=True`，例如用于并行使用的结构化数据和表格。
 
-### Common internal patterns
+### 常见内部模式
 
 #### `_pre_run_setup()`
 
-To initialize a custom component with counters set:
+使用计数器设置初始化自定义组件：
 
 ```python
 def _pre_run_setup(self):
@@ -219,11 +219,11 @@ def _pre_run_setup(self):
         self.iteration = 0
 ```
 
-#### Override `run` or `_run`
-You can override `async def _run(self): ...` to define custom execution logic, although the default behavior from the base class usually covers most cases.
+#### 重写 `run` 或 `_run`
+您可以重写 `async def _run(self): ...` 来定义自定义执行逻辑，尽管基类的默认行为通常涵盖大多数情况。
 
-#### Store data in `self.ctx`
-Use `self.ctx` as a shared storage for data or counters across the component's execution flow:
+#### 在 `self.ctx` 中存储数据
+使用 `self.ctx` 作为跨组件执行流程的数据或计数器的共享存储：
 
 ```python
 def some_method(self):
@@ -231,30 +231,30 @@ def some_method(self):
     self.ctx["my_count"] = count + 1
 ```
 
-## Directory structure requirements
+## 目录结构要求
 
-By default, Langflow looks for custom components in the `langflow/components` directory.
+默认情况下，Langflow 在 `langflow/components` 目录中查找自定义组件。
 
-If you're creating custom components in a different location using the [LANGFLOW_COMPONENTS_PATH](/environment-variables#LANGFLOW_COMPONENTS_PATH) environment variable, components must be organized in a specific directory structure to be properly loaded and displayed in the UI:
+如果您使用 [LANGFLOW_COMPONENTS_PATH](/environment-variables#LANGFLOW_COMPONENTS_PATH) 环境变量在不同位置创建自定义组件，组件必须按照特定的目录结构进行组织，以便正确加载并在 UI 中显示：
 
 ```
-/your/custom/components/path/    # Base directory set by LANGFLOW_COMPONENTS_PATH
-    └── category_name/          # Required category subfolder that determines menu name
-        └── custom_component.py # Component file
+/your/custom/components/path/    # LANGFLOW_COMPONENTS_PATH 设置的基础目录
+    └── category_name/          # 决定菜单名称的必需分类子文件夹
+        └── custom_component.py # 组件文件
 ```
 
-Components must be placed inside **category folders**, not directly in the base directory.
-The category folder name determines where the component appears in the Langflow **Components** menu.
+组件必须放置在**分类文件夹**内，而不是直接放在基础目录中。
+分类文件夹名称决定组件在 Langflow **组件**菜单中的显示位置。
 
-For example, to add a component to the **Helpers** category, place it in a `helpers` subfolder:
+例如，要将组件添加到 **Helpers** 分类，请将其放在 `helpers` 子文件夹中：
 
 ```
 /app/custom_components/          # LANGFLOW_COMPONENTS_PATH
-    └── helpers/                 # Displayed within the "Helpers" category
-        └── custom_component.py  # Your component
+    └── helpers/                 # 显示在"Helpers"分类中
+        └── custom_component.py  # 您的组件
 ```
 
-You can have multiple category folders to organize components into different categories:
+您可以拥有多个分类文件夹来将组件组织到不同的分类中：
 ```
 /app/custom_components/
     ├── helpers/
@@ -263,61 +263,61 @@ You can have multiple category folders to organize components into different cat
         └── tool_component.py
 ```
 
-This folder structure is required for Langflow to properly discover and load your custom components. Components placed directly in the base directory will not be loaded.
+这种文件夹结构是 Langflow 正确发现和加载自定义组件所必需的。直接放置在基础目录中的组件将不会被加载。
 
 ```
 /app/custom_components/          # LANGFLOW_COMPONENTS_PATH
-    └── custom_component.py      # Won't be loaded - missing category folder!
+    └── custom_component.py      # 不会被加载 - 缺少分类文件夹！
 ```
 
-## Custom component inputs and outputs
+## 自定义组件输入和输出
 
-Inputs and outputs define how data flows through the component, how it appears in the UI, and how connections to other components are validated.
+输入和输出定义了数据如何流经组件、在 UI 中的显示方式以及如何验证与其他组件的连接。
 
-### Inputs
+### 输入
 
-Inputs are defined in a class-level `inputs` list. When Langflow loads the component, it uses this list to render component fields and [ports](/concepts-components#component-ports) in the UI. Users or other components provide values or connections to fill these inputs.
+输入在类级别的 `inputs` 列表中定义。当 Langflow 加载组件时，它使用此列表在 UI 中渲染组件字段和[端口](/concepts-components#component-ports)。用户或其他组件提供值或连接以填充这些输入。
 
-An input is usually an instance of a class from `langflow.io` (such as `StrInput`, `DataInput`, or `MessageTextInput`). The most common constructor parameters are:
+输入通常是来自 `langflow.io` 的类的实例（如 `StrInput`、`DataInput` 或 `MessageTextInput`）。最常见的构造函数参数是：
 
-* **`name`**: The internal variable name, accessed via `self.<name>`.
-* **`display_name`**: The label shown to users in the UI.
-* **`info`** *(optional)*: A tooltip or short description.
-* **`value`** *(optional)*: The default value.
-* **`advanced`** *(optional)*: If `True`, moves the field into the "Advanced" section.
-* **`required`** *(optional)*: If `True`, forces the user to provide a value.
-* **`is_list`** *(optional)*: If `True`, allows multiple values.
-* **`input_types`** *(optional)*: Restricts allowed connection types (e.g., `["Data"]`, `["LanguageModel"]`).
+* **`name`**：内部变量名，通过 `self.<name>` 访问。
+* **`display_name`**：在 UI 中显示给用户的标签。
+* **`info`** *（可选）*：工具提示或简短描述。
+* **`value`** *（可选）*：默认值。
+* **`advanced`** *（可选）*：如果为 `True`，将字段移至"高级"部分。
+* **`required`** *（可选）*：如果为 `True`，强制用户提供值。
+* **`is_list`** *（可选）*：如果为 `True`，允许多个值。
+* **`input_types`** *（可选）*：限制允许的连接类型（例如，`["Data"]`、`["LanguageModel"]`）。
 
-Here are the most commonly used input classes and their typical usage.
+以下是最常用的输入类及其典型用法。
 
-**Text Inputs**: For simple text entries.
-* **`StrInput`** creates a single-line text field.
-* **`MultilineInput`** creates a multi-line text area.
+**文本输入**：用于简单的文本条目。
+* **`StrInput`** 创建单行文本字段。
+* **`MultilineInput`** 创建多行文本区域。
 
-**Numeric and Boolean Inputs**: Ensures users can only enter valid numeric or boolean data.
-* **`BoolInput`**, **`IntInput`**, and **`FloatInput`** provide fields for boolean, integer, and float values, ensuring type consistency.
+**数值和布尔输入**：确保用户只能输入有效的数值或布尔数据。
+* **`BoolInput`**、**`IntInput`** 和 **`FloatInput`** 为布尔值、整数和浮点值提供字段，确保类型一致性。
 
-**Dropdowns**: For selecting from predefined options, useful for modes or levels.
+**下拉菜单**：用于从预定义选项中选择，对模式或级别很有用。
 * **`DropdownInput`**
 
-**Secrets**: A specialized input for sensitive data, ensuring input is hidden in the UI.
-* **`SecretStrInput`** for API keys and passwords.
+**密钥**：用于敏感数据的专用输入，确保输入在 UI 中隐藏。
+* **`SecretStrInput`** 用于 API 密钥和密码。
 
-**Specialized Data Inputs**: Ensures type-checking and color-coded connections in the UI.
-* **`DataInput`** expects a `Data` object (typically with `.data` and optional `.text`).
-* **`MessageInput`** expects a `Message` object, used in chat or agent-based flows.
-* **`MessageTextInput`** simplifies access to the `.text` field of a `Message`.
+**专用数据输入**：确保 UI 中的类型检查和颜色编码连接。
+* **`DataInput`** 期望一个 `Data` 对象（通常带有 `.data` 和可选的 `.text`）。
+* **`MessageInput`** 期望一个 `Message` 对象，用于聊天或基于代理的流程。
+* **`MessageTextInput`** 简化对 `Message` 的 `.text` 字段的访问。
 
-**Handle-Based Inputs**: Used to connect outputs of specific types, ensuring correct pipeline connections.
+**基于句柄的输入**：用于连接特定类型的输出，确保正确的管道连接。
 - **`HandleInput`**
 
-**File Uploads**: Allows users to upload files directly through the UI or receive file paths from other components.
+**文件上传**：允许用户直接通过 UI 上传文件或从其他组件接收文件路径。
 - **`FileInput`**
 
-**Lists**: Set `is_list=True` to accept multiple values, ideal for batch or grouped operations.
+**列表**：设置 `is_list=True` 以接受多个值，适用于批处理或分组操作。
 
-This example defines three inputs: a text field (`StrInput`), a boolean toggle (`BoolInput`), and a dropdown selection (`DropdownInput`).
+此示例定义了三个输入：文本字段（`StrInput`）、布尔切换（`BoolInput`）和下拉选择（`DropdownInput`）。
 
 ```python
 from langflow.io import StrInput, BoolInput, DropdownInput
@@ -329,27 +329,27 @@ inputs = [
 ]
 ```
 
-### Outputs
+### 输出
 
-Outputs are defined in a class-level `outputs` list. When Langflow renders a component, each output becomes a connector point in the UI. When you connect something to an output, Langflow automatically calls the corresponding method and passes the returned object to the next component.
+输出在类级别的 `outputs` 列表中定义。当 Langflow 渲染组件时，每个输出成为 UI 中的连接点。当您将某些内容连接到输出时，Langflow 自动调用相应的方法并将返回的对象传递给下一个组件。
 
-An output is usually an instance of `Output` from `langflow.io`, with common parameters:
+输出通常是来自 `langflow.io` 的 `Output` 实例，具有常见参数：
 
-* **`name`**: The internal variable name.
-* **`display_name`**: The label shown in the UI.
-* **`method`**: The name of the method called to produce the output.
-* **`info`** *(optional)*: Help text shown on hover.
+* **`name`**：内部变量名。
+* **`display_name`**：在 UI 中显示的标签。
+* **`method`**：调用以产生输出的方法名称。
+* **`info`** *（可选）*：悬停时显示的帮助文本。
 
-The method must exist in the class, and it is recommended to annotate its return type for better type checking.
-You can also set a `self.status` message inside the method to show progress or logs.
+方法必须存在于类中，建议为其返回类型添加注释以进行更好的类型检查。
+您还可以在方法内设置 `self.status` 消息以显示进度或日志。
 
-**Common Return Types**:
-- **`Message`**: Structured chat messages.
-- **`Data`**: Flexible object with `.data` and optional `.text`.
-- **`DataFrame`**: Pandas-based tables (`langflow.schema.DataFrame`).
-- **Primitive types**: `str`, `int`, `bool` (not recommended if you need type/color consistency).
+**常见返回类型**：
+- **`Message`**：结构化聊天消息。
+- **`Data`**：具有 `.data` 和可选 `.text` 的灵活对象。
+- **`DataFrame`**：基于 Pandas 的表格（`langflow.schema.DataFrame`）。
+- **原始类型**：`str`、`int`、`bool`（如果需要类型/颜色一致性，则不推荐）。
 
-In this example, the `DataToDataFrame` component defines its output using the outputs list. The `df_out` output is linked to the `build_df` method, so when connected in the UI, Langflow calls this method and passes its returned DataFrame to the next node. This demonstrates how each output maps to a method that generates the actual output data.
+在此示例中，`DataToDataFrame` 组件使用输出列表定义其输出。`df_out` 输出链接到 `build_df` 方法，因此当在 UI 中连接时，Langflow 调用此方法并将其返回的 DataFrame 传递给下一个节点。这演示了每个输出如何映射到生成实际输出数据的方法。
 
 ```python
 from langflow.custom import Component
@@ -392,11 +392,11 @@ class DataToDataFrame(Component):
 ```
 
 
-### Tool mode
+### 工具模式
 
-You can configure a Custom Component to work as a **Tool** by setting the parameter `tool_mode=True`. This allows the component to be used in Langflow's Tool Mode workflows, such as by Agent components.
+您可以通过设置参数 `tool_mode=True` 将自定义组件配置为**工具**。这允许组件在 Langflow 的工具模式工作流中使用，例如被代理组件使用。
 
-Langflow currently supports the following input types for Tool Mode:
+Langflow 目前支持以下工具模式的输入类型：
 
 * `DataInput`
 * `DataFrameInput`
@@ -416,43 +416,43 @@ inputs = [
 ]
 ```
 
-## Typed annotations
+## 类型注释
 
-In Langflow, **typed annotations** allow Langflow to visually guide users and maintain flow consistency.
+在 Langflow 中，**类型注释**允许 Langflow 可视化地指导用户并保持流程一致性。
 
-Typed annotations provide:
+类型注释提供：
 
-* **Color-coding**: Outputs like `-> Data` or `-> Message` get distinct colors.
-* **Validation**: Langflow blocks incompatible connections automatically.
-* **Readability**: Developers can quickly understand data flow.
-* **Development tools**: Better code suggestions and error checking in your code editor.
+* **颜色编码**：像 `-> Data` 或 `-> Message` 这样的输出获得不同的颜色。
+* **验证**：Langflow 自动阻止不兼容的连接。
+* **可读性**：开发人员可以快速理解数据流。
+* **开发工具**：在代码编辑器中提供更好的代码建议和错误检查。
 
-### Common Return Types
+### 常见返回类型
 
 **`Message`**
 
-For chat-style outputs.
+用于聊天风格的输出。
 
 ```python
 def produce_message(self) -> Message:
     return Message(text="Hello! from typed method!", sender="System")
 ```
-In the UI, connects only to Message-compatible inputs.
+在 UI 中，仅连接到与 Message 兼容的输入。
 
 **`Data`**
 
-For structured data like dicts or partial texts.
+用于结构化数据，如字典或部分文本。
 ```python
 def get_processed_data(self) -> Data:
     processed = {"key1": "value1", "key2": 123}
     return Data(data=processed)
 ```
 
-In the UI, connects only with DataInput.
+在 UI 中，仅与 DataInput 连接。
 
 **`DataFrame`**
 
-For tabular data
+用于表格数据
 
 ```python
 def build_df(self) -> DataFrame:
@@ -461,36 +461,36 @@ def build_df(self) -> DataFrame:
 
 ```
 
-In the UI, connects only to DataFrameInput.
+在 UI 中，仅连接到 DataFrameInput。
 
-**Primitive Types (`str`, `int`, `bool`)**
+**原始类型（`str`、`int`、`bool`）**
 
-Returning primitives is allowed but wrapping in Data or Message is recommended for better UI consistency.
+返回原始类型是允许的，但建议包装在 Data 或 Message 中以获得更好的 UI 一致性。
 
 ```python
 def compute_sum(self) -> int:
     return sum(self.numbers)
 ```
 
-### Tips for typed annotations
+### 类型注释提示
 
-When using typed annotations, consider the following best practices:
+使用类型注释时，请考虑以下最佳实践：
 
-* **Always Annotate Outputs**: Specify return types like `-> Data`, `-> Message`, or `-> DataFrame` to enable proper UI color-coding and validation.
-* **Wrap Raw Data**: Use `Data`, `Message`, or `DataFrame` wrappers instead of returning plain structures.
-* **Use Primitives Carefully**: Direct `str` or `int` returns are fine for simple flows, but wrapping improves flexibility.
-* **Annotate Helpers Too**: Even if internal, typing improves maintainability and clarity.
-* **Handle Edge Cases**: Prefer returning structured `Data` with error fields when needed.
-* **Stay Consistent**: Use the same types across your components to make flows predictable and easier to build.
+* **始终注释输出**：指定返回类型，如 `-> Data`、`-> Message` 或 `-> DataFrame`，以启用正确的 UI 颜色编码和验证。
+* **包装原始数据**：使用 `Data`、`Message` 或 `DataFrame` 包装器，而不是返回普通结构。
+* **谨慎使用原始类型**：直接的 `str` 或 `int` 返回对于简单流程是可以的，但包装可以提高灵活性。
+* **也要注释辅助函数**：即使是内部的，类型化也能提高可维护性和清晰度。
+* **处理边缘情况**：需要时，优先返回带有错误字段的结构化 `Data`。
+* **保持一致性**：在组件之间使用相同的类型，使流程可预测且更易于构建。
 
 
-## Enable dynamic fields
+## 启用动态字段
 
-In **Langflow**, dynamic fields allow inputs to change or appear based on user interactions. You can make an input dynamic by setting `dynamic=True`.
-Optionally, setting `real_time_refresh=True` triggers the `update_build_config` method to adjust the input's visibility or properties in real time, creating a contextual UI that only displays relevant fields based on the user's choices.
+在 **Langflow** 中，动态字段允许输入根据用户交互而改变或显示。您可以通过设置 `dynamic=True` 使输入动态化。
+可选地，设置 `real_time_refresh=True` 会触发 `update_build_config` 方法，以实时调整输入的可见性或属性，创建一个仅根据用户选择显示相关字段的上下文 UI。
 
-In this example, the operator field triggers updates via `real_time_refresh=True`.
-The `regex_pattern` field is initially hidden and controlled via `dynamic=True`.
+在此示例中，operator 字段通过 `real_time_refresh=True` 触发更新。
+`regex_pattern` 字段最初是隐藏的，通过 `dynamic=True` 控制。
 
 ```python
 from langflow.io import DropdownInput, StrInput
@@ -517,11 +517,11 @@ class RegexRouter(Component):
     ]
 ```
 
-### Implement `update_build_config`
+### 实现 `update_build_config`
 
-When a field with `real_time_refresh=True` is modified, Langflow calls the `update_build_config` method, passing the updated field name, value, and the component's configuration to dynamically adjust the visibility or properties of other fields based on user input.
+当修改具有 `real_time_refresh=True` 的字段时，Langflow 调用 `update_build_config` 方法，传递更新的字段名、值和组件配置，以根据用户输入动态调整其他字段的可见性或属性。
 
-This example will show or hide the `regex_pattern` field when the user selects a different operator.
+此示例将在用户选择不同的操作符时显示或隐藏 `regex_pattern` 字段。
 
 ```python
 def update_build_config(self, build_config: dict, field_value: str, field_name: str | None = None) -> dict:
@@ -533,42 +533,42 @@ def update_build_config(self, build_config: dict, field_value: str, field_name: 
     return build_config
 ```
 
-### Additional Dynamic Field Controls
+### 其他动态字段控制
 
-You can also modify other properties within `update_build_config`, such as:
-* `required`: Set `build_config["some_field"]["required"] = True/False`
+您还可以在 `update_build_config` 中修改其他属性，例如：
+* `required`：设置 `build_config["some_field"]["required"] = True/False`
 
-* `advanced`: Set `build_config["some_field"]["advanced"] = True`
+* `advanced`：设置 `build_config["some_field"]["advanced"] = True`
 
-* `options`: Modify dynamic dropdown options.
+* `options`：修改动态下拉选项。
 
-### Tips for Managing Dynamic Fields
+### 管理动态字段的提示
 
-When working with dynamic fields, consider the following best practices to ensure a smooth user experience:
+处理动态字段时，请考虑以下最佳实践以确保流畅的用户体验：
 
-* **Minimize field changes**: Hide only fields that are truly irrelevant to avoid confusing users.
-* **Test behavior**: Ensure that adding or removing fields doesn't accidentally erase user input.
-* **Preserve data**: Use `build_config["some_field"]["show"] = False` to hide fields without losing their values.
-* **Clarify logic**: Add `info` notes to explain why fields appear or disappear based on conditions.
-* **Keep it manageable**: If the dynamic logic becomes too complex, consider breaking it into smaller components, unless it serves a clear purpose in a single node.
+* **最小化字段更改**：只隐藏真正不相关的字段，以避免混淆用户。
+* **测试行为**：确保添加或删除字段不会意外删除用户输入。
+* **保存数据**：使用 `build_config["some_field"]["show"] = False` 隐藏字段而不丢失其值。
+* **澄清逻辑**：添加 `info` 注释来解释字段为什么会根据条件出现或消失。
+* **保持可管理性**：如果动态逻辑变得太复杂，考虑将其分解为更小的组件，除非它在单个节点中有明确的目的。
 
 
-## Error handling and logging
+## 错误处理和日志记录
 
-In Langflow, robust error handling ensures that your components behave predictably, even when unexpected situations occur, such as invalid inputs, external API failures, or internal logic errors.
+在 Langflow 中，强大的错误处理确保您的组件行为可预测，即使在发生意外情况时也是如此，例如无效输入、外部 API 故障或内部逻辑错误。
 
-### Error handling techniques
+### 错误处理技术
 
-* **Raise Exceptions**:
-  If a critical error occurs, you can raise standard Python exceptions such as `ValueError`, or specialized exceptions like `ToolException`. Langflow will automatically catch these and display appropriate error messages in the UI, helping users quickly identify what went wrong.
+* **抛出异常**：
+  如果发生严重错误，您可以抛出标准的 Python 异常，如 `ValueError`，或专门的异常，如 `ToolException`。Langflow 将自动捕获这些异常并在 UI 中显示适当的错误消息，帮助用户快速识别问题所在。
   ```python
   def compute_result(self) -> str:
       if not self.user_input:
           raise ValueError("No input provided.")
       # ...
   ```
-* **Return Structured Error Data**:
-  Instead of stopping a flow abruptly, you can return a Data object containing an "error" field. This approach allows the flow to continue operating and enables downstream components to detect and handle the error gracefully.
+* **返回结构化错误数据**：
+  您可以返回包含"error"字段的 Data 对象，而不是突然停止流程。这种方法允许流程继续运行，并使下游组件能够检测和优雅地处理错误。
   ```python
   def run_model(self) -> Data:
     try:
@@ -577,44 +577,44 @@ In Langflow, robust error handling ensures that your components behave predictab
         return Data(data={"error": str(e)})
   ```
 
-### Improve debugging and flow management
+### 改进调试和流程管理
 
-* **Use `self.status`**:
-  Each component has a status field where you can store short messages about the execution result—such as success summaries, partial progress, or error notifications. These appear directly in the UI, making troubleshooting easier for users.
+* **使用 `self.status`**：
+  每个组件都有一个状态字段，您可以在其中存储有关执行结果的简短消息——例如成功摘要、部分进度或错误通知。这些直接出现在 UI 中，使用户更容易进行故障排除。
   ```python
   def parse_data(self) -> Data:
   # ...
   self.status = f"Parsed {len(rows)} rows successfully."
   return Data(data={"rows": rows})
   ```
-* **Stop specific outputs with `self.stop(...)`**:
-  You can halt individual output paths when certain conditions fail, without affecting the entire component. This is especially useful when working with components that have multiple output branches.
+* **使用 `self.stop(...)` 停止特定输出**：
+  当某些条件失败时，您可以停止个别输出路径，而不影响整个组件。这在处理具有多个输出分支的组件时特别有用。
   ```python
   def some_output(self) -> Data:
   if <some condition>:
-      self.stop("some_output")  # Tells Langflow no data flows
+      self.stop("some_output")  # 告诉 Langflow 没有数据流
       return Data(data={"error": "Condition not met"})
   ```
 
-* **Log events**:
-  You can log key execution details inside components. Logs are displayed in the "Logs" or "Events" section of the component's detail view and can be accessed later through the flow's debug panel or exported files, providing a clear trace of the component's behavior for easier debugging.
+* **记录事件**：
+  您可以在组件内记录关键执行详细信息。日志显示在组件详细视图的"日志"或"事件"部分，稍后可以通过流程的调试面板或导出文件访问，为更容易的调试提供清晰的组件行为轨迹。
   ```python
   def process_file(self, file_path: str):
   self.log(f"Processing file {file_path}")
   # ...
   ```
 
-### Tips for error handling and logging
+### 错误处理和日志记录提示
 
-To build more reliable components, consider the following best practices:
+要构建更可靠的组件，请考虑以下最佳实践：
 
-* **Validate inputs early**: Catch missing or invalid inputs at the start to prevent broken logic.
-* **Summarize with `self.status`**: Use short success or error summaries to help users understand results quickly.
-* **Keep logs concise**: Focus on meaningful messages to avoid cluttering the UI.
-* **Return structured errors**: When appropriate, return `Data(data={"error": ...})` instead of raising exceptions to allow downstream handling.
-* **Stop outputs selectively**: Only halt specific outputs with `self.stop(...)` if necessary, to preserve correct flow behavior elsewhere.
+* **早期验证输入**：在开始时捕获缺失或无效的输入，以防止逻辑错误。
+* **使用 `self.status` 总结**：使用简短的成功或错误摘要帮助用户快速理解结果。
+* **保持日志简洁**：专注于有意义的消息，避免使 UI 混乱。
+* **返回结构化错误**：适当时，返回 `Data(data={"error": ...})` 而不是抛出异常，以允许下游处理。
+* **有选择地停止输出**：仅在必要时使用 `self.stop(...)` 停止特定输出，以保持其他地方的正确流程行为。
 
-## Contribute custom components to Langflow
+## 向 Langflow 贡献自定义组件
 
-See [How to Contribute](/contributing-components) to contribute your custom component to Langflow.
+请参阅[如何贡献](/contributing-components)以向 Langflow 贡献您的自定义组件。
 

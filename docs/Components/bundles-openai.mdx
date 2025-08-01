@@ -5,78 +5,78 @@ slug: /bundles-openai
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components)包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **OpenAI** bundle.
+本页介绍了 **OpenAI** 组件包中可用的组件。
 
-For more information about OpenAI features and functionality used by OpenAI components, see the [OpenAI documentation](https://platform.openai.com/docs/overview).
+有关 OpenAI 组件所使用的 OpenAI 功能和特性的更多信息，请参阅 [OpenAI 文档](https://platform.openai.com/docs/overview)。
 
-## OpenAI text generation
+## OpenAI 文本生成
 
-The **OpenAI** component generates text using [OpenAI's language models](https://platform.openai.com/docs/models).
+**OpenAI** 组件使用 [OpenAI 语言模型](https://platform.openai.com/docs/models)生成文本。
 
-It provides access to the same OpenAI models that are available in the core **Language Model** component, but the **OpenAI** component provides additional parameters for customizing the request to the OpenAI API.
+它提供对核心**语言模型**组件中可用的相同 OpenAI 模型的访问，但 **OpenAI** 组件提供了额外的参数来自定义对 OpenAI API 的请求。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+它可以输出**模型响应** ([`Message`](/data-types#message)) 或**语言模型** ([`LanguageModel`](/data-types#languagemodel))。
 
-Use the **Language Model** output when you want to use a specific OpenAI model configuration as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要将特定的 OpenAI 模型配置用作另一个LLM驱动组件（如**语言模型**或**智能函数**组件）的 LLM 时，请使用**语言模型**输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅[**语言模型**组件](/components-models)。
 
-### OpenAI text generation parameters
+### OpenAI 文本生成参数
 
-Many **OpenAI** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **OpenAI** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| api_key | SecretString | Input parameter. Your OpenAI API Key. |
-| model | String | Input parameter. The name of the OpenAI model to use. Options include "gpt-3.5-turbo" and "gpt-4". |
-| max_tokens | Integer | Input parameter. The maximum number of tokens to generate. Set to 0 for unlimited tokens. |
-| temperature | Float | Input parameter. Controls randomness in the output. Range: [0.0, 1.0]. Default: 0.7. |
-| top_p | Float | Input parameter. Controls the nucleus sampling. Range: [0.0, 1.0]. Default: 1.0. |
-| frequency_penalty | Float | Input parameter. Controls the frequency penalty. Range: [0.0, 2.0]. Default: 0.0. |
-| presence_penalty | Float | Input parameter. Controls the presence penalty. Range: [0.0, 2.0]. Default: 0.0. |
+| api_key | SecretString | 输入参数。您的 OpenAI API 密钥。 |
+| model | String | 输入参数。要使用的 OpenAI 模型名称。选项包括 "gpt-3.5-turbo" 和 "gpt-4"。 |
+| max_tokens | Integer | 输入参数。要生成的最大令牌数。设置为 0 表示无限制令牌。 |
+| temperature | Float | 输入参数。控制输出的随机性。范围：[0.0, 1.0]。默认值：0.7。 |
+| top_p | Float | 输入参数。控制核采样。范围：[0.0, 1.0]。默认值：1.0。 |
+| frequency_penalty | Float | 输入参数。控制频率惩罚。范围：[0.0, 2.0]。默认值：0.0。 |
+| presence_penalty | Float | 输入参数。控制存在惩罚。范围：[0.0, 2.0]。默认值：0.0。 |
 
 ## OpenAI Embeddings
 
-The **OpenAI Embeddings** component uses [OpenAI embedding models](https://platform.openai.com/docs/guides/embeddings) for embedding generation.
+**OpenAI Embeddings** 组件使用 [OpenAI 嵌入模型](https://platform.openai.com/docs/guides/embeddings)进行嵌入生成。
 
-It provides access to the same OpenAI models that are available in the core **Embedding Model** component, but the **OpenAI Embeddings** component provides additional parameters for customizing the request to the OpenAI embedding API.
+它提供对核心**嵌入模型**组件中可用的相同 OpenAI 模型的访问，但 **OpenAI Embeddings** 组件提供了额外的参数来自定义对 OpenAI 嵌入 API 的请求。
 
-For more information about using embedding model components in flows, see [**Embedding Model** components](/components-embedding-models).
+有关在流程中使用嵌入模型组件的更多信息，请参阅[**嵌入模型**组件](/components-embedding-models)。
 
-### OpenAI Embeddings parameters
+### OpenAI Embeddings 参数
 
-Many **OpenAI Embeddings** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **OpenAI Embeddings** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| OpenAI API Key | String | Input parameter. The API key to use for accessing the OpenAI API. |
-| Default Headers | Dict | Input parameter. The default headers for the HTTP requests. |
-| Default Query | NestedDict | Input parameter. The default query parameters for the HTTP requests. |
-| Allowed Special | List | Input parameter. The special tokens allowed for processing. Default: `[]`. |
-| Disallowed Special | List | Input parameter. The special tokens disallowed for processing. Default: `["all"]`. |
-| Chunk Size | Integer | Input parameter. The chunk size for processing. Default: `1000`. |
-| Client | Any | Input parameter. The HTTP client for making requests. |
-| Deployment | String | Input parameter. The deployment name for the model. Default: `text-embedding-3-small`. |
-| Embedding Context Length | Integer | Input parameter. The length of embedding context. Default: `8191`. |
-| Max Retries | Integer | Input parameter. The maximum number of retries for failed requests. Default: `6`. |
-| Model | String | Input parameter. The name of the model to use. Default: `text-embedding-3-small`. |
-| Model Kwargs | NestedDict | Input parameter. Additional keyword arguments for the model. |
-| OpenAI API Base | String | Input parameter. The base URL of the OpenAI API. |
-| OpenAI API Type | String | Input parameter. The type of the OpenAI API. |
-| OpenAI API Version | String | Input parameter. The version of the OpenAI API. |
-| OpenAI Organization | String | Input parameter. The organization associated with the API key. |
-| OpenAI Proxy | String | Input parameter. The proxy server for the requests. |
-| Request Timeout | Float | Input parameter. The timeout for the HTTP requests. |
-| Show Progress Bar | Boolean | Input parameter. Whether to show a progress bar for processing. Default: `False`. |
-| Skip Empty | Boolean | Input parameter. Whether to skip empty inputs. Default: `False`. |
-| TikToken Enable | Boolean | Input parameter. Whether to enable TikToken. Default: `True`. |
-| TikToken Model Name | String | Input parameter. The name of the TikToken model. |
+| OpenAI API Key | String | 输入参数。用于访问 OpenAI API 的 API 密钥。 |
+| Default Headers | Dict | 输入参数。HTTP 请求的默认标头。 |
+| Default Query | NestedDict | 输入参数。HTTP 请求的默认查询参数。 |
+| Allowed Special | List | 输入参数。允许处理的特殊令牌。默认值：`[]`。 |
+| Disallowed Special | List | 输入参数。不允许处理的特殊令牌。默认值：`["all"]`。 |
+| Chunk Size | Integer | 输入参数。处理的块大小。默认值：`1000`。 |
+| Client | Any | 输入参数。用于发出请求的 HTTP 客户端。 |
+| Deployment | String | 输入参数。模型的部署名称。默认值：`text-embedding-3-small`。 |
+| Embedding Context Length | Integer | 输入参数。嵌入上下文的长度。默认值：`8191`。 |
+| Max Retries | Integer | 输入参数。失败请求的最大重试次数。默认值：`6`。 |
+| Model | String | 输入参数。要使用的模型名称。默认值：`text-embedding-3-small`。 |
+| Model Kwargs | NestedDict | 输入参数。模型的附加关键字参数。 |
+| OpenAI API Base | String | 输入参数。OpenAI API 的基础 URL。 |
+| OpenAI API Type | String | 输入参数。OpenAI API 的类型。 |
+| OpenAI API Version | String | 输入参数。OpenAI API 的版本。 |
+| OpenAI Organization | String | 输入参数。与 API 密钥关联的组织。 |
+| OpenAI Proxy | String | 输入参数。请求的代理服务器。 |
+| Request Timeout | Float | 输入参数。HTTP 请求的超时时间。 |
+| Show Progress Bar | Boolean | 输入参数。是否显示处理进度条。默认值：`False`。 |
+| Skip Empty | Boolean | 输入参数。是否跳过空输入。默认值：`False`。 |
+| TikToken Enable | Boolean | 输入参数。是否启用 TikToken。默认值：`True`。 |
+| TikToken Model Name | String | 输入参数。TikToken 模型的名称。 |
 
-## See also
+## 另请参阅
 
-* [**Agent** component](/components-agents)
-* [LangChain **OpenAI Tools Agent** component](/bundles-langchain#openai-tools-agent)
+* [**Agent** 组件](/components-agents)
+* [LangChain **OpenAI Tools Agent** 组件](/bundles-langchain#openai-tools-agent)

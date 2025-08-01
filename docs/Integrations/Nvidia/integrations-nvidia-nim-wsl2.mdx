@@ -1,30 +1,30 @@
 ---
-title:  Integrate NVIDIA NIMs with Langflow
+title:  将 NVIDIA NIMs 与 Langflow 集成
 slug: /integrations-nvidia-ingest-wsl2
 ---
 
-Connect **Langflow** with **NVIDIA NIM** on an RTX Windows system with [Windows Subsystem for Linux 2 (WSL2)](https://learn.microsoft.com/en-us/windows/wsl/install) installed.
+在安装了 [Windows Subsystem for Linux 2 (WSL2)](https://learn.microsoft.com/en-us/windows/wsl/install) 的 RTX Windows 系统上连接 **Langflow** 与 **NVIDIA NIM**。
 
-[NVIDIA NIM (NVIDIA Inference Microservices)](https://docs.nvidia.com/nim/index.html) provides containers to self-host GPU-accelerated inferencing microservices.
-In this example, you connect a model component in **Langflow** to a deployed `mistral-nemo-12b-instruct` NIM on an **RTX Windows system** with **WSL2**.
+[NVIDIA NIM (NVIDIA Inference Microservices)](https://docs.nvidia.com/nim/index.html) 提供容器来自托管 GPU 加速的推理微服务。
+在这个示例中，您将 **Langflow** 中的模型组件连接到在 **RTX Windows 系统** 上使用 **WSL2** 部署的 `mistral-nemo-12b-instruct` NIM。
 
-For more information on NVIDIA NIM, see the [NVIDIA documentation](https://docs.nvidia.com/nim/index.html).
+有关 NVIDIA NIM 的更多信息，请参阅 [NVIDIA 文档](https://docs.nvidia.com/nim/index.html)。
 
-## Prerequisites
+## 先决条件
 
-* [NVIDIA NIM WSL2 installed](https://docs.nvidia.com/nim/wsl2/latest/getting-started.html)
-* A NIM container deployed according to the model's instructions. Prerequisites vary between models.
-For example, to deploy the `mistral-nemo-12b-instruct` NIM, follow the instructions for **Windows on RTX AI PCs (Beta)** on your [model's deployment overview](https://build.nvidia.com/nv-mistralai/mistral-nemo-12b-instruct/deploy?environment=wsl2.md)
-* Windows 11 build 23H2 or later
-* At least 12 GB of RAM
+* [已安装 NVIDIA NIM WSL2](https://docs.nvidia.com/nim/wsl2/latest/getting-started.html)
+* 根据模型说明部署的 NIM 容器。不同模型的先决条件有所不同。
+例如，要部署 `mistral-nemo-12b-instruct` NIM，请按照您的[模型部署概述](https://build.nvidia.com/nv-mistralai/mistral-nemo-12b-instruct/deploy?environment=wsl2.md)中的 **Windows on RTX AI PCs (Beta)** 说明进行操作
+* Windows 11 build 23H2 或更高版本
+* 至少 12 GB 的 RAM
 
-## Use the NVIDIA NIM in a flow
+## 在流程中使用 NVIDIA NIM
 
-To connect the NIM you've deployed with Langflow, add the **NVIDIA** model component to a flow.
+要将您部署的 NIM 与 Langflow 连接，请将 **NVIDIA** 模型组件添加到流程中。
 
-1. Create a [basic prompting flow](/get-started-quickstart).
-2. Replace the **OpenAI** model component with the **NVIDIA** component.
-3. In the **NVIDIA** component's **Base URL** field, add the URL where your NIM is accessible. If you followed your model's [deployment instructions](https://build.nvidia.com/nv-mistralai/mistral-nemo-12b-instruct/deploy?environment=wsl2.md), the value is `http://localhost:8000/v1`.
-4. In the **NVIDIA** component's **NVIDIA API Key** field, add your NVIDIA API Key.
-5. Select your model from the **Model Name** dropdown.
-6. Open the **Playground** and chat with your **NIM** model.
+1. 创建一个[基本提示流程](/get-started-quickstart)。
+2. 将 **OpenAI** 模型组件替换为 **NVIDIA** 组件。
+3. 在 **NVIDIA** 组件的 **Base URL** 字段中，添加您的 NIM 可访问的 URL。如果您按照模型的[部署说明](https://build.nvidia.com/nv-mistralai/mistral-nemo-12b-instruct/deploy?environment=wsl2.md)进行操作，该值为 `http://localhost:8000/v1`。
+4. 在 **NVIDIA** 组件的 **NVIDIA API Key** 字段中，添加您的 NVIDIA API Key。
+5. 从 **Model Name** 下拉菜单中选择您的模型。
+6. 打开 **Playground** 并与您的 **NIM** 模型聊天。

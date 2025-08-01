@@ -56,64 +56,64 @@ docker run -it --rm \
 
 如果您的 `.env` 文件不在同一目录中，请提供 `.env` 文件的路径。
 
-### Langflow service
+### Langflow 服务
 
-The `langflow`service serves both the backend API and frontend UI of the Langflow web application.
+`langflow` 服务提供 Langflow Web 应用程序的后端 API 和前端 UI。
 
-The `langflow` service uses the `langflowai/langflow:latest` Docker image and exposes port `7860`. It depends on the `postgres` service.
+`langflow` 服务使用 `langflowai/langflow:latest` Docker 镜像并暴露端口 `7860`。它依赖于 `postgres` 服务。
 
-Environment variables:
+环境变量：
 
-- `LANGFLOW_DATABASE_URL`: The connection string for the PostgreSQL database.
-- `LANGFLOW_CONFIG_DIR`: The directory where Langflow stores logs, file storage, monitor data, and secret keys.
+- `LANGFLOW_DATABASE_URL`：PostgreSQL 数据库的连接字符串。
+- `LANGFLOW_CONFIG_DIR`：Langflow 存储日志、文件存储、监控数据和密钥的目录。
 
-Volumes:
+卷：
 
-- `langflow-data`: This volume is mapped to `/app/langflow` in the container.
+- `langflow-data`：此卷映射到容器中的 `/app/langflow`。
 
-### PostgreSQL service
+### PostgreSQL 服务
 
-The `postgres` service is a database that stores Langflow's persistent data including flows, users, and settings.
+`postgres` 服务是一个数据库，用于存储 Langflow 的持久性数据，包括流程、用户和设置。
 
-The service runs on port 5432 and includes a dedicated volume for data storage.
+该服务在端口 5432 上运行，并包含专用的数据存储卷。
 
-The `postgres` service uses the `postgres:16` Docker image.
+`postgres` 服务使用 `postgres:16` Docker 镜像。
 
-Environment variables:
+环境变量：
 
-- `POSTGRES_USER`: The username for the PostgreSQL database.
-- `POSTGRES_PASSWORD`: The password for the PostgreSQL database.
-- `POSTGRES_DB`: The name of the PostgreSQL database.
+- `POSTGRES_USER`：PostgreSQL 数据库的用户名。
+- `POSTGRES_PASSWORD`：PostgreSQL 数据库的密码。
+- `POSTGRES_DB`：PostgreSQL 数据库的名称。
 
-Volumes:
+卷：
 
-- `langflow-postgres`: This volume is mapped to `/var/lib/postgresql/data` in the container.
+- `langflow-postgres`：此卷映射到容器中的 `/var/lib/postgresql/data`。
 
-### Deploy a specific Langflow version with Docker Compose
+### 使用 Docker Compose 部署特定的 Langflow 版本
 
-If you want to deploy a specific version of Langflow, you can modify the `image` field under the `langflow` service in the Docker Compose file. For example, to use version `1.0-alpha`, change `langflowai/langflow:latest` to `langflowai/langflow:1.0-alpha`.
+如果您想部署特定版本的 Langflow，可以修改 Docker Compose 文件中 `langflow` 服务下的 `image` 字段。例如，要使用版本 `1.0-alpha`，请将 `langflowai/langflow:latest` 更改为 `langflowai/langflow:1.0-alpha`。
 
-## Package your flow as a Docker image {#package-your-flow-as-a-docker-image}
+## 将您的流程打包为 Docker 镜像 {#package-your-flow-as-a-docker-image}
 
-You can include your Langflow flow with the application image.
-When you build the image, your saved flow `.JSON` flow is included.
-This enables you to serve a flow from a container, push the image to Docker Hub, and deploy on Kubernetes.
+您可以将 Langflow 流程包含在应用程序镜像中。
+当您构建镜像时，您保存的流程 `.JSON` 文件会被包含在内。
+这使您能够从容器中提供流程服务，将镜像推送到 Docker Hub，并在 Kubernetes 上部署。
 
-An example flow is available in the [Langflow Helm Charts](https://github.com/langflow-ai/langflow-helm-charts/tree/main/examples/flows) repository, or you can provide your own `JSON` file.
+示例流程可在 [Langflow Helm Charts](https://github.com/langflow-ai/langflow-helm-charts/tree/main/examples/flows) 仓库中找到，或者您可以提供自己的 `JSON` 文件。
 
-1. Create a project directory:
+1. 创建项目目录：
 
 ```bash
 mkdir langflow-custom && cd langflow-custom
 ```
 
-2. Download the example flow or include your flow's `.JSON` file in the `langflow-custom` directory.
+2. 下载示例流程或将您的流程 `.JSON` 文件包含在 `langflow-custom` 目录中。
 
 ```bash
 wget https://raw.githubusercontent.com/langflow-ai/langflow-helm-charts/refs/heads/main/examples/flows/basic-prompting-hello-world.json
 ```
 
-3. Create a Dockerfile:
+3. 创建 Dockerfile：
 
 ```dockerfile
 FROM langflowai/langflow-backend:latest
@@ -122,77 +122,77 @@ COPY ./*.json /app/flows/
 ENV LANGFLOW_LOAD_FLOWS_PATH=/app/flows
 ```
 
-The `COPY ./*json` command copies all JSON files in your current directory to the `/flows` folder.
+`COPY ./*json` 命令将当前目录中的所有 JSON 文件复制到 `/flows` 文件夹。
 
-The `ENV LANGFLOW_LOAD_FLOWS_PATH=/app/flows` command sets the environment variable within the Docker container. By pointing it to `/app/flows`, you ensure that the application can find and utilize the JSON flow files that have been copied into that directory during the image build process.
+`ENV LANGFLOW_LOAD_FLOWS_PATH=/app/flows` 命令在 Docker 容器内设置环境变量。通过将其指向 `/app/flows`，您可以确保应用程序能够找到并使用在镜像构建过程中复制到该目录的 JSON 流程文件。
 
-4. Build and run the image locally.
+4. 在本地构建并运行镜像。
 
 ```bash
 docker build -t myuser/langflow-hello-world:1.0.0 .
 docker run -p 7860:7860 myuser/langflow-hello-world:1.0.0
 ```
 
-5. Build and push the image to Docker Hub.
-   Replace `myuser` with your Docker Hub username.
+5. 构建镜像并推送到 Docker Hub。
+   将 `myuser` 替换为您的 Docker Hub 用户名。
 
 ```bash
 docker build -t myuser/langflow-hello-world:1.0.0 .
 docker push myuser/langflow-hello-world:1.0.0
 ```
 
-To deploy the image with Helm, see [Deploy the Langflow production environment on Kubernetes](/deployment-kubernetes-prod).
+要使用 Helm 部署镜像，请参阅[在 Kubernetes 上部署 Langflow 生产环境](/deployment-kubernetes-prod)。
 
-## Customize the Langflow Docker image with your own code
+## 使用您自己的代码自定义 Langflow Docker 镜像
 
-You can customize the Langflow Docker image by adding your own code or modifying existing components.
+您可以通过添加自己的代码或修改现有组件来自定义 Langflow Docker 镜像。
 
-This example Dockerfile demonstrates how to customize Langflow by replacing the `astradb_graph.py` component, but the pattern can be adapted for any other components or custom code.
+此示例 Dockerfile 演示了如何通过替换 `astradb_graph.py` 组件来自定义 Langflow，但这种模式可以适用于任何其他组件或自定义代码。
 
 ```dockerfile
 FROM langflowai/langflow:latest
-# Set working directory
+# 设置工作目录
 WORKDIR /app
-# Copy your modified astradb_graph.py file
+# 复制您修改的 astradb_graph.py 文件
 COPY src/backend/base/langflow/components/vectorstores/astradb_graph.py /tmp/astradb_graph.py
-# Find the site-packages directory where langflow is installed
+# 查找安装 langflow 的 site-packages 目录
 RUN python -c "import site; print(site.getsitepackages()[0])" > /tmp/site_packages.txt
-# Replace the file in the site-packages location
+# 在 site-packages 位置替换文件
 RUN SITE_PACKAGES=$(cat /tmp/site_packages.txt) && \
     echo "Site packages at: $SITE_PACKAGES" && \
     mkdir -p "$SITE_PACKAGES/langflow/components/vectorstores" && \
     cp /tmp/astradb_graph.py "$SITE_PACKAGES/langflow/components/vectorstores/"
-# Clear Python cache in the site-packages directory only
+# 仅清理 site-packages 目录中的 Python 缓存
 RUN SITE_PACKAGES=$(cat /tmp/site_packages.txt) && \
     find "$SITE_PACKAGES" -name "*.pyc" -delete && \
     find "$SITE_PACKAGES" -name "__pycache__" -type d -exec rm -rf {} +
-# Expose the default Langflow port
+# 暴露默认的 Langflow 端口
 EXPOSE 7860
-# Command to run Langflow
+# 运行 Langflow 的命令
 CMD ["python", "-m", "langflow", "run", "--host", "0.0.0.0", "--port", "7860"]
 ```
 
-To use this custom Dockerfile, do the following:
+要使用此自定义 Dockerfile，请执行以下操作：
 
-1. Create a directory for your custom Langflow setup:
+1. 为您的自定义 Langflow 设置创建目录：
 ```bash
 mkdir langflow-custom && cd langflow-custom
 ```
 
-2. Create the necessary directory structure for your custom code.
-In this example, Langflow expects `astradb_graph.py` to exist in the `/vectorstores` directory, so you create a directory in that location.
+2. 为您的自定义代码创建必要的目录结构。
+在此示例中，Langflow 期望 `astradb_graph.py` 存在于 `/vectorstores` 目录中，因此您需要在该位置创建目录。
 ```bash
 mkdir -p src/backend/base/langflow/components/vectorstores
 ```
 
-3. Place your modified `astradb_graph.py` file in the `/vectorstores` directory.
+3. 将您修改的 `astradb_graph.py` 文件放在 `/vectorstores` 目录中。
 
-4. Create a new file named `Dockerfile` in your `langflow-custom` directory, and then copy the Dockerfile contents shown above into it.
+4. 在您的 `langflow-custom` 目录中创建名为 `Dockerfile` 的新文件，然后将上面显示的 Dockerfile 内容复制到其中。
 
-5. Build and run the image:
+5. 构建并运行镜像：
 ```bash
 docker build -t myuser/langflow-custom:1.0.0 .
 docker run -p 7860:7860 myuser/langflow-custom:1.0.0
 ```
 
-This approach can be adapted for any other components or custom code you want to add to Langflow by modifying the file paths and component names.
+这种方法可以适用于您想要添加到 Langflow 的任何其他组件或自定义代码，只需修改文件路径和组件名称即可。

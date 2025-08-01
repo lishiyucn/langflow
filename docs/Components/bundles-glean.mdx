@@ -5,29 +5,29 @@ slug: /bundles-glean
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Glean** bundle.
+本页面描述了 **Glean** bundle 中可用的组件。
 
 ## Glean Search API
 
-This component allows you to call the Glean Search API.
+此组件允许您调用 Glean Search API。
 
-It returns a list of search results as a [`DataFrame`](/data-types#dataframe).
+它返回搜索结果列表作为 [`DataFrame`](/data-types#dataframe)。
 
-### Glean Search API parameters
+### Glean Search API 参数
 
-Some **Glean Search API** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+**Glean Search API** 组件的一些输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| glean_api_url | String | Input parameter. The URL of the Glean API. |
-| glean_access_token | SecretString | Input parameter. An access token for Glean API authentication. |
-| query | String | Input parameter. The search query input. |
-| page_size | Integer | Input parameter. The number of results per page. Default: 10. |
-| request_options | Dict | Input parameter. Additional options for the API request. |
+| glean_api_url | String | 输入参数。Glean API 的 URL。 |
+| glean_access_token | SecretString | 输入参数。用于 Glean API 身份验证的访问令牌。 |
+| query | String | 输入参数。搜索查询输入。 |
+| page_size | Integer | 输入参数。每页结果数量。默认：10。 |
+| request_options | Dict | 输入参数。API 请求的附加选项。 |
 
-## See also
+## 另请参阅
 
-* [**Web Search** component](/components-data#web-search)
+* [**Web Search** 组件](/components-data#web-search)

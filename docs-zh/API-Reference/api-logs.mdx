@@ -1,18 +1,18 @@
 ---
-title: Logs endpoints
+title: 日志端点
 slug: /api-logs
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Retrieve logs for your Langflow flow.
+检索您的 Langflow 流程的日志。
 
-## Enable log retrieval
+## 启用日志检索
 
-The `/logs` endpoint requires log retrieval to be enabled in your Langflow instance.
+`/logs` 端点需要在您的 Langflow 实例中启用日志检索功能。
 
-1. To enable log retrieval, include these values in your `.env` file:
+1. 要启用日志检索，请在您的 `.env` 文件中包含这些值：
 
     ```text
     LANGFLOW_ENABLE_LOG_RETRIEVAL=true
@@ -20,17 +20,17 @@ The `/logs` endpoint requires log retrieval to be enabled in your Langflow insta
     LANGFLOW_LOG_LEVEL=DEBUG
     ```
 
-    Log retrieval requires that `LANGFLOW_LOG_RETRIEVER_BUFFER_SIZE` is greater than 0. The default value is `10000`.
+    日志检索要求 `LANGFLOW_LOG_RETRIEVER_BUFFER_SIZE` 大于 0。默认值为 `10000`。
 
-2. Start Langflow with the updated `.env`:
+2. 使用更新后的 `.env` 启动 Langflow：
 
    ```text
    uv run langflow run --env-file .env
    ```
 
-## Stream logs
+## 流式传输日志
 
-Stream logs in real-time using Server Sent Events (SSE).
+使用服务器发送事件 (SSE) 实时流式传输日志。
 
 ```bash
 curl -X GET \
@@ -40,7 +40,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```text
 keepalive
@@ -64,16 +64,16 @@ keepalive
 
 </details>
 
-## Retrieve logs with optional parameters
+## 使用可选参数检索日志
 
-Retrieve logs with optional query parameters:
+使用可选查询参数检索日志：
 
-- `lines_before`: The number of logs before the timestamp or the last log.
-- `lines_after`: The number of logs after the timestamp.
-- `timestamp`: The timestamp to start getting logs from.
+- `lines_before`：时间戳之前或最后一条日志之前的日志数量。
+- `lines_after`：时间戳之后的日志数量。
+- `timestamp`：开始获取日志的时间戳。
 
-The default values for all three parameters is `0`.
-With default values, the endpoint returns the last 10 lines of logs.
+所有三个参数的默认值都是 `0`。
+使用默认值时，端点返回最后 10 行日志。
 
 ```bash
 curl -X GET \
@@ -83,7 +83,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```text
 {

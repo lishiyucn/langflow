@@ -1,21 +1,21 @@
 ---
-title: Users endpoints
+title: 用户端点
 slug: /api-users
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Use the `/users` endpoint to manage user accounts in Langflow.
+使用 `/users` 端点来管理 Langflow 中的用户账户。
 
-The `user_id` value is specifically for Langflow's user system, which is stored in the Langflow database and managed at the `/users` API endpoint.
-The `user_id` primary key in the Langflow database is mapped to the `id` value in the API.
+`user_id` 值专门用于 Langflow 的用户系统，它存储在 Langflow 数据库中并通过 `/users` API 端点进行管理。
+Langflow 数据库中的 `user_id` 主键映射到 API 中的 `id` 值。
 
-## Add user
+## 添加用户
 
-Create a new user account with a username and password.
+使用用户名和密码创建新的用户账户。
 
-This creates a new UUID for the user's `id`, which is mapped to `user_id` in the Langflow database.
+这会为用户的 `id` 创建一个新的 UUID，它映射到 Langflow 数据库中的 `user_id`。
 
 ```bash
 curl -X POST \
@@ -29,7 +29,7 @@ curl -X POST \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -52,9 +52,9 @@ curl -X POST \
 
 </details>
 
-## Get current user
+## 获取当前用户
 
-Retrieve information about the currently authenticated user.
+检索当前已认证用户的信息。
 
 ```bash
 curl -X GET \
@@ -64,7 +64,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -82,10 +82,10 @@ curl -X GET \
 
 </details>
 
-## List all users
+## 列出所有用户
 
-Get a paginated list of all users in the system.
-Only superusers can use this endpoint (`is_superuser: true`).
+获取系统中所有用户的分页列表。
+只有超级用户可以使用此端点（`is_superuser: true`）。
 
 ```bash
 curl -X GET \
@@ -95,7 +95,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -156,11 +156,11 @@ curl -X GET \
 
 </details>
 
-## Update user
+## 更新用户
 
-Modify an existing user's information with a PATCH request.
+使用 PATCH 请求修改现有用户的信息。
 
-This example makes the user `10c1c6a2-ab8a-4748-8700-0e4832fd5ce8` an active superuser.
+此示例将用户 `10c1c6a2-ab8a-4748-8700-0e4832fd5ce8` 设置为活跃的超级用户。
 
 ```bash
 curl -X PATCH \
@@ -174,7 +174,7 @@ curl -X PATCH \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -197,11 +197,11 @@ curl -X PATCH \
 
 </details>
 
-## Reset password
+## 重置密码
 
-Change a user's password to a new secure value.
+将用户的密码更改为新的安全值。
 
-You can't change another user's password.
+您不能更改其他用户的密码。
 
 ```bash
 curl -X PATCH \
@@ -214,7 +214,7 @@ curl -X PATCH \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -237,11 +237,11 @@ curl -X PATCH \
 
 </details>
 
-## Delete user
+## 删除用户
 
-Remove a user account from the system.
+从系统中删除用户账户。
 
-Only superusers can use this endpoint (`is_superuser: true`).
+只有超级用户可以使用此端点（`is_superuser: true`）。
 
 ```bash
 curl -X DELETE \
@@ -251,7 +251,7 @@ curl -X DELETE \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {

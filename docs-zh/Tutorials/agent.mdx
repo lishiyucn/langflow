@@ -38,42 +38,42 @@ import TabItem from '@theme/TabItem';
 5. 对于两个工具组件，将 **Toolset** 端口连接到 Agent 组件的 **Tools** 端口。
 6. 在 **Agent** 组件中，输入您的 OpenAI API 密钥。
 
-    If you want to use a different provider or model, edit the **Model Provider**, **Model Name**, and **API Key** fields accordingly.
+    如果您想使用不同的提供商或模型，请相应地编辑 **Model Provider**、**Model Name** 和 **API Key** 字段。
 
-7. To test the flow, click <Icon name="Play" aria-hidden="true" /> **Playground**, and then ask the LLM a question, such as `Recommend 3 used items for carol.davis@example.com, based on previous orders.`
+7. 要测试流程，请点击 <Icon name="Play" aria-hidden="true" /> **Playground**，然后向 LLM 提问，例如 `为 carol.davis@example.com 推荐 3 个二手商品，基于以前的订单。`
 
-    Given the example prompt, the LLM would respond with recommendations and web links for items based on previous orders in `customer_orders.csv`.
+    给定示例提示，LLM 将根据 `customer_orders.csv` 中的以前订单响应推荐和相关商品的网页链接。
 
-    The **Playground** prints the agent's chain of thought as it selects tools to use and interacts with functionality provided by those tools.
-    For example, the agent can use the **Directory** component's `as_dataframe` tool to retrieve a [DataFrame](/data-types#dataframe), and the **Web search** component's `perform_search` tool to find links to related items.
+    **Playground** 会打印代理的思考链，当它选择要使用的工具并与这些工具提供的功能交互时。
+    例如，代理可以使用 **Directory** 组件的 `as_dataframe` 工具来检索 [DataFrame](/data-types#dataframe)，以及 **Web search** 组件的 `perform_search` 工具来查找相关商品的链接。
 
-## Add a Prompt Template component to the flow
+## 向流程添加 Prompt Template 组件
 
-In this example, the application sends a customer's email address to the Langflow agent. The agent compares the customer's previous orders within the Directory component, searches the web for used versions of those items, and returns three results.
+在此示例中，应用程序将客户的电子邮件地址发送到 Langflow 代理。代理比较 Directory 组件中客户的以前订单，在网上搜索这些商品的二手版本，并返回三个结果。
 
-1. To include the email address as a value in your flow, add a [**Prompt Template**](/components-prompts) component to your flow between the **Chat Input** and **Agent**.
-2. In the **Prompt Template** component's **Template** field, enter `Recommend 3 used items for {email}, based on previous orders.`
-Adding the `{email}` value in curly braces creates a new input in the **Prompt Template** component, and the component connected to the `{email}` port is supplying the value for that variable.
-This creates a point for the user's email to enter the flow from your request.
-If you aren't using the `customer_orders.csv` example file, modify the input to search for a value in your dataset.
+1. 要在您的流程中包含电子邮件地址作为值，请在 **Chat Input** 和 **Agent** 之间添加一个 [**Prompt Template**](/components-prompts) 组件。
+2. 在 **Prompt Template** 组件的 **Template** 字段中，输入 `为 {email} 推荐 3 个二手商品，基于以前的订单。`
+在大括号中添加 `{email}` 值会在 **Prompt Template** 组件中创建一个新输入，连接到 `{email}` 端口的组件为该变量提供值。
+这为用户的电子邮件从您的请求进入流程创建了一个点。
+如果您没有使用 `customer_orders.csv` 示例文件，请修改输入以在您的数据集中搜索值。
 
-    At this point your flow has six components. The **Chat Input** is connected to the **Prompt Template** component's **email** port. Then, the **Prompt Template** output is connected to the **Agent** component's **System Message** port. The **Directory** and **Web Search** components are connected to the **Agent** component's **Tools** port. Finally, the **Agent** component's output is connected to the **Chat Output** component, which returns the final response to the application.
+    此时您的流程有六个组件。**Chat Input** 连接到 **Prompt Template** 组件的 **email** 端口。然后，**Prompt Template** 输出连接到 **Agent** 组件的 **System Message** 端口。**Directory** 和 **Web Search** 组件连接到 **Agent** 组件的 **Tools** 端口。最后，**Agent** 组件的输出连接到 **Chat Output** 组件，该组件将最终响应返回给应用程序。
 
-    ![An agent component connected to web search and directory components](/img/tutorial-agent-with-directory.png)
+    ![连接到网络搜索和目录组件的代理组件](/img/tutorial-agent-with-directory.png)
 
-## Send requests to your flow from a JavaScript application
+## 从 JavaScript 应用程序向您的流程发送请求
 
-With your flow operational, connect it to a JavaScript application to use the agent's responses.
+流程运行后，将其连接到 JavaScript 应用程序以使用代理的响应。
 
-1. To construct a JavaScript application to connect to your flow, gather the following information:
+1. 要构建连接到您的流程的 JavaScript 应用程序，请收集以下信息：
 
-    * `LANGFLOW_SERVER_ADDRESS`: Your Langflow server's domain. The default value is `127.0.0.1:7860`. You can get this value from the code snippets on your flow's [**API access** pane](/concepts-publish#api-access).
-    * `FLOW_ID`: Your flow's UUID or custom endpoint name. You can get this value from the code snippets on your flow's [**API access** pane](/concepts-publish#api-access).
-    * `LANGFLOW_API_KEY`: A valid Langflow API key. To create an API key, see [API keys](/configuration-api-keys).
+    * `LANGFLOW_SERVER_ADDRESS`：您的 Langflow 服务器的域。默认值是 `127.0.0.1:7860`。您可以从流程的 [**API access** 面板](/concepts-publish#api-access)上的代码片段中获取此值。
+    * `FLOW_ID`：您的流程的 UUID 或自定义端点名称。您可以从流程的 [**API access** 面板](/concepts-publish#api-access)上的代码片段中获取此值。
+    * `LANGFLOW_API_KEY`：有效的 Langflow API 密钥。要创建 API 密钥，请参阅 [API 密钥](/configuration-api-keys)。
 
-2. Copy the following script into a JavaScript file, and then replace the placeholders with the information you gathered in the previous step.
-If you're using the `customer_orders.csv` example file, you can run this example as-is with the example email address in the code sample.
-If not, modify the `const email = "isabella.rodriguez@example.com"` to search for a value in your dataset.
+2. 将以下脚本复制到 JavaScript 文件中，然后用您在上一步中收集的信息替换占位符。
+如果您使用 `customer_orders.csv` 示例文件，您可以按原样运行此示例，使用代码示例中的示例电子邮件地址。
+如果不是，请修改 `const email = "isabella.rodriguez@example.com"` 以在您的数据集中搜索值。
 
     ```js
     import { LangflowClient } from "@datastax/langflow-client";
@@ -85,81 +85,81 @@ If not, modify the `const email = "isabella.rodriguez@example.com"` to search fo
 
     async function runAgentFlow(): Promise<void> {
         try {
-            // Initialize the Langflow client
+            // 初始化 Langflow 客户端
             const client = new LangflowClient({
                 baseUrl: LANGFLOW_SERVER_ADDRESS,
                 apiKey: LANGFLOW_API_KEY
             });
 
-            console.log(`Connecting to Langflow server at: ${LANGFLOW_SERVER_ADDRESS} `);
-            console.log(`Flow ID: ${FLOW_ID}`);
-            console.log(`Email: ${email}`);
+            console.log(`连接到 Langflow 服务器：${LANGFLOW_SERVER_ADDRESS} `);
+            console.log(`流程 ID：${FLOW_ID}`);
+            console.log(`邮箱：${email}`);
 
-            // Get the flow instance
+            // 获取流程实例
             const flow = client.flow(FLOW_ID);
 
-            // Run the flow with the email as input
-            console.log('\nSending request to agent...');
+            // 使用邮箱作为输入运行流程
+            console.log('\n向代理发送请求...');
             const response = await flow.run(email, {
-                session_id: email // Use email as session ID for context
+                session_id: email // 使用邮箱作为会话 ID 以保持上下文
             });
 
-            console.log('\n=== Response from Langflow ===');
-            console.log('Session ID:', response.sessionId);
+            console.log('\n=== 来自 Langflow 的响应 ===');
+            console.log('会话 ID：', response.sessionId);
 
-            // Extract URLs from the chat message
+            // 从聊天消息中提取 URL
             const chatMessage = response.chatOutputText();
-            console.log('\n=== URLs from Chat Message ===');
+            console.log('\n=== 来自聊天消息的 URL ===');
             const messageUrls = chatMessage.match(/https?:\/\/[^\s"')\]]+/g) || [];
             const cleanMessageUrls = [...new Set(messageUrls)].map(url => url.trim());
-            console.log('URLs from message:');
+            console.log('消息中的 URL：');
             cleanMessageUrls.slice(0, 3).forEach(url => console.log(url));
 
         } catch (error) {
-            console.error('Error running flow:', error);
+            console.error('运行流程时出错：', error);
 
-            // Provide error messages
+            // 提供错误消息
             if (error instanceof Error) {
                 if (error.message.includes('fetch')) {
-                    console.error('\nMake sure your Langflow server is running and accessible at:', LANGFLOW_SERVER_ADDRESS);
+                    console.error('\n确保您的 Langflow 服务器正在运行并可在以下位置访问：', LANGFLOW_SERVER_ADDRESS);
                 }
                 if (error.message.includes('401') || error.message.includes('403')) {
-                    console.error('\nCheck your API key configuration');
+                    console.error('\n检查您的 API 密钥配置');
                 }
                 if (error.message.includes('404')) {
-                    console.error('\nCheck your Flow ID - make sure it exists and is correct');
+                    console.error('\n检查您的流程 ID - 确保它存在且正确');
                 }
             }
         }
     }
 
-    // Run the function
-    console.log('Starting Langflow Agent...\n');
+    // 运行函数
+    console.log('启动 Langflow 代理...\n');
     runAgentFlow().catch(console.error);
     ```
 
-3.  Save and run the script to send the request and test the flow.
+3. 保存并运行脚本以发送请求并测试流程。
 
-    Your application receives three URLs for recommended used items based on a customer's previous orders in your local CSV, all without changing any code.
+    您的应用程序根据客户在本地 CSV 中的以前订单接收三个推荐二手商品的 URL，所有这些都无需更改任何代码。
 
     <details>
-    <summary>Result</summary>
+    <summary>结果</summary>
 
-    The following is an example response from this tutorial's flow. Due to the nature of LLMs and variations in your inputs, your response might be different.
+    以下是本教程流程的示例响应。由于 LLM 的性质和您输入的变化，您的响应可能会有所不同。
 
     ```
-    Starting Langflow Agent...
+    启动 Langflow 代理...
 
-    Connecting to Langflow server at: http://localhost:7860
-    Flow ID: local-db-search
-    Email: isabella.rodriguez@example.com
+    连接到 Langflow 服务器：http://localhost:7860
+    流程 ID：local-db-search
+    邮箱：isabella.rodriguez@example.com
 
-    Sending request to agent...
+    向代理发送请求...
 
-    === Response from Langflow ===
-    Session ID: isabella.rodriguez@example.com
+    === 来自 Langflow 的响应 ===
+    会话 ID：isabella.rodriguez@example.com
 
-    URLs found:
+    找到的 URL：
     https://www.facebook.com/marketplace/258164108225783/electronics/
     https://www.facebook.com/marketplace/458332108944152/furniture/
     https://www.facebook.com/marketplace/613732137493719/kitchen-cabinets/
@@ -167,13 +167,13 @@ If not, modify the `const email = "isabella.rodriguez@example.com"` to search fo
 
     </details>
 
-4.  To quickly check traffic to your flow, open the **Playground**.
-    New sessions are named after the user's email address.
-    Keeping sessions distinct helps the agent maintain context. For more on session IDs, see [Session ID](/session-id).
+4. 要快速检查到您流程的流量，请打开 **Playground**。
+    新会话以用户的电子邮件地址命名。
+    保持会话的独特性有助于代理维护上下文。有关会话 ID 的更多信息，请参阅 [会话 ID](/session-id)。
 
-## Next steps
+## 下一步
 
-For more information on building or extending this tutorial, see the following:
+有关构建或扩展本教程的更多信息，请参阅以下内容：
 
-* [Model Context Protocol (MCP) servers](/mcp-server)
-* [Langflow deployment overview](/deployment-overview)
+* [模型上下文协议 (MCP) 服务器](/mcp-server)
+* [Langflow 部署概述](/deployment-overview)

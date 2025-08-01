@@ -5,33 +5,33 @@ slug: /bundles-perplexity
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components)包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Perplexity** bundle.
+本页介绍了 **Perplexity** 组件包中可用的组件。
 
-For more information about Perplexity features and functionality used by Perplexity components, see the [Perplexity documentation](https://perplexity.ai/).
+有关 Perplexity 组件所使用的 Perplexity 功能和特性的更多信息，请参阅 [Perplexity 文档](https://perplexity.ai/)。
 
-## Perplexity text generation
+## Perplexity 文本生成
 
-This component generates text using Perplexity's language models.
+该组件使用 Perplexity 的语言模型生成文本。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+它可以输出**模型响应** ([`Message`](/data-types#message)) 或**语言模型** ([`LanguageModel`](/data-types#languagemodel))。
 
-Use the **Language Model** output when you want to use a Perplexity model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要将 Perplexity 模型用作另一个LLM驱动组件（如**语言模型**或**智能函数**组件）的 LLM 时，请使用**语言模型**输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅[**语言模型**组件](/components-models)。
 
-### Perplexity text generation parameters
+### Perplexity 文本生成参数
 
-Many **Perplexity** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **Perplexity** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| model_name | String | Input parameter. The name of the Perplexity model to use. Options include various Llama 3.1 models. |
-| max_output_tokens | Integer | Input parameter. The maximum number of tokens to generate. |
-| api_key | SecretString | Input parameter. The Perplexity API Key for authentication. |
-| temperature | Float | Input parameter. Controls randomness in the output. Default: 0.75. |
-| top_p | Float | Input parameter. The maximum cumulative probability of tokens to consider when sampling (advanced). |
-| n | Integer | Input parameter. Number of chat completions to generate for each prompt (advanced). |
-| top_k | Integer | Input parameter. Number of top tokens to consider for top-k sampling. Must be positive (advanced). |
+| model_name | String | 输入参数。要使用的 Perplexity 模型名称。选项包括各种 Llama 3.1 模型。 |
+| max_output_tokens | Integer | 输入参数。要生成的最大令牌数。 |
+| api_key | SecretString | 输入参数。用于身份验证的 Perplexity API 密钥。 |
+| temperature | Float | 输入参数。控制输出的随机性。默认值：0.75。 |
+| top_p | Float | 输入参数。采样时考虑的令牌的最大累积概率（高级选项）。 |
+| n | Integer | 输入参数。为每个提示生成的聊天完成数量（高级选项）。 |
+| top_k | Integer | 输入参数。用于 top-k 采样的顶级令牌数量。必须为正数（高级选项）。 |

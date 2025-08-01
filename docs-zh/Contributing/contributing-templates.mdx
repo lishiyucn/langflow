@@ -1,48 +1,48 @@
 ---
-title: Contribute templates
+title: 贡献模板
 slug: /contributing-templates
 ---
 
-Follow these best practices when submitting a template to Langflow.
+向 Langflow 提交模板时，请遵循这些最佳实践。
 
 For template formatting examples, see the Langflow repository's [starter_projects](https://github.com/langflow-ai/langflow/tree/main/src/backend/base/langflow/initial_setup/starter_projects) folder.
 
-## Create a PR to submit your template
+## 创建 PR 提交您的模板
 
-Follow these steps to submit your template:
+按照以下步骤提交您的模板：
 
-1. Fork the [Langflow repository](https://github.com/langflow-ai/langflow) on GitHub.
-2. Add your `template.json` file to the Langflow repository's [starter_projects](https://github.com/langflow-ai/langflow/tree/main/src/backend/base/langflow/initial_setup/starter_projects) folder in your fork.
-3. Include the [Required items for template submission](#required-items-for-template-submission) listed below.
-4. Create a Pull Request from your fork to the main Langflow repository.
-5. Include a screenshot of your template in the PR.
+1. 在 GitHub 上 Fork [Langflow 仓库](https://github.com/langflow-ai/langflow)。
+2. 将您的 `template.json` 文件添加到您 fork 中的 Langflow 仓库的 [starter_projects](https://github.com/langflow-ai/langflow/tree/main/src/backend/base/langflow/initial_setup/starter_projects) 文件夹中。
+3. 包含下面列出的[模板提交必需项目](#required-items-for-template-submission)。
+4. 从您的 fork 创建一个 Pull Request 到主 Langflow 仓库。
+5. 在 PR 中包含您模板的截图。
 
-The Langflow team will review your PR, offer feedback, and merge the template.
+Langflow 团队将审查您的 PR，提供反馈，并合并模板。
 
-## Required items for template submission
+## 模板提交必需项目
 
-Include the following items and follow these guidelines when submitting your template.
+提交模板时，请包含以下项目并遵循这些准则。
 
-### Name
-The template name must be concise and contain no more than three words.
-Capitalize only the first letter of each word.
-For example: **Blog Writer** or **Travel Planning Agent**.
+### 名称
+模板名称必须简洁，不超过三个单词。
+只大写每个单词的首字母。
+例如：**Blog Writer** 或 **Travel Planning Agent**。
 
-### Description
-The description is displayed in the UI to guide users to your template.
-The description should be brief and informative, and describe what the template does and its intended use cases.
+### 描述
+描述在 UI 中显示，用于引导用户使用您的模板。
+描述应该简洁且信息丰富，说明模板的功能和预期用例。
 For example:```json  "description": "Auto-generate a customized blog post from instructions and referenced articles.",```
 
-### Icons
+### 图标
 
-Use icons from the [Lucide](https://lucide.dev/icons/) icon library.
+使用 [Lucide](https://lucide.dev/icons/) 图标库中的图标。
 
-### Flow
-Use only the components that are available in the sidebar.
-Do not use custom components.
+### 流程
+只使用侧边栏中可用的组件。
+不要使用自定义组件。
 
-Include a note to guide users. Notes accept Markdown syntax.
-A single note usually suffices.
+包含一个指导用户的注释。注释支持 Markdown 语法。
+通常一个注释就足够了。
 
   For example:
   ```text
@@ -65,20 +65,20 @@ A single note usually suffices.
   5. Click the **Playground** and ask `Why did Nvidia stock drop in January?`
   ```
 
-### Format
+### 格式
 
-Submit the template in JSON format.
+以 JSON 格式提交模板。
 
-### Tags
-Assign the template to one of the following categories:
+### 标签
+将模板分配到以下类别之一：
 
-- Assistants
-- Classification
-- Coding
-- Content Generation
-- Q&A
-- Prompting
+- Assistants（助手）
+- Classification（分类）
+- Coding（编程）
+- Content Generation（内容生成）
+- Q&A（问答）
+- Prompting（提示）
 - RAG
-- Agents
+- Agents（代理）
 
 For more information, see the Langflow repository's [template categories](https://github.com/langflow-ai/langflow/blob/main/src/frontend/src/modals/templatesModal/index.tsx#L27-L57).

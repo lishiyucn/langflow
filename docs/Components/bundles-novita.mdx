@@ -5,31 +5,31 @@ slug: /bundles-novita
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[包](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Novita** bundle.
+本页面描述了 **Novita** 包中可用的组件。
 
 ## Novita AI
 
-This component generates text using [Novita's language models](https://novita.ai/docs/guides/llm-api).
+此组件使用 [Novita 的语言模型](https://novita.ai/docs/guides/llm-api) 生成文本。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+它可以输出 **模型响应**（[`Message`](/data-types#message)）或 **语言模型**（[`LanguageModel`](/data-types#languagemodel)）。
 
-Use the **Language Model** output when you want to use a Novita model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要将 Novita 模型用作其他 LLM 驱动组件（如 **语言模型** 或 **智能函数** 组件）的 LLM 时，请使用 **语言模型** 输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅 [**语言模型** 组件](/components-models)。
 
-### Novita AI parameters
+### Novita AI 参数
 
-Many **Novita AI** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **Novita AI** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控件** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| api_key | SecretString | Input parameter. Your Novita AI API Key. |
-| model | String | Input parameter. The id of the Novita AI model to use. |
-| max_tokens | Integer | Input parameter. The maximum number of tokens to generate. Set to 0 for unlimited tokens. |
-| temperature | Float | Input parameter. Controls randomness in the output. Range: [0.0, 1.0]. Default: 0.7. |
-| top_p | Float | Input parameter. Controls the nucleus sampling. Range: [0.0, 1.0]. Default: 1.0. |
-| frequency_penalty | Float | Input parameter. Controls the frequency penalty. Range: [0.0, 2.0]. Default: 0.0. |
-| presence_penalty | Float | Input parameter. Controls the presence penalty. Range: [0.0, 2.0]. Default: 0.0. |
+| api_key | SecretString | 输入参数。您的 Novita AI API 密钥。 |
+| model | String | 输入参数。要使用的 Novita AI 模型 ID。 |
+| max_tokens | Integer | 输入参数。要生成的最大令牌数。设置为 0 表示无限制令牌。 |
+| temperature | Float | 输入参数。控制输出的随机性。范围：[0.0, 1.0]。默认值：0.7。 |
+| top_p | Float | 输入参数。控制核采样。范围：[0.0, 1.0]。默认值：1.0。 |
+| frequency_penalty | Float | 输入参数。控制频率惩罚。范围：[0.0, 2.0]。默认值：0.0。 |
+| presence_penalty | Float | 输入参数。控制存在惩罚。范围：[0.0, 2.0]。默认值：0.0。 |

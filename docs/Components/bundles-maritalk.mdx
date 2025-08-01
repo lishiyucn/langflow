@@ -5,31 +5,31 @@ slug: /bundles-maritalk
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **MariTalk** bundle.
+本页面描述了 **MariTalk** bundle 中可用的组件。
 
-For more information, see the [MariTalk documentation](https://www.maritalk.com/).
+有关更多信息，请参阅 [MariTalk 文档](https://www.maritalk.com/)。
 
-## MariTalk text generation
+## MariTalk 文本生成
 
-The **MariTalk** component generates text using MariTalk LLMs.
+**MariTalk** 组件使用 MariTalk LLM 生成文本。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+它可以输出 **Model Response**（[`Message`](/data-types#message)）或 **Language Model**（[`LanguageModel`](/data-types#languagemodel)）。
 
-Use the **Language Model** output when you want to use a MariTalk model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要使用 MariTalk 模型作为其他 LLM 驱动组件（如 **Language Model** 或 **Smart Function** 组件）的 LLM 时，请使用 **Language Model** 输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅 [**Language Model** 组件](/components-models)。
 
-### MariTalk text generation parameters
+### MariTalk 文本生成参数
 
-Many **MariTalk** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+**MariTalk** 组件的许多输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| max_tokens | Integer | Input parameter. The maximum number of tokens to generate. Set to `0` for unlimited tokens. Default: `512`. |
-| model_name | String | Input parameter. The name of the MariTalk model to use. Options: `sabia-2-small`, `sabia-2-medium`. Default: `sabia-2-small`. |
-| api_key | SecretString | Input parameter. The MariTalk API Key to use for authentication. |
-| temperature | Float | Input parameter. Controls randomness in the output. Range: `[0.0, 1.0]`. Default: `0.5`. |
-| endpoint_url | String | Input parameter. The MariTalk API endpoint. Default: `https://api.maritalk.com`. |
+| max_tokens | Integer | 输入参数。生成的最大令牌数。设置为 `0` 表示无限制令牌。默认：`512`。 |
+| model_name | String | 输入参数。要使用的 MariTalk 模型名称。选项：`sabia-2-small`、`sabia-2-medium`。默认：`sabia-2-small`。 |
+| api_key | SecretString | 输入参数。用于身份验证的 MariTalk API 密钥。 |
+| temperature | Float | 输入参数。控制输出的随机性。范围：`[0.0, 1.0]`。默认：`0.5`。 |
+| endpoint_url | String | 输入参数。MariTalk API 端点。默认：`https://api.maritalk.com`。 |

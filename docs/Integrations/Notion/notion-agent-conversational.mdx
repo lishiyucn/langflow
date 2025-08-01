@@ -1,120 +1,120 @@
 ---
-title: Notion Conversational Agent
+title: Notion 对话代理
 slug: /integrations/notion/notion-agent-conversational
 ---
 
-The Notion Conversational Agent is an AI-powered assistant that interacts with your Notion workspace through natural language conversations. This flow performs Notion-related tasks like creating pages, searching for information, and managing content, all through a chat interface.
+Notion 对话代理是一个由 AI 驱动的助手，通过自然语言对话与您的 Notion 工作区交互。此流程可以执行与 Notion 相关的任务，如创建页面、搜索信息和管理内容，这些都通过聊天界面完成。
 
-![Notion Components Toolkit](./notion_conversational_agent_tools.png)
+![Notion 组件工具包](./notion_conversational_agent_tools.png)
 
-## Prerequisites
+## 前置条件
 
-- [Notion App](/integrations/notion/setup)
-- [Notion account and API key](https://www.notion.so/my-integrations)
-- [OpenAI API key](https://platform.openai.com/account/api-keys)
-- [Download Flow Conversation Agent Flow](./Conversational_Notion_Agent.json)(Download link)
+- [Notion 应用](/integrations/notion/setup)
+- [Notion 账户和 API 密钥](https://www.notion.so/my-integrations)
+- [OpenAI API 密钥](https://platform.openai.com/account/api-keys)
+- [下载对话代理流](./Conversational_Notion_Agent.json)（下载链接）
 
-## Components
+## 组件
 
-- **Chat Input**: Accepts user queries and commands
-- **Chat Output**: Displays the agent's responses
-- **Language Model**: Processes user input and generates responses with an OpenAI model
-- **Tool Calling Agent**: Coordinates the use of various Notion tools based on user input
-- **Toolkit**: Combines multiple Notion-specific tools into a single toolkit
-- **Notion Tools**: Various components for interacting with Notion, including:
-  - List Users
-  - List Database Properties
-  - List Pages
-  - Page Content Viewer
-  - Create Page
-  - Update Page Property
-  - Add Content to Page
-  - Search
-- **Message History**: Stores conversation history
-- **Prompt Template**: Provides system instructions and context for the agent
-- **Current Date**: Supplies the current date and time for context
+- **聊天输入**：接受用户查询和命令
+- **聊天输出**：显示代理的响应
+- **语言模型**：使用 OpenAI 模型处理用户输入并生成响应
+- **工具调用代理**：根据用户输入协调各种 Notion 工具的使用
+- **工具包**：将多个 Notion 特定工具组合成单个工具包
+- **Notion 工具**：用于与 Notion 交互的各种组件，包括：
+  - 列出用户
+  - 列出数据库属性
+  - 列出页面
+  - 页面内容查看器
+  - 创建页面
+  - 更新页面属性
+  - 添加内容到页面
+  - 搜索
+- **消息历史**：存储对话历史
+- **提示模板**：为代理提供系统指令和上下文
+- **当前日期**：为上下文提供当前日期和时间
 
-## Run the Conversational Notion Agent
+## 运行 Notion 对话代理
 
-1. Open Langflow and create a new flow.
-2. Add the components listed above to your flow canvas, or Download the [Conversation Agent Flow](./Conversational_Notion_Agent.json)(Download link) and **Import** the JSON file into Langflow.
-3. Connect the components as shown in the flow diagram.
-4. Input the Notion and OpenAI API keys in their respective components.
-5. To start the flow, click the "Play" button in Langflow.
-6. In the chat interface, enter a Notion-related request or question. For example:
-   - "Create a new page in my task database"
-   - "Search for pages about project management"
-   - "List all users in my Notion workspace"
-7. The agent will process your request, use the appropriate Notion tools, and provide a response.
-8. Continue the conversation, asking follow-up questions or giving new commands as needed.
+1. 打开 Langflow 并创建新流程。
+2. 将上述列出的组件添加到您的流程画布中，或下载[对话代理流](./Conversational_Notion_Agent.json)（下载链接）并将 JSON 文件**导入**到 Langflow 中。
+3. 按照流程图所示连接组件。
+4. 在相应组件中输入 Notion 和 OpenAI API 密钥。
+5. 要启动流程，请点击 Langflow 中的"播放"按钮。
+6. 在聊天界面中，输入与 Notion 相关的请求或问题。例如：
+   - "在我的任务数据库中创建一个新页面"
+   - "搜索关于项目管理的页面"
+   - "列出我的 Notion 工作区中的所有用户"
+7. 代理将处理您的请求，使用适当的 Notion 工具，并提供响应。
+8. 继续对话，根据需要提出后续问题或给出新命令。
 
-## Example Interactions
+## 交互示例
 
 ```
-User: List all the users in my Notion workspace.
+用户：列出我的 Notion 工作区中的所有用户。
 
-Agent: Certainly! I'll use the Notion User List tool to retrieve that information for you. One moment please.
+代理：当然！我将使用 Notion 用户列表工具为您检索该信息。请稍等。
 
-[Agent uses the Notion User List tool]
+[代理使用 Notion 用户列表工具]
 
-Here's a list of users in your Notion workspace:
+以下是您的 Notion 工作区中的用户列表：
 
 1. John Doe (john@example.com)
 2. Jane Smith (jane@example.com)
 3. Alex Johnson (alex@example.com)
 
-Is there anything specific you'd like to know about these users or any other Notion-related task I can help you with?
+您想了解这些用户的具体信息，或者有其他 Notion 相关任务需要我帮忙吗？
 
-User: Create a new page in my Projects database with the title "Website Redesign".
+用户：在我的项目数据库中创建一个标题为"网站重设计"的新页面。
 
-Agent: Certainly! I'd be happy to create a new page in your Projects database with the title "Website Redesign". I'll use the Notion Page Creator tool to do this. First, let me check the properties of your Projects database to ensure we include all necessary information.
+代理：当然！我很乐意在您的项目数据库中创建一个标题为"网站重设计"的新页面。我将使用 Notion 页面创建工具来完成此操作。首先，让我检查您的项目数据库的属性，以确保我们包含所有必要的信息。
 
-[Agent uses the Notion Database Properties tool]
+[代理使用 Notion 数据库属性工具]
 
-I've retrieved the properties for your Projects database. Now, I'll create the new page with the title "Website Redesign". One moment please.
+我已经检索了您的项目数据库的属性。现在，我将创建标题为"网站重设计"的新页面。请稍等。
 
-[Agent uses the Notion Page Creator tool]
+[代理使用 Notion 页面创建工具]
 
-Great news! I've successfully created a new page in your Projects database with the title "Website Redesign". Here are the details:
+好消息！我已经成功在您的项目数据库中创建了一个标题为"网站重设计"的新页面。详细信息如下：
 
-- Title: Website Redesign
-- Page ID: [page_id_here]
-- URL: [page_url_here]
+- 标题：网站重设计
+- 页面 ID：[page_id_here]
+- URL：[page_url_here]
 
-Is there any additional information you'd like me to add to this new project page, such as a description, due date, or assigned team members?
+您希望我为这个新项目页面添加任何其他信息吗，比如描述、截止日期或指派的团队成员？
 
-User: Yes, please add a description: "Redesign company website to improve user experience and modernize the look."
+用户：是的，请添加一个描述："重新设计公司网站以改善用户体验并使外观现代化。"
 
-Agent: Certainly! I'd be happy to add that description to the "Website Redesign" project page. I'll use the Add Content to Page tool to update the page with this information.
+代理：当然！我很乐意为"网站重设计"项目页面添加该描述。我将使用添加内容到页面工具来用这些信息更新页面。
 
-[Agent uses the Add Content to Page tool]
+[代理使用添加内容到页面工具]
 
-I've successfully added the description to your "Website Redesign" project page. Here's a summary of what I've done:
+我已经成功为您的"网站重设计"项目页面添加了描述。以下是我所做的操作摘要：
 
-1. Located the "Website Redesign" page using the page ID from our previous interaction.
-2. Added the following content to the page:
+1. 使用我们之前交互中的页面 ID 定位了"网站重设计"页面。
+2. 向页面添加了以下内容：
 
-   Description: Redesign company website to improve user experience and modernize the look.
+   描述：重新设计公司网站以改善用户体验并使外观现代化。
 
-The description has been added as a new text block on the page. Is there anything else you'd like me to add or modify on this project page?
+描述已作为新文本块添加到页面中。您还希望我在此项目页面上添加或修改其他内容吗？
 ```
 
-## Customization
+## 自定义
 
-The flow can be customized to meet your team's specific needs.
-For example:
+该流程可以根据您团队的特定需求进行自定义。
+例如：
 
-1. Adjust the system prompt to change the agent's behavior or knowledge base.
-2. Add or remove Notion tools based on your specific needs.
-3. Modify the OpenAI model parameters (e.g., temperature) to adjust the agent's response style.
+1. 调整系统提示以改变代理的行为或知识库。
+2. 根据您的特定需求添加或删除 Notion 工具。
+3. 修改 OpenAI 模型参数（例如温度）以调整代理的响应风格。
 
-## Troubleshooting
+## 故障排除
 
-If you encounter issues:
+如果您遇到问题：
 
-1. Ensure all API keys are correctly set and have the necessary permissions.
-2. Check that your Notion integration has access to the relevant pages and databases.
-3. Verify that all components are properly connected in the flow.
-4. Review the Langflow logs for any error messages.
+1. 确保所有 API 密钥都正确设置并具有必要的权限。
+2. 检查您的 Notion 集成是否有权访问相关页面和数据库。
+3. 验证所有组件在流程中都正确连接。
+4. 查看 Langflow 日志以查找任何错误消息。
 
-For more advanced usage and integration options, refer to the [Notion API documentation](https://developers.notion.com/) and [Langflow documentation](/).
+有关更高级的使用和集成选项，请参阅 [Notion API 文档](https://developers.notion.com/)和 [Langflow 文档](/)。

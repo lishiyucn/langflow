@@ -1,33 +1,33 @@
 ---
-title: Troubleshoot Langflow
+title: Langflow 故障排除
 slug: /troubleshoot
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This page provides troubleshooting advice for issues you might encounter when using Langflow or contributing to Langflow.
+本页面为您在使用 Langflow 或为 Langflow 做贡献时可能遇到的问题提供故障排除建议。
 
-## Missing components
+## 缺少组件
 
-As Langflow development continues, components are often recategorized or deprecated for better alignment or to prepare for new components.
+随着 Langflow 开发的继续，组件经常被重新分类或弃用，以便更好地对齐或为新组件做准备。
 
-If a component appears to be missing from the expected location on the **Components** menu, try the following:
+如果组件似乎从**组件**菜单上的预期位置消失，请尝试以下操作：
 
-* Search for the component or check other component categories, including [**Bundles**](/components-bundle-components).
-* [Expose legacy components](/concepts-components#component-menus), which are hidden by default.
-* Check the [Changelog](https://github.com/langflow-ai/langflow/releases/latest) for component changes in recent releases.
-* Make sure the component isn't already present in your flow if it is a single-use component.
+* 搜索组件或检查其他组件类别，包括[**包**](/components-bundle-components)。
+* [显示遗留组件](/concepts-components#component-menus)，它们默认是隐藏的。
+* 检查[更改日志](https://github.com/langflow-ai/langflow/releases/latest)以了解最近版本中的组件更改。
+* 如果它是单次使用组件，请确保该组件尚未存在于您的流程中。
 
-If you still cannot locate the component, see [Langflow GitHub Issues and Discussions](/contributing-github-issues).
+如果您仍然无法找到该组件，请参阅 [Langflow GitHub 问题和讨论](/contributing-github-issues)。
 
-## No input in the Playground
+## Playground 中没有输入
 
-If there is no message input field in the **Playground**, make sure your flow has a [**Chat Input** component](/components-io#chat-io) that is connected, directly or indirectly, to the **Input** port of a **Language Model** or **Agent** component.
+如果**Playground** 中没有消息输入字段，请确保您的流程有一个[**聊天输入**组件](/components-io#chat-io)，它直接或间接连接到**语言模型**或**代理**组件的**输入**端口。
 
-Because the **Playground** is designed for flows that use an LLM in a query-and-response format, such as chatbots and agents, a flow must have **Chat Input**, **Language Model**/**Agent**, and **Chat Output** components to be fully supported by the **Playground**'s chat interface.
+因为 **Playground** 是为使用 LLM 进行查询和响应格式的流程而设计的，例如聊天机器人和代理，流程必须具有**聊天输入**、**语言模型**/**代理**和**聊天输出**组件才能完全支持 **Playground** 的聊天界面。
 
-For more information, see [Test flows in the **Playground**](/concepts-playground).
+有关更多信息，请参阅[在 **Playground** 中测试流程](/concepts-playground)。
 
 ## Missing key, no key found, or invalid API key
 

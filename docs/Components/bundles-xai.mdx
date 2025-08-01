@@ -5,34 +5,34 @@ slug: /bundles-xai
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components)包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **xAI** bundle.
+本页介绍了 **xAI** 组件包中可用的组件。
 
-For more information about xAI features and functionality used by xAI components, see the [xAI documentation](https://x.ai/).
+有关 xAI 组件所使用的 xAI 功能和特性的更多信息，请参阅 [xAI 文档](https://x.ai/)。
 
-## xAI text generation
+## xAI 文本生成
 
-The **xAI** component generates text using xAI models like [Grok](https://x.ai/grok).
+**xAI** 组件使用 xAI 模型（如 [Grok](https://x.ai/grok)）生成文本。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+它可以输出**模型响应** ([`Message`](/data-types#message)) 或**语言模型** ([`LanguageModel`](/data-types#languagemodel))。
 
-Use the **Language Model** output when you want to use an xAI model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要将 xAI 模型用作另一个LLM驱动组件（如**语言模型**或**智能函数**组件）的 LLM 时，请使用**语言模型**输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅[**语言模型**组件](/components-models)。
 
-### xAI text generation parameters
+### xAI 文本生成参数
 
-Many **xAI** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **xAI** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| max_tokens | Integer | Input parameter. Maximum number of tokens to generate. Set to `0` for unlimited. Range: `0-128000`. |
-| model_kwargs | Dictionary | Input parameter. Additional keyword arguments for the model. |
-| json_mode | Boolean | Input parameter. If `True`, outputs JSON regardless of passing a schema. |
-| model_name | String | Input parameter. The xAI model to use. Default: `grok-2-latest`. |
-| base_url | String | Input parameter. Base URL for API requests. Default: `https://api.x.ai/v1`. |
-| api_key | SecretString | Input parameter. Your xAI API key for authentication. |
-| temperature | Float | Input parameter. Controls randomness in the output. Range: `[0.0, 2.0]`. Default: `0.1`. |
-| seed | Integer | Input parameter. Controls reproducibility of the job. |
+| max_tokens | Integer | 输入参数。要生成的最大令牌数。设置为 `0` 表示无限制。范围：`0-128000`。 |
+| model_kwargs | Dictionary | 输入参数。模型的附加关键字参数。 |
+| json_mode | Boolean | 输入参数。如果为 `True`，无论是否传递模式都输出 JSON。 |
+| model_name | String | 输入参数。要使用的 xAI 模型。默认值：`grok-2-latest`。 |
+| base_url | String | 输入参数。API 请求的基础 URL。默认值：`https://api.x.ai/v1`。 |
+| api_key | SecretString | 输入参数。您的 xAI API 密钥，用于身份验证。 |
+| temperature | Float | 输入参数。控制输出的随机性。范围：`[0.0, 2.0]`。默认值：`0.1`。 |
+| seed | Integer | 输入参数。控制作业的可重现性。 |

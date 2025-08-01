@@ -5,74 +5,74 @@ slug: /bundles-huggingface
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-The components in the **Hugging Face** bundle require access to Hugging Face APIs.
+**Hugging Face** bundle 中的组件需要访问 Hugging Face API。
 
-For more information about Hugging Face features and functionality used by Hugging Face components, see the [Hugging Face documentation](https://huggingface.co/docs).
+有关 Hugging Face 组件使用的 Hugging Face 功能的更多信息，请参阅 [Hugging Face 文档](https://huggingface.co/docs)。
 
-## Hugging Face text generation
+## Hugging Face 文本生成
 
-The **Hugging Face** component generates text using a specified model by sending requests to the Hugging Face API, which is a hosted inference API for models hosted on Hugging Face.
-Authentication is required.
+**Hugging Face** 组件通过向 Hugging Face API（这是 Hugging Face 上托管模型的托管推理 API）发送请求，使用指定模型生成文本。
+需要身份验证。
 
-This component can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
-Specifically, the **Language Model** output is an instance of [`HuggingFaceHub`](https://python.langchain.com/docs/integrations/providers/huggingface/) configured according to the component's parameters.
+此组件可以输出 **Model Response**（[`Message`](/data-types#message)）或 **Language Model**（[`LanguageModel`](/data-types#languagemodel)）。
+具体来说，**Language Model** 输出是根据组件参数配置的 [`HuggingFaceHub`](https://python.langchain.com/docs/integrations/providers/huggingface/) 实例。
 
-Use the **Language Model** output when you want to use a Hugging Face model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要使用 Hugging Face 模型作为其他 LLM 驱动组件（如 **Language Model** 或 **Smart Function** 组件）的 LLM 时，请使用 **Language Model** 输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅 [**Language Model** 组件](/components-models)。
 
-### Hugging Face text generation parameters
+### Hugging Face 文本生成参数
 
-Many **Hugging Face** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+**Hugging Face** 组件的许多输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| model_id | String | Input parameter. The model ID from Hugging Face Hub. For example, "gpt2", "facebook/bart-large". |
-| huggingfacehub_api_token | SecretString | Input parameter. Your [Hugging Face API token](https://huggingface.co/docs/hub/security-tokens) for authentication. |
-| temperature | Float | Input parameter. Controls randomness in the output. Range: [0.0, 1.0]. Default: 0.7. |
-| max_new_tokens | Integer | Input parameter. Maximum number of tokens to generate. Default: 512. |
-| top_p | Float | Input parameter. Nucleus sampling parameter. Range: [0.0, 1.0]. Default: 0.95. |
-| top_k | Integer | Input parameter. Top-k sampling parameter. Default: 50. |
-| model_kwargs | Dictionary | Input parameter. Additional keyword arguments to pass to the model. |
+| model_id | String | 输入参数。来自 Hugging Face Hub 的模型 ID。例如，"gpt2"、"facebook/bart-large"。 |
+| huggingfacehub_api_token | SecretString | 输入参数。您的 [Hugging Face API 令牌](https://huggingface.co/docs/hub/security-tokens) 用于身份验证。 |
+| temperature | Float | 输入参数。控制输出的随机性。范围：[0.0, 1.0]。默认：0.7。 |
+| max_new_tokens | Integer | 输入参数。生成的最大令牌数。默认：512。 |
+| top_p | Float | 输入参数。核采样参数。范围：[0.0, 1.0]。默认：0.95。 |
+| top_k | Integer | 输入参数。Top-k 采样参数。默认：50。 |
+| model_kwargs | Dictionary | 输入参数。传递给模型的附加关键字参数。 |
 
 ## Hugging Face Embeddings Inference
 
-Use the **Hugging Face Embeddings Inference** component to create embeddings with Hugging Face's hosted models or with your own locally hosted models.
+使用 **Hugging Face Embeddings Inference** 组件可以使用 Hugging Face 的托管模型或您自己的本地托管模型创建嵌入。
 
-The component generates embeddings using [Hugging Face Inference API models](https://huggingface.co/models).
-Authentication is required when not using a local model.
+该组件使用 [Hugging Face Inference API 模型](https://huggingface.co/models) 生成嵌入。
+不使用本地模型时需要身份验证。
 
-For more information about using embedding model components in flows, see [**Embedding Model** components](/components-embedding-models) and [Use a local Hugging Face embeddings model](#local-hugging-face-model).
+有关在流中使用嵌入模型组件的更多信息，请参阅 [**Embedding Model** 组件](/components-embedding-models) 和 [使用本地 Hugging Face 嵌入模型](#local-hugging-face-model)。
 
-### Hugging Face Embeddings Inference parameters
+### Hugging Face Embeddings Inference 参数
 
-| Name | Display Name | Info |
+| 名称 | 显示名称 | 信息 |
 |------|--------------|------|
-| API Key | API Key | Input parameter. Your [Hugging Face API token](https://huggingface.co/docs/hub/security-tokens) for accessing the Hugging Face Inference API, if required. Local inference models do not require an API key. |
-| API URL | API URL | Input parameter. The URL of the Hugging Face Inference API. |
-| Model Name | Model Name | Input parameter. The name of the model to use for embeddings. |
+| API Key | API Key | 输入参数。您的 [Hugging Face API 令牌](https://huggingface.co/docs/hub/security-tokens) 用于访问 Hugging Face Inference API（如果需要）。本地推理模型不需要 API 密钥。 |
+| API URL | API URL | 输入参数。Hugging Face Inference API 的 URL。 |
+| Model Name | Model Name | 输入参数。用于嵌入的模型名称。 |
 
-### Use a local Hugging Face embeddings model {#local-hugging-face-model}
+### 使用本地 Hugging Face 嵌入模型 {#local-hugging-face-model}
 
-To connect the local Hugging Face model to the **Hugging Face Embeddings Inference** component and use it in a flow, follow these steps:
+要将本地 Hugging Face 模型连接到 **Hugging Face Embeddings Inference** 组件并在流中使用它，请按照以下步骤操作：
 
-1. Run a [local Hugging Face embeddings inference](https://huggingface.co/docs/text-embeddings-inference/local_cpu).
+1. 运行 [本地 Hugging Face 嵌入推理](https://huggingface.co/docs/text-embeddings-inference/local_cpu)。
 
-2. For this example, create a flow from the [**Vector Store RAG** template](/vector-store-rag).
+2. 对于此示例，从 [**Vector Store RAG** 模板](/vector-store-rag) 创建流。
 
-3. Replace the two **OpenAI Embeddings** components with **Hugging Face Embeddings Inference** components.
+3. 将两个 **OpenAI Embeddings** 组件替换为 **Hugging Face Embeddings Inference** 组件。
 
-    Make sure to reconnect the **Embedding Model** ports from each embedding model component to its corresponding **Astra DB** vector store component.
+    确保将每个嵌入模型组件的 **Embedding Model** 端口重新连接到其对应的 **Astra DB** 向量存储组件。
 
-4. Configure the **Astra DB** vector store components to connect to your Astra organization, or replace both **Astra DB** vector store components with other [vector store components](/components-vector-stores).
+4. 配置 **Astra DB** 向量存储组件以连接到您的 Astra 组织，或将两个 **Astra DB** 向量存储组件替换为其他 [向量存储组件](/components-vector-stores)。
 
-5. Connect each **Hugging Face Embeddings Inference** component to your local inference model:
+5. 将每个 **Hugging Face Embeddings Inference** 组件连接到您的本地推理模型：
 
-    * **Inference Endpoint**: Enter the URL of your local inference model.
-    * **API Key**: Can be empty for local inference.
-    * **Model Name**: Enter the name of your local inference model if it isn't automatically detected.
+    * **Inference Endpoint**：输入您的本地推理模型的 URL。
+    * **API Key**：对于本地推理可以为空。
+    * **Model Name**：如果未自动检测到，请输入您的本地推理模型的名称。
 
-6. To test the flow, click **Playground**, and then enter some text to generate an embedding.
+6. 要测试流，请点击 **Playground**，然后输入一些文本以生成嵌入。

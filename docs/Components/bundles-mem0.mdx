@@ -5,35 +5,35 @@ slug: /bundles-mem0
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Mem0** bundle.
+本页面描述了 **Mem0** bundle 中可用的组件。
 
 ## Mem0 Chat Memory
 
-The **Mem0 Chat Memory** component retrieves and stores chat messages using Mem0 memory storage.
+**Mem0 Chat Memory** 组件使用 Mem0 内存存储检索和存储聊天消息。
 
-### Mem0 Chat Memory parameters
+### Mem0 Chat Memory 参数
 
-Many **Mem0 Chat Memory** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+**Mem0 Chat Memory** 组件的许多输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 切换参数。
 
-| Name | Display Name | Info |
+| 名称 | 显示名称 | 信息 |
 |------|--------------|------|
-| mem0_config | Mem0 Configuration | Input parameter. The configuration dictionary for initializing the Mem0 memory instance. |
-| ingest_message | Message to Ingest | Input parameter. The message content to be ingested into Mem0 memory. |
-| existing_memory | Existing Memory Instance | Input parameter. An optional existing Mem0 memory instance. |
-| user_id | User ID | Input parameter. The identifier for the user associated with the messages. |
-| search_query | Search Query | Input parameter. The input text for searching related memories in Mem0. |
-| mem0_api_key | Mem0 API Key | Input parameter. The API key for the Mem0 platform. Leave empty to use the local version. |
-| metadata | Metadata | Input parameter. The additional metadata to associate with the ingested message. |
-| openai_api_key | OpenAI API Key | Input parameter. The API key for OpenAI. Required when using OpenAI embeddings without a provided configuration. |
+| mem0_config | Mem0 Configuration | 输入参数。用于初始化 Mem0 内存实例的配置字典。 |
+| ingest_message | Message to Ingest | 输入参数。要接收到 Mem0 内存中的消息内容。 |
+| existing_memory | Existing Memory Instance | 输入参数。可选的现有 Mem0 内存实例。 |
+| user_id | User ID | 输入参数。与消息关联的用户标识符。 |
+| search_query | Search Query | 输入参数。在 Mem0 中搜索相关内存的输入文本。 |
+| mem0_api_key | Mem0 API Key | 输入参数。Mem0 平台的 API 密钥。留空以使用本地版本。 |
+| metadata | Metadata | 输入参数。与接收消息关联的附加元数据。 |
+| openai_api_key | OpenAI API Key | 输入参数。OpenAI 的 API 密钥。在使用 OpenAI 嵌入而没有提供配置时必需。 |
 
-### Mem0 Chat Memory output
+### Mem0 Chat Memory 输出
 
-The **Mem0 Chat Memory** component can output either **Mem0 Memory** ([`Memory`](/data-types#memory)) or **Search Results** ([`Data`](/data-types#data)).
-You can select the output type near the component's output port.
+**Mem0 Chat Memory** 组件可以输出 **Mem0 Memory**（[`Memory`](/data-types#memory)）或 **Search Results**（[`Data`](/data-types#data)）。
+您可以在组件输出端口附近选择输出类型。
 
-Use **Mem0 Chat Memory** for memory storage and retrieval operations with the [**Message History** component](/components-helpers#message-history).
+使用 **Mem0 Chat Memory** 与 [**Message History** 组件](/components-helpers#message-history) 进行内存存储和检索操作。
 
-Use the **Search Results** output to retrieve specific memories based on a search query.
+使用 **Search Results** 输出根据搜索查询检索特定内存。

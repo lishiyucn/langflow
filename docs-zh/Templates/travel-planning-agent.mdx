@@ -1,47 +1,47 @@
 ---
-title: Travel planning agent
+title: 旅行规划智能体
 slug: /travel-planning-agent
 ---
 
 import Icon from "@site/src/components/icon";
 
-This flow demonstrates using multiple [Agent](/agents) components in a single flow.
+该流程演示了在单个流程中使用多个 [Agent](/agents) 组件。
 
-In this flow, multiple **Agents** plan a travel journey.
-Each agent is given a different responsibility defined by its **System Prompt** field.
-The **Chat input** defines where the user wants to go, and passes the result to the **City Selection** agent. The **Local Expert** agent then adds information based on the selected cities, and the **Travel Concierge** assembles a seven day travel plan in Markdown.
+在此流程中，多个 **Agent** 规划一次旅行。
+每个智能体都有不同的职责，由其 **System Prompt** 字段定义。
+**Chat input** 定义用户想去的地方，并将结果传递给 **City Selection** 智能体。**Local Expert** 智能体然后根据选定的城市添加信息，**Travel Concierge** 智能体组装一个七天的 Markdown 旅行计划。
 
-All agents have access to the **Search API** and **URL Content Fetcher** components, while only the **Travel Concierge** agent can use the **Calculator** for computing the trip costs.
+所有智能体都可以访问 **Search API** 和 **URL Content Fetcher** 组件，而只有 **Travel Concierge** 智能体可以使用 **Calculator** 计算旅行费用。
 
-## Prerequisites
+## 前提条件
 
-- [A running Langflow instance](/get-started-installation)
-- [An OpenAI API key](https://platform.openai.com/)
-- [A Search API key](https://www.searchapi.io/)
+- [运行中的 Langflow 实例](/get-started-installation)
+- [OpenAI API 密钥](https://platform.openai.com/)
+- [Search API 密钥](https://www.searchapi.io/)
 
-## Open Langflow and start a new flow
+## 打开 Langflow 并开始新流程
 
-Click **New Flow**, and then select the **Travel Planning Agent** flow.
+点击 **New Flow**，然后选择 **Travel Planning Agent** 流程。
 
-This opens a starter flow with the necessary components to run an agentic application using multiple Tool-calling agents.
+这将打开一个包含必要组件的启动流程，用于运行使用多个工具调用智能体的智能体应用程序。
 
-## Create the travel planning agent flow
+## 创建旅行规划智能体流程
 
 ![](/img/starter-flow-travel-agent.png)
 
-The **Travel Planning Agent** flow consists of these components:
+**Travel Planning Agent** 流程包含以下组件：
 
-* Multiple **Tool calling agent** components that use the connected LLM to reason through the user's input and select among the connected tools to complete their tasks.
-* The **Calculator** component performs basic arithmetic operations.
-* The **URL Content Fetcher** component scrapes content from a given URL.
-* The **Chat Input** component accepts user input to the chat.
-* The **Chat Output** component prints the flow's output to the chat.
-* The **OpenAI** model component sends the user input and prompt to the OpenAI API and receives a response.
+* 多个 **Tool calling agent** 组件，使用连接的 LLM 对用户输入进行推理，并在连接的工具中选择以完成任务。
+* **Calculator** 组件执行基本算术运算。
+* **URL Content Fetcher** 组件从给定 URL 抓取内容。
+* **Chat Input** 组件接受用户在聊天中的输入。
+* **Chat Output** 组件将流程的输出打印到聊天中。
+* **OpenAI** 模型组件将用户输入和提示发送到 OpenAI API 并接收响应。
 
-## Run the travel planning agent flow
+## 运行旅行规划智能体流程
 
-1. Add your credentials to the OpenAI and Search API components.
-2. To run the flow, click <Icon name="Play" aria-hidden="true"/> **Playground**.
-You should receive a detailed, helpful answer to the journey defined in the **Chat input** component.
+1. 将您的凭证添加到 OpenAI 和 Search API 组件中。
+2. 要运行流程，请点击 <Icon name="Play" aria-hidden="true"/> **Playground**。
+您应该会收到针对 **Chat input** 组件中定义的旅程的详细、有用的答案。
 
-Now that your query has completed the journey from **Chat input** to **Chat output**, you have completed the **Travel Planning Agent** flow.
+现在您的查询已完成从 **Chat input** 到 **Chat output** 的旅程，您已完成了 **Travel Planning Agent** 流程。

@@ -1,16 +1,16 @@
 ---
-title: Monitor endpoints
+title: 监控端点
 slug: /api-monitor
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Use the `/monitor` endpoint to monitor and modify messages passed between Langflow components, vertex builds, and transactions.
+使用 `/monitor` 端点来监控和修改在 Langflow 组件、顶点构建和事务之间传递的消息。
 
-## Get Vertex builds
+## 获取顶点构建
 
-Retrieve Vertex builds for a specific flow.
+检索特定流的顶点构建。
 
 ```bash
 curl -X GET \
@@ -20,7 +20,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -384,9 +384,9 @@ curl -X GET \
 
 </details>
 
-## Delete Vertex builds
+## 删除顶点构建
 
-Delete Vertex builds for a specific flow.
+删除特定流的顶点构建。
 
 ```bash
 curl -X DELETE \
@@ -396,7 +396,7 @@ curl -X DELETE \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```text
 204 No Content
@@ -404,9 +404,9 @@ curl -X DELETE \
 
 </details>
 
-## Get messages
+## 获取消息
 
-Retrieve a list of all messages:
+检索所有消息的列表：
 
 ```bash
 curl -X GET \
@@ -415,11 +415,11 @@ curl -X GET \
   -H "x-api-key: $LANGFLOW_API_KEY"
 ```
 
-To filter messages, use the `flow_id`, `session_id`, `sender`, and `sender_name` query parameters.
+要过滤消息，请使用 `flow_id`、`session_id`、`sender` 和 `sender_name` 查询参数。
 
-To sort the results, use the `order_by` query parameter.
+要对结果进行排序，请使用 `order_by` 查询参数。
 
-This example retrieves messages sent by `Machine` and `AI` in a given chat session (`session_id`) and orders the messages by timestamp.
+此示例检索在给定聊天会话（`session_id`）中由 `Machine` 和 `AI` 发送的消息，并按时间戳对消息进行排序。
 
 ```bash
 curl -X GET \
@@ -429,7 +429,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 [
@@ -466,11 +466,11 @@ curl -X GET \
 
 </details>
 
-## Delete messages
+## 删除消息
 
-Delete specific messages by their IDs.
+根据ID删除特定消息。
 
-This example deletes the message retrieved in the previous `GET /messages` example.
+此示例删除在前面的 `GET /messages` 示例中检索到的消息。
 
 ```bash
 curl -v -X DELETE \
@@ -482,7 +482,7 @@ curl -v -X DELETE \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```text
 204 No Content
@@ -490,11 +490,11 @@ curl -v -X DELETE \
 
 </details>
 
-## Update message
+## 更新消息
 
-Update a specific message by its ID.
+根据ID更新特定消息。
 
-This example updates the `text` value of message `3ab66cc6-c048-48f8-ab07-570f5af7b160`.
+此示例更新消息 `3ab66cc6-c048-48f8-ab07-570f5af7b160` 的 `text` 值。
 
 ```bash
 curl -X PUT \
@@ -508,7 +508,7 @@ curl -X PUT \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -540,11 +540,11 @@ curl -X PUT \
 
 </details>
 
-## Update session ID
+## 更新会话ID
 
-Update the session ID for messages.
+更新消息的会话ID。
 
-This example updates the `session_ID` value `01ce083d-748b-4b8d-97b6-33adbb6a528a` to `different_session_id`.
+此示例将 `session_ID` 值 `01ce083d-748b-4b8d-97b6-33adbb6a528a` 更新为 `different_session_id`。
 
 ```bash
 curl -X PATCH \
@@ -554,7 +554,7 @@ curl -X PATCH \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 [
@@ -591,9 +591,9 @@ curl -X PATCH \
 
 </details>
 
-## Delete messages by session
+## 按会话删除消息
 
-Delete all messages for a specific session.
+删除特定会话的所有消息。
 
 ```bash
 curl -X DELETE \
@@ -603,7 +603,7 @@ curl -X DELETE \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```text
 HTTP/1.1 204 No Content
@@ -611,9 +611,9 @@ HTTP/1.1 204 No Content
 
 </details>
 
-## Get transactions
+## 获取事务
 
-Retrieve all transactions, which are interactions between components, for a specific flow.
+检索特定流的所有事务，即组件之间的交互。
 
 ```bash
 curl -X GET \
@@ -623,7 +623,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -649,6 +649,6 @@ curl -X GET \
 
 </details>
 
-## See also
+## 另请参阅
 
-- [Session ID](/session-id)
+- [会话ID](/session-id)

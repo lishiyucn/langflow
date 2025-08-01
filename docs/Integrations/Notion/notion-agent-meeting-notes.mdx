@@ -1,162 +1,162 @@
 ---
-title: Notion Meeting Notes Agent
+title: Notion 会议记录代理
 slug: /integrations/notion/notion-agent-meeting-notes
 ---
 
 import Icon from "@site/src/components/icon";
 
-The Notion Agent for Meeting Notes is an AI-powered tool that automatically processes meeting transcripts and updates your Notion workspace. It identifies tasks, action items, and key points from your meetings, then creates new tasks or updates existing ones in Notion without manual input.
+Notion 会议记录代理是一个由 AI 驱动的工具，可以自动处理会议记录并更新您的 Notion 工作区。它可以从您的会议中识别任务、行动项和关键要点，然后在 Notion 中创建新任务或更新现有任务，无需手动输入。
 
-## Prerequisites
+## 前置条件
 
-- [Notion App](/integrations/notion/setup)
-- [Notion API key](https://www.notion.so/my-integrations)
-- [OpenAI API key](https://platform.openai.com/account/api-keys)
-- [Download Flow Meeting Agent Flow](./Meeting_Notes_Agent.json)(Download link)
+- [Notion 应用](/integrations/notion/setup)
+- [Notion API 密钥](https://www.notion.so/my-integrations)
+- [OpenAI API 密钥](https://platform.openai.com/account/api-keys)
+- [下载会议代理流](./Meeting_Notes_Agent.json)（下载链接）
 
 :::important
-Before using this flow, ensure you have obtained the necessary API keys from Notion and OpenAI. These keys are essential for the flow to function properly. Keep them secure and do not share them publicly.
+在使用此流程之前，请确保您已获得 Notion 和 OpenAI 的必要 API 密钥。这些密钥对于流程正常运行至关重要。请保持密钥安全，不要公开分享。
 :::
 
-## Components
+## 组件
 
-![Notion Meeting Agent Part 1](./notion_meeting_agent_part_1.png)
+![Notion 会议代理第一部分](./notion_meeting_agent_part_1.png)
 
-### Meeting Transcript (text input)
+### 会议记录（文本输入）
 
-This component allows users to input the meeting transcript directly into the flow.
+此组件允许用户直接将会议记录输入到流程中。
 
-### List Users (Notion component)
+### 列出用户（Notion 组件）
 
-- **Purpose**: Retrieves a list of users from the Notion workspace.
-- **Input**: Notion Secret (API key)
-- **Output**: List of user data
+- **目的**：从 Notion 工作区检索用户列表。
+- **输入**：Notion 密钥（API 密钥）
+- **输出**：用户数据列表
 
-### List Databases (Notion component)
+### 列出数据库（Notion 组件）
 
-- **Purpose**: Searches and lists all databases in the Notion workspace.
-- **Input**:
-  - Notion Secret (API key)
-  - Query (optional)
-  - Filter Type (default: database)
-  - Sort Direction
-- **Output**: List of database data
+- **目的**：搜索并列出 Notion 工作区中的所有数据库。
+- **输入**：
+  - Notion 密钥（API 密钥）
+  - 查询（可选）
+  - 过滤类型（默认：database）
+  - 排序方向
+- **输出**：数据库数据列表
 
-### Prompt
+### 提示
 
-This component creates a dynamic prompt template using the following inputs:
-- Meeting Transcript
-- List of Users
-- List of Databases
-- Current Date
+此组件使用以下输入创建动态提示模板：
+- 会议记录
+- 用户列表
+- 数据库列表
+- 当前日期
 
-### Meeting Summarizer (Tool Calling Agent)
+### 会议总结器（工具调用代理）
 
-- **Purpose**: Analyzes the meeting transcript and identifies tasks and action items.
-- **Inputs**:
-  - System Prompt (from the Prompt component)
-  - Language Model (OpenAI)
-  - Tools:
-    - Notion Search
-    - List Database Properties
-    - Create Page
-    - Update Page Property
-    - Add Content to Page
+- **目的**：分析会议记录并识别任务和行动项。
+- **输入**：
+  - 系统提示（来自提示组件）
+  - 语言模型（OpenAI）
+  - 工具：
+    - Notion 搜索
+    - 列出数据库属性
+    - 创建页面
+    - 更新页面属性
+    - 添加内容到页面
 
-![Notion Meeting Agent Part 2](./notion_meeting_agent_part_2.png)
+![Notion 会议代理第二部分](./notion_meeting_agent_part_2.png)
 
-### Notion Agent (Tool Calling Agent)
+### Notion 代理（工具调用代理）
 
-- **Purpose**: Executes actions in Notion based on the meeting summary.
-- **Inputs**:
-  - System Prompt (from the second Prompt component)
-  - Language Model (OpenAI)
-  - Tools:
-    - List Database Properties
-    - Create Page
-    - Update Page Property
-    - Add Content to Page
+- **目的**：基于会议总结在 Notion 中执行操作。
+- **输入**：
+  - 系统提示（来自第二个提示组件）
+  - 语言模型（OpenAI）
+  - 工具：
+    - 列出数据库属性
+    - 创建页面
+    - 更新页面属性
+    - 添加内容到页面
 
-### Notion components (tools)
+### Notion 组件（工具）
 
-#### List Database Properties
+#### 列出数据库属性
 
-- **Purpose**: Retrieves the properties of a specified Notion database.
-- **Input**:
-  - Database ID
-  - Notion Secret (API key)
+- **目的**：检索指定 Notion 数据库的属性。
+- **输入**：
+  - 数据库 ID
+  - Notion 密钥（API 密钥）
 
-#### Create Page
+#### 创建页面
 
-- **Purpose**: Creates a new page in a Notion database.
-- **Inputs**:
-  - Database ID
-  - Notion Secret (API key)
-  - Properties (JSON)
+- **目的**：在 Notion 数据库中创建新页面。
+- **输入**：
+  - 数据库 ID
+  - Notion 密钥（API 密钥）
+  - 属性（JSON）
 
-#### Update Page Property
+#### 更新页面属性
 
-- **Purpose**: Updates the properties of an existing Notion page.
-- **Inputs**:
-  - Page ID
-  - Notion Secret (API key)
-  - Properties to update
+- **目的**：更新现有 Notion 页面的属性。
+- **输入**：
+  - 页面 ID
+  - Notion 密钥（API 密钥）
+  - 要更新的属性
 
-#### Add Content to Page
+#### 添加内容到页面
 
-- **Purpose**: Converts markdown text to Notion blocks and appends them to a specified Notion page.
-- **Inputs**:
-  - Page/Block ID
-  - Notion Secret (API key)
-  - Markdown text
+- **目的**：将 markdown 文本转换为 Notion 块并将其附加到指定的 Notion 页面。
+- **输入**：
+  - 页面/块 ID
+  - Notion 密钥（API 密钥）
+  - Markdown 文本
 
-### Chat Output
+### 聊天输出
 
-Displays the final output of the Notion Agent in the Playground.
+在 Playground 中显示 Notion 代理的最终输出。
 
-## Flow Process
+## 流程过程
 
-1. The user inputs a meeting transcript.
-2. The flow retrieves the list of Notion users and databases.
-3. A prompt is generated using the transcript, user list, database list, and current date.
-4. The Meeting Summarizer analyzes the transcript and identifies tasks and action items.
-5. The Notion Agent uses the meeting summary to:
-   - Create new pages for new tasks
-   - Update existing pages for existing tasks
-   - Add content to pages with meeting notes
-6. The Chat Output displays a summary of actions taken in Notion.
+1. 用户输入会议记录。
+2. 流程检索 Notion 用户和数据库的列表。
+3. 使用记录、用户列表、数据库列表和当前日期生成提示。
+4. 会议总结器分析记录并识别任务和行动项。
+5. Notion 代理使用会议总结来：
+   - 为新任务创建新页面
+   - 为现有任务更新现有页面
+   - 向页面添加会议记录内容
+6. 聊天输出显示在 Notion 中执行的操作摘要。
 
-## Run the Notion Meeting Notes flow
+## 运行 Notion 会议记录流程
 
-To run the Notion Agent for Meeting Notes:
+要运行 Notion 会议记录代理：
 
-1. Open Langflow and create a new project.
-2. Add the components listed above to your flow canvas, or download the [Flow Meeting Agent Flow](./Meeting_Notes_Agent.json)(Download link) and **Import** the JSON file into Langflow.
-3. Connect the components as shown in the flow diagram.
-4. Input the Notion and OpenAI API keys in their respective components.
-5. Paste your meeting transcript into the Meeting Transcript component.
-6. Run the flow by clicking <Icon name="Play" aria-hidden="True" /> **Run component** on the **Chat Output** component.
-7. Review the output in the Chat Output component, which will summarize the actions taken in your Notion workspace.
+1. 打开 Langflow 并创建新项目。
+2. 将上述列出的组件添加到您的流程画布中，或下载[会议代理流](./Meeting_Notes_Agent.json)（下载链接）并将 JSON 文件**导入**到 Langflow 中。
+3. 按照流程图所示连接组件。
+4. 在相应组件中输入 Notion 和 OpenAI API 密钥。
+5. 将您的会议记录粘贴到会议记录组件中。
+6. 通过点击**聊天输出**组件上的 <Icon name="Play" aria-hidden="True" /> **运行组件**来运行流程。
+7. 在聊天输出组件中查看输出，它将总结在您的 Notion 工作区中执行的操作。
 
-For optimal results, use detailed meeting transcripts. The quality of the output depends on the comprehensiveness of the input provided.
+为获得最佳结果，请使用详细的会议记录。输出质量取决于所提供输入的全面性。
 
-## Customization
+## 自定义
 
-The flow can be customized to meet your team's specific needs.
+该流程可以根据您团队的特定需求进行自定义。
 
-Customize this flow by:
+自定义此流程的方法：
 
-1. Adjusting the system prompt to change the agent's behavior or knowledge base.
-2. Adding or removing Notion tools based on your specific needs.
-3. Modifying the OpenAI model parameters (e.g., temperature) to adjust the agent's response style.
+1. 调整系统提示以改变代理的行为或知识库。
+2. 根据您的特定需求添加或删除 Notion 工具。
+3. 修改 OpenAI 模型参数（例如温度）以调整代理的响应风格。
 
-## Troubleshooting
+## 故障排除
 
-If you encounter issues:
+如果您遇到问题：
 
-1. Ensure all API keys are correctly set and have the necessary permissions.
-2. Check that your Notion integration has access to the relevant pages and databases.
-3. Verify that all components are properly connected in the flow.
-4. Review the Langflow logs for any error messages.
+1. 确保所有 API 密钥都正确设置并具有必要的权限。
+2. 检查您的 Notion 集成是否有权访问相关页面和数据库。
+3. 验证所有组件在流程中都正确连接。
+4. 查看 Langflow 日志以查找任何错误消息。
 
-For more advanced usage and integration options, refer to the [Notion API documentation](https://developers.notion.com/) and [Langflow documentation](/).
+有关更高级的使用和集成选项，请参阅 [Notion API 文档](https://developers.notion.com/)和 [Langflow 文档](/)。

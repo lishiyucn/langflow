@@ -5,33 +5,33 @@ slug: /bundles-redis
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components)包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Redis** bundle.
+本页介绍了 **Redis** 组件包中可用的组件。
 
-## Redis Chat Memory
+## Redis 聊天记忆
 
-The **Redis Chat Memory** component retrieves and stores chat messages using Redis memory storage.
+**Redis 聊天记忆** 组件使用 Redis 内存存储检索和存储聊天消息。
 
-Chat memories are passed between memory storage components as the [`Memory`](/data-types#memory) data type.
+聊天记忆在内存存储组件之间作为 [`Memory`](/data-types#memory) 数据类型传递。
 
-For more information about using external chat memory in flows, see the [**Message History** component](/components-helpers#message-history).
+有关在流程中使用外部聊天记忆的更多信息，请参阅[**消息历史**组件](/components-helpers#message-history)。
 
-### Redis Chat Memory parameters
+### Redis 聊天记忆参数
 
-Many **Redis Chat Memory** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **Redis 聊天记忆** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
 
-| Name | Display Name | Info |
+| 名称 | 显示名称 | 信息 |
 |------|--------------|------|
-| host | hostname | Input parameter. The IP address or hostname. |
-| port | port | Input parameter. The Redis Port Number. |
-| database | database | Input parameter. The Redis database. |
-| username | Username | Input parameter. The Redis username. |
-| password | Password | Input parameter. The password for the username. |
-| key_prefix | Key prefix | Input parameter. The key prefix. |
-| session_id | Session ID | Input parameter. The unique session identifier for the message. |
+| host | hostname | 输入参数。IP 地址或主机名。 |
+| port | port | 输入参数。Redis 端口号。 |
+| database | database | 输入参数。Redis 数据库。 |
+| username | Username | 输入参数。Redis 用户名。 |
+| password | Password | 输入参数。用户名的密码。 |
+| key_prefix | Key prefix | 输入参数。键前缀。 |
+| session_id | Session ID | 输入参数。消息的唯一会话标识符。 |
 
-## Redis vector store
+## Redis 向量存储
 
-See [**Redis** vector store component](/components-vector-stores#redis).
+请参阅 [**Redis** 向量存储组件](/components-vector-stores#redis)。

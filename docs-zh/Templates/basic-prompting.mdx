@@ -1,53 +1,53 @@
 ---
-title: Basic prompting
+title: 基础提示
 slug: /basic-prompting
 ---
 
 import Icon from "@site/src/components/icon";
 
-This flow is a starting point for understanding Langflow.
-The flow demonstrates how to chat with an LLM, and how modifying the prompt can affect your outcomes.
+此流程是理解 Langflow 的起点。
+该流程演示了如何与 LLM 聊天，以及修改提示如何影响您的结果。
 
-Prompts serve as the inputs to a large language model (LLM), acting as the interface between human instructions and computational tasks.
+提示作为大型语言模型 (LLM) 的输入，充当人类指令和计算任务之间的接口。
 
-By submitting natural language requests in a prompt to an LLM, you can obtain answers, generate text, and solve problems.
+通过在提示中向 LLM 提交自然语言请求，您可以获得答案、生成文本并解决问题。
 
-## Prerequisites
+## 先决条件
 
-- [A running Langflow instance](/get-started-installation)
-- [An OpenAI API key](https://platform.openai.com/)
+- [正在运行的 Langflow 实例](/get-started-installation)
+- [OpenAI API 密钥](https://platform.openai.com/)
 
-## Create the basic prompting flow
+## 创建基础提示流程
 
-1. From the Langflow dashboard, click **New Flow**.
+1. 从 Langflow 仪表板，点击**新建流程**。
 
-2. Select **Basic Prompting**.
+2. 选择**基础提示**。
 
-3. The **Basic Prompting** flow is created.
+3. **基础提示**流程被创建。
 
     ![Basic prompting flow](/img/starter-flow-basic-prompting.png)
 
-    This flow allows you to chat with the **OpenAI model** component.
-    The model will respond according to the prompt constructed in the **Prompt** component.
+    此流程允许您与 **OpenAI 模型**组件聊天。
+    该模型将根据**提示**组件中构建的提示进行响应。
 
-4. To examine the **Template**, in the **Prompt** component, click the **Template** field.
+4. 要检查**模板**，在**提示**组件中，点击**模板**字段。
     ```text
     Answer the user as if you were a GenAI expert, enthusiastic about helping them get started building something fresh.
     ```
 
-5. To create an environment variable for the **OpenAI** component, in the **OpenAI API Key** field, click the <Icon name="Globe" aria-hidden="true"/> **Globe** button, and then click **Add New Variable**.
+5. 要为 **OpenAI** 组件创建环境变量，在 **OpenAI API 密钥**字段中，点击 <Icon name="Globe" aria-hidden="true"/> **地球**按钮，然后点击**添加新变量**。
 
-	1. In the **Variable Name** field, enter `openai_api_key`.
-	2. In the **Value** field, paste your OpenAI API Key (`sk-...`).
-	3. Click **Save Variable**.
+	1. 在**变量名称**字段中，输入 `openai_api_key`。
+	2. 在**值**字段中，粘贴您的 OpenAI API 密钥（`sk-...`）。
+	3. 点击**保存变量**。
 
-## Run the basic prompting flow
+## 运行基础提示流程
 
-1. Click the **Playground** button.
-2. Type a message and press Enter. The bot should respond in a markedly piratical manner!
+1. 点击**操场**按钮。
+2. 输入一条消息并按 Enter 键。机器人应该以明显的海盗方式响应！
 
-## Modify the prompt for a different result
+## 修改提示以获得不同结果
 
-1. To modify your prompt results, in the **Prompt** component, click the **Template** field. The **Edit Prompt** window opens.
-2. Change the existing prompt to a different character, perhaps `Answer the user as if you were Hermione Granger.`
-3. Run the workflow again and notice how the prompt changes the model's response.
+1. 要修改您的提示结果，在**提示**组件中，点击**模板**字段。**编辑提示**窗口打开。
+2. 将现有提示更改为不同的角色，例如 `Answer the user as if you were Hermione Granger.`
+3. 再次运行工作流并注意提示如何改变模型的响应。

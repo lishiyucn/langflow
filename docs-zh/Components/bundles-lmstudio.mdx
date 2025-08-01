@@ -5,52 +5,52 @@ slug: /bundles-lmstudio
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-The components in the **LM Studio** bundle let you use models from a local or hosted instance of LM Studio.
-Components can require authentication with an LM Studio API key. For information about LM Studio models, connections, and credentials, see the [LM Studio documentation](https://lmstudio.ai/docs).
+**LM Studio** 组件包中的组件让您可以使用来自本地或托管 LM Studio 实例的模型。
+组件可能需要使用 LM Studio API 密钥进行身份验证。有关 LM Studio 模型、连接和凭据的信息，请参阅 [LM Studio 文档](https://lmstudio.ai/docs)。
 
-## LM Studio text generation
+## LM Studio 文本生成
 
-The **LM Studio** component generates text using LM Studio's local language models.
+**LM Studio** 组件使用 LM Studio 的本地语言模型生成文本。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+它可以输出 **模型响应**（[`Message`](/data-types#message)）或 **语言模型**（[`LanguageModel`](/data-types#languagemodel)）。
 
-Use the **Language Model** output when you want to use an LM Studio model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要将 LM Studio 模型用作另一个 LLM 驱动组件（如 **语言模型** 或 **智能函数** 组件）的 LLM 时，请使用 **语言模型** 输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅 [**语言模型** 组件](/components-models)。
 
-### LM Studio text generation parameters
+### LM Studio 文本生成参数
 
-Many **LM Studio** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **LM Studio** 组件输入参数在可视化编辑器中默认为隐藏状态。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控件** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| base_url | String | Input parameter. The URL where LM Studio is running. Default: `"http://localhost:1234"`. |
-| api_key | LM Studio API Key | Input parameter. The API key for authentication with LM Studio, if required. |
-| max_tokens | Integer | Input parameter. Maximum number of tokens to generate in the response. Default: `512`. |
-| temperature | Float | Input parameter. Controls randomness in the output. Range: `[0.0, 2.0]`. Default: `0.7`. |
-| top_p | Float | Input parameter. Controls diversity via nucleus sampling. Range: `[0.0, 1.0]`. Default: `1.0`. |
-| stop | List[String] | Input parameter. List of strings that stop generation when encountered. |
-| stream | Boolean | Input parameter. Whether to stream the response. Default: `False`. |
-| presence_penalty | Float | Input parameter. Penalizes repeated tokens. Range: `[-2.0, 2.0]`. Default: `0.0`. |
-| frequency_penalty | Float | Input parameter. Penalizes frequent tokens. Range: `[-2.0, 2.0]`. Default: `0.0`. |
+| base_url | String | 输入参数。LM Studio 运行的 URL。默认：`"http://localhost:1234"`。 |
+| api_key | LM Studio API Key | 输入参数。用于 LM Studio 身份验证的 API 密钥（如果需要）。 |
+| max_tokens | Integer | 输入参数。响应中生成的最大令牌数。默认：`512`。 |
+| temperature | Float | 输入参数。控制输出的随机性。范围：`[0.0, 2.0]`。默认：`0.7`。 |
+| top_p | Float | 输入参数。通过核抽样控制多样性。范围：`[0.0, 1.0]`。默认：`1.0`。 |
+| stop | List[String] | 输入参数。遇到时停止生成的字符串列表。 |
+| stream | Boolean | 输入参数。是否流式传输响应。默认：`False`。 |
+| presence_penalty | Float | 输入参数。惩罚重复令牌。范围：`[-2.0, 2.0]`。默认：`0.0`。 |
+| frequency_penalty | Float | 输入参数。惩罚频繁令牌。范围：`[-2.0, 2.0]`。默认：`0.0`。 |
 
 ## LM Studio Embeddings
 
-The **LM Studio Embeddings** component generates embeddings using LM Studio models.
+**LM Studio Embeddings** 组件使用 LM Studio 模型生成嵌入。
 
-For more information about using embedding model components in flows, see [**Embedding Model** components](/components-embedding-models).
+有关在流程中使用嵌入模型组件的更多信息，请参阅 [**嵌入模型** 组件](/components-embedding-models)。
 
-### LM Studio Embeddings parameters
+### LM Studio Embeddings 参数
 
-Many **LM Studio Embeddings** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **LM Studio Embeddings** 组件输入参数在可视化编辑器中默认为隐藏状态。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控件** 来切换参数。
 
-| Name | Display Name | Info |
+| 名称 | 显示名称 | 信息 |
 |------|--------------|------|
-| model | Model | Input parameter. The LM Studio model to use for generating embeddings. |
-| base_url | LM Studio Base URL | Input parameter. The base URL for the LM Studio API. |
-| api_key | LM Studio API Key | Input parameter. The API key for authentication with LM Studio. |
-| temperature | Model Temperature | Input parameter. The temperature setting for the model. |
+| model | 模型 | 输入参数。用于生成嵌入的 LM Studio 模型。 |
+| base_url | LM Studio 基础 URL | 输入参数。LM Studio API 的基础 URL。 |
+| api_key | LM Studio API 密钥 | 输入参数。用于 LM Studio 身份验证的 API 密钥。 |
+| temperature | 模型温度 | 输入参数。模型的温度设置。 |

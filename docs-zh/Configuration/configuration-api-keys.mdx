@@ -17,13 +17,13 @@ API 密钥代表创建它的用户。如果您以超级用户身份创建密钥�
 唯一的例外是 MCP 端点 `/v1/mcp`、`/v1/mcp-projects` 和 `/v2/mcp`，它们从不需要身份验证。
 
 <details>
-<summary>AUTO_LOGIN and SKIP_AUTH options</summary>
+<summary>AUTO_LOGIN 和 SKIP_AUTH 选项</summary>
 
-In Langflow versions earlier than 1.5, if `LANGFLOW_AUTO_LOGIN=true`, then Langflow automatically logs users in as a superuser without requiring authentication.
-In this case, API requests don't require a Langflow API key.
+在 Langflow 1.5 之前的版本中，如果设置 `LANGFLOW_AUTO_LOGIN=true`，则 Langflow 会自动将用户以超级用户身份登录，无需身份验证。
+在这种情况下，API 请求不需要 Langflow API 密钥。
 
-In Langflow version 1.5, you can set `LANGFLOW_SKIP_AUTH_AUTO_LOGIN=true` and `LANGFLOW_AUTO_LOGIN=true` to skip authentication for API requests.
-However, the `LANGFLOW_SKIP_AUTH_AUTO_LOGIN` option will be removed in a future release.
+在 Langflow 1.5 版本中，您可以设置 `LANGFLOW_SKIP_AUTH_AUTO_LOGIN=true` 和 `LANGFLOW_AUTO_LOGIN=true` 来跳过 API 请求的身份验证。
+但是，`LANGFLOW_SKIP_AUTH_AUTO_LOGIN` 选项将在未来版本中移除。
 </details>
 
 ## 生成 Langflow API 密钥

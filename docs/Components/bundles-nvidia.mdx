@@ -5,55 +5,55 @@ slug: /bundles-nvidia
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[包](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **NVIDIA** bundle.
+本页面描述了 **NVIDIA** 包中可用的组件。
 
 ## NVIDIA
 
-This component generates text using NVIDIA LLMs.
-For more information about NVIDIA LLMs, see the [NVIDIA AI documentation](https://developer.nvidia.com/generative-ai).
+此组件使用 NVIDIA LLM 生成文本。
+有关 NVIDIA LLM 的更多信息，请参阅 [NVIDIA AI 文档](https://developer.nvidia.com/generative-ai)。
 
-For an example of this component in a flow, see [Integrate NVIDIA NIMs with Langflow](/integrations-nvidia-ingest-wsl2).
+有关此组件在流程中的示例，请参阅[将 NVIDIA NIM 与 Langflow 集成](/integrations-nvidia-ingest-wsl2)。
 
-### NVIDIA parameters
+### NVIDIA 参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| max_tokens | Integer | Input parameter. The maximum number of tokens to generate. Set to `0` for unlimited tokens (advanced). |
-| model_name | String | Input parameter. The name of the NVIDIA model to use. Default: `mistralai/mixtral-8x7b-instruct-v0.1`. |
-| base_url | String | Input parameter. The base URL of the NVIDIA API. Default: `https://integrate.api.nvidia.com/v1`. |
-| nvidia_api_key | SecretString | Input parameter. The NVIDIA API Key for authentication. |
-| temperature | Float | Input parameter. Controls randomness in the output. Default: `0.1`. |
-| seed | Integer | Input parameter. The seed controls the reproducibility of the job (advanced). Default: `1`. |
-| model | LanguageModel | Output parameter. An instance of ChatNVIDIA configured with the specified parameters. |
+| max_tokens | Integer | 输入参数。要生成的最大令牌数。设置为 `0` 表示无限制令牌（高级）。 |
+| model_name | String | 输入参数。要使用的 NVIDIA 模型名称。默认：`mistralai/mixtral-8x7b-instruct-v0.1`。 |
+| base_url | String | 输入参数。NVIDIA API 的基础 URL。默认：`https://integrate.api.nvidia.com/v1`。 |
+| nvidia_api_key | SecretString | 输入参数。用于身份验证的 NVIDIA API 密钥。 |
+| temperature | Float | 输入参数。控制输出的随机性。默认：`0.1`。 |
+| seed | Integer | 输入参数。种子控制作业的可重现性（高级）。默认：`1`。 |
+| model | LanguageModel | 输出参数。使用指定参数配置的 ChatNVIDIA 实例。 |
 
-## NVIDIA Embeddings
+## NVIDIA 嵌入
 
-The **NVIDIA Embeddings** component generates embeddings using [NVIDIA models](https://docs.nvidia.com).
+**NVIDIA 嵌入** 组件使用 [NVIDIA 模型](https://docs.nvidia.com) 生成嵌入。
 
-For more information about using embedding model components in flows, see [**Embedding Model** components](/components-embedding-models).
+有关在流程中使用嵌入模型组件的更多信息，请参阅[**嵌入模型** 组件](/components-embedding-models)。
 
-### NVIDIA Embeddings parameters
+### NVIDIA 嵌入参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| model | String | Input parameter. The NVIDIA model to use for embeddings, such as `nvidia/nv-embed-v1`. |
-| base_url | String | Input parameter. The base URL for the NVIDIA API. Default: `https://integrate.api.nvidia.com/v1`. |
-| nvidia_api_key | SecretString | Input parameter. The API key for authenticating with NVIDIA's service. |
-| temperature | Float | Input parameter. The model temperature for embedding generation. Default: `0.1`. |
-| embeddings | Embeddings | Output parameter. An `NVIDIAEmbeddings` instance for generating embeddings. |
+| model | String | 输入参数。用于嵌入的 NVIDIA 模型，如 `nvidia/nv-embed-v1`。 |
+| base_url | String | 输入参数。NVIDIA API 的基础 URL。默认：`https://integrate.api.nvidia.com/v1`。 |
+| nvidia_api_key | SecretString | 输入参数。用于与 NVIDIA 服务进行身份验证的 API 密钥。 |
+| temperature | Float | 输入参数。嵌入生成的模型温度。默认：`0.1`。 |
+| embeddings | Embeddings | 输出参数。用于生成嵌入的 `NVIDIAEmbeddings` 实例。 |
 
-## NVIDIA Rerank
+## NVIDIA 重排序
 
-This component finds and reranks documents using the NVIDIA API.
+此组件使用 NVIDIA API 查找和重新排序文档。
 
-## NVIDIA Retriever Extraction
+## NVIDIA 检索器提取
 
-This component uses the NVIDIA `nv-ingest` microservice for data ingestion, processing, and extraction of text files.
-For more information, see [Integrate NVIDIA Retriever Extraction with Langflow](/integrations-nvidia-ingest).
+此组件使用 NVIDIA `nv-ingest` 微服务进行数据摄取、处理和文本文件提取。
+有关更多信息，请参阅[将 NVIDIA 检索器提取与 Langflow 集成](/integrations-nvidia-ingest)。
 
-## NVIDIA System-Assist
+## NVIDIA 系统助手
 
-This component requires a specific system environment.
-For information about this component, see [Integrate NVIDIA G-Assist with Langflow](/integrations-nvidia-g-assist).
+此组件需要特定的系统环境。
+有关此组件的信息，请参阅[将 NVIDIA G-Assist 与 Langflow 集成](/integrations-nvidia-g-assist)。

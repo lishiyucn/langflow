@@ -1,19 +1,19 @@
 ---
-title: Contribute components
+title: 贡献组件
 slug: /contributing-components
 ---
 
 
-New components are added as objects of the [`Component`](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/custom/custom_component/component.py) class.
+新组件作为 [`Component`](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/custom/custom_component/component.py) 类的对象添加。
 
-Dependencies are added to the [pyproject.toml](https://github.com/langflow-ai/langflow/blob/main/pyproject.toml#L148) file.
+依赖项被添加到 [pyproject.toml](https://github.com/langflow-ai/langflow/blob/main/pyproject.toml#L148) 文件中。
 
-## Contribute an example component to Langflow
+## 向 Langflow 贡献示例组件
 
-Anyone can contribute an example component. For example, to create a new data component called **DataFrame processor**, follow these steps to contribute it to Langflow.
+任何人都可以贡献示例组件。例如，要创建一个名为 **DataFrame processor** 的新数据组件，请按照以下步骤将其贡献给 Langflow。
 
-1. Create a Python file called `dataframe_processor.py`.
-2. Write your processor as an object of the [`Component`](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/custom/custom_component/component.py) class. You'll create a new class, `DataFrameProcessor`, that will inherit from `Component` and override the base class's methods.
+1. 创建一个名为 `dataframe_processor.py` 的 Python 文件。
+2. 将处理器编写为 [`Component`](https://github.com/langflow-ai/langflow/blob/main/src/backend/base/langflow/custom/custom_component/component.py) 类的对象。您将创建一个新类 `DataFrameProcessor`，它将继承自 `Component` 并重写基类的方法。
 
 ```python
 from typing import Any, Dict, Optional
@@ -24,7 +24,7 @@ class DataFrameProcessor(Component):
     """A component that processes pandas DataFrames with various operations."""
 ```
 
-3. Define class attributes to provide information about your custom component:
+3. 定义类属性以提供有关自定义组件的信息：
 ```python
 from typing import Any, Dict, Optional
 import pandas as pd
@@ -41,17 +41,17 @@ class DataFrameProcessor(Component):
     name: str = "dataframe_processor"
 ```
 
-   * `display_name`: A user-friendly name shown in the UI.
-   * `description`: A brief description of what your component does.
-   * `documentation`: A link to detailed documentation.
-   * `icon`: An emoji or icon identifier for visual representation.
-    For more information, see [Contributing bundles](/contributing-bundles#add-the-bundle-to-the-frontend-folder).
-   * `priority`: An optional integer to control display order. Lower numbers appear first.
-   * `name`: An optional internal identifier that defaults to class name.
+   * `display_name`：在 UI 中显示的用户友好名称。
+   * `description`：对组件功能的简要描述。
+   * `documentation`：详细文档的链接。
+   * `icon`：用于视觉表示的表情符号或图标标识符。
+    更多信息请参见 [贡献包](/contributing-bundles#add-the-bundle-to-the-frontend-folder)。
+   * `priority`：控制显示顺序的可选整数。较小的数字优先显示。
+   * `name`：可选的内部标识符，默认为类名。
 
-4. Define the component's interface by specifying its inputs, outputs, and the method that will process them. The method name must match the `method` field in your outputs list, as this is how Langflow knows which method to call to generate each output.
-This example creates a minimal custom component skeleton.
-For more information on creating your custom component, see [Create custom Python components](/components-custom-components).
+4. 通过指定输入、输出和处理它们的方法来定义组件的接口。方法名必须与输出列表中的 `method` 字段匹配，这样 Langflow 才知道调用哪个方法来生成每个输出。
+此示例创建了一个最小的自定义组件骨架。
+有关创建自定义组件的更多信息，请参见 [创建自定义 Python 组件](/components-custom-components)。
 ```python
 from typing import Any, Dict, Optional
 import pandas as pd
@@ -76,100 +76,100 @@ class DataFrameProcessor(Component):
         return ...
 ```
 
-5. Save the `dataframe_processor.py` to the `src > backend > base > langflow > components` directory.
-This example adds a data component, so add it to the `/data` directory.
+5. 将 `dataframe_processor.py` 保存到 `src > backend > base > langflow > components` 目录。
+此示例添加了一个数据组件，因此将其添加到 `/data` 目录。
 
-6. Add the component dependency to `src > backend > base > langflow > components > data > __init__.py` as `from .DataFrameProcessor import DataFrameProcessor`.
-You can view the [/data/__init__.py](https://github.com/langflow-ai/langflow/blob/dev/src/backend/base/langflow/components/data/__init__.py) in the Langflow repository.
+6. 将组件依赖项添加到 `src > backend > base > langflow > components > data > __init__.py`，如 `from .DataFrameProcessor import DataFrameProcessor`。
+您可以在 Langflow 仓库中查看 [/data/__init__.py](https://github.com/langflow-ai/langflow/blob/dev/src/backend/base/langflow/components/data/__init__.py)。
 
-7. Add any new dependencies to the [pyproject.toml](https://github.com/langflow-ai/langflow/blob/main/pyproject.toml#L20) file.
+7. 将任何新的依赖项添加到 [pyproject.toml](https://github.com/langflow-ai/langflow/blob/main/pyproject.toml#L20) 文件中。
 
-8. Submit documentation for your component. For this example component, you would submit documentation to the [Data components page](https://github.com/langflow-ai/langflow/blob/main/docs/docs/Components/components-data.mdx).
+8. 为您的组件提交文档。对于此示例组件，您需要将文档提交到 [数据组件页面](https://github.com/langflow-ai/langflow/blob/main/docs/docs/Components/components-data.mdx)。
 
-9. Submit your changes as a pull request. The Langflow team will review, suggest changes, and add your component to Langflow.
+9. 以拉取请求的形式提交您的更改。Langflow 团队将审查、建议更改并将您的组件添加到 Langflow。
 
-## Best practices for modifying components
+## 修改组件的最佳实践
 
-When creating or updating components, follow these best practices to maintain backward compatibility and ensure a smooth experience for users.
+在创建或更新组件时，请遵循以下最佳实践以保持向后兼容性并确保用户的流畅体验。
 
-### Don't rename the class or `name` attribute
+### 不要重命名类或 `name` 属性
 
-Changing the class name or the `name` attribute breaks the component for all existing users. This happens because the frontend tests the `type` attribute, which is set to the class' name or the `name` attribute. If these names change, the component effectively becomes a new component, and the old component disappears.
+更改类名或 `name` 属性会破坏所有现有用户的组件。这是因为前端测试 `type` 属性，该属性设置为类名或 `name` 属性。如果这些名称发生更改，组件实际上会变成一个新组件，旧组件会消失。
 
-Instead, do the following:
-* Change only the display name if the old name is unclear.
-* Change only the display name if functionality changes but remains related.
-* If a new internal name is necessary, mark the old component as `legacy=true` and create a new component.
+相反，请执行以下操作：
+* 如果旧名称不清楚，只更改显示名称。
+* 如果功能发生变化但仍然相关，只更改显示名称。
+* 如果需要新的内部名称，将旧组件标记为 `legacy=true` 并创建新组件。
 
-For example:
+例如：
 ```python
 class MyCustomComponent(BaseComponent):
     name = "my_custom_component_internal"
     legacy = True
 ```
 
-### Don't remove fields and outputs
+### 不要删除字段和输出
 
-Removing fields or outputs can cause edges to disconnect and change the behavior of components.
+删除字段或输出可能导致边缘断开连接并改变组件的行为。
 
-Instead, mark fields as `deprecated` and keep them in the same location. If removal is absolutely necessary, you must define and document a migration plan. Always clearly communicate any changes in the field's information to users.
+相反，将字段标记为 `deprecated` 并将它们保留在相同位置。如果绝对必须删除，您必须定义并记录迁移计划。始终向用户清楚地传达字段信息的任何变化。
 
-### Maintain outdated components as legacy
+### 将过时的组件保持为遗留版本
 
-When updating components, create them as completely separate entities while maintaining the old component as a legacy version. Always ensure backward compatibility and never remove methods and attributes from base classes, such as `LCModelComponent`.
+更新组件时，将它们创建为完全独立的实体，同时将旧组件保持为遗留版本。始终确保向后兼容性，永远不要从基类（如 `LCModelComponent`）中删除方法和属性。
 
-### Favor asynchronous methods
+### 优先使用异步方法
 
-Always favor asynchronous methods and functions in your components. When interacting with files, use `aiofile` and `anyio.Path` for better performance and compatibility.
+在组件中始终优先使用异步方法和函数。与文件交互时，使用 `aiofile` 和 `anyio.Path` 以获得更好的性能和兼容性。
 
-### Include tests with your component
+### 为您的组件包含测试
 
-Include tests for your changes using `ComponentTestBase` classes. For more information, see [Contribute component tests](/contributing-component-tests).
+使用 `ComponentTestBase` 类为您的更改包含测试。更多信息请参见 [贡献组件测试](/contributing-component-tests)。
 
-### Documentation
+### 文档
 
-When documenting changes in pull requests, clearly explain *what* changed, such as display name updates or new fields, *why* it changed, such as improvements or bug fixes, and the *impact* on existing users.
+在拉取请求中记录更改时，清楚地解释 *什么* 发生了变化（如显示名称更新或新字段），*为什么* 发生变化（如改进或错误修复），以及对现有用户的 *影响*。
 
-For example:
+例如：
 
 <details>
-<summary>Example PR</summary>
+<summary>示例 PR</summary>
 
 ```markdown
-# Pull request with changes to Notify component
+# 对 Notify 组件更改的拉取请求
 
-This pull request updates the Notify component.
+此拉取请求更新了 Notify 组件。
 
-## What changed
-- Added new `timeout` field to control how long the component waits for a response.
-- Renamed `message` field to `notification_text` for clarity.
-- Added support for async operations.
-- Deprecated the `retry_count` field in favor of `max_retries`.
+## 发生了什么变化
+- 添加了新的 `timeout` 字段来控制组件等待响应的时间。
+- 将 `message` 字段重命名为 `notification_text` 以便更清楚。
+- 添加了对异步操作的支持。
+- 弃用了 `retry_count` 字段，改为使用 `max_retries`。
 
-## Why it changed
-- `timeout` field addresses user requests for better control over wait times.
-- `message` to `notification_text` change makes the field's purpose clearer.
-- Async support improves performance in complex flows.
-- `retry_count` to `max_retries` aligns with common retry pattern terminology.
+## 为什么发生变化
+- `timeout` 字段解决了用户对更好控制等待时间的请求。
+- `message` 到 `notification_text` 的更改使字段的目的更清楚。
+- 异步支持提高了复杂流程中的性能。
+- `retry_count` 到 `max_retries` 的更改与常见的重试模式术语保持一致。
 
-## Impact on users
-- New `timeout` field is optional (defaults to 30 seconds).
-- Users will see a deprecation warning for `retry_count`.
-  - Migration: Replace `retry_count` with `max_retries` in existing flows.
-  - Both fields will work until version 2.0.
-- No action needed for async support - it's backward compatible.
+## 对用户的影响
+- 新的 `timeout` 字段是可选的（默认为 30 秒）。
+- 用户将看到 `retry_count` 的弃用警告。
+  - 迁移：在现有流程中将 `retry_count` 替换为 `max_retries`。
+  - 两个字段在版本 2.0 之前都将工作。
+- 异步支持无需任何操作 - 它是向后兼容的。
 ```
 
 </details>
 
-## Example pull request flow
+## 示例拉取请求流程
 
-1. Create or update a component.
-Maintain the class name and `name` attribute if the purpose remains the same.
-Otherwise, create a new component and move the old component to `legacy`.
-2. Add tests.
-Create tests using one of the `ComponentTestBase` classes.
-For more information, see [Contribute component tests](/contributing-component-tests).
-3. Flag outdated fields and outputs as `deprecated` and keep them in the same location to ensure backward compatibility.
-4. Document your changes.
-Include migration instructions if breaking changes occur.
+1. 创建或更新组件。
+如果目的保持不变，维护类名和 `name` 属性。
+否则，创建新组件并将旧组件移至 `legacy`。
+2. 添加测试。
+使用其中一个 `ComponentTestBase` 类创建测试。
+更多信息请参见 [贡献组件测试](/contributing-component-tests)。
+3. 将过时的字段和输出标记为 `deprecated` 并将它们保留在相同位置以确保向后兼容性。
+4. 记录您的更改。
+如果发生破坏性更改，请包含迁移说明。

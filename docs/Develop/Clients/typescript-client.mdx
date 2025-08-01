@@ -1,20 +1,20 @@
 ---
-title: Langflow TypeScript client
+title: Langflow TypeScript 客户端
 slug: /typescript-client
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-The Langflow TypeScript client allows your TypeScript applications to programmatically interact with the Langflow API.
+Langflow TypeScript 客户端允许您的 TypeScript 应用程序通过编程方式与 Langflow API 进行交互。
 
-For the client code repository, see [langflow-client-ts](https://github.com/datastax/langflow-client-ts/).
+有关客户端代码仓库，请参阅 [langflow-client-ts](https://github.com/datastax/langflow-client-ts/)。
 
-For the npm package, see [@datastax/langflow-client](https://www.npmjs.com/package/@datastax/langflow-client).
+有关 npm 包，请参阅 [@datastax/langflow-client](https://www.npmjs.com/package/@datastax/langflow-client)。
 
-## Install the Langflow TypeScript package
+## 安装 Langflow TypeScript 包
 
-To install the Langflow typescript client package, use one of the following commands:
+要安装 Langflow TypeScript 客户端包，请使用以下命令之一：
 
 <Tabs>
 <TabItem value="npm" label="npm" default>
@@ -40,15 +40,15 @@ pnpm add @datastax/langflow-client
 </TabItem>
 </Tabs>
 
-## Initialize the Langflow TypeScript client
+## 初始化 Langflow TypeScript 客户端
 
-1. Import the client into your code.
+1. 将客户端导入到您的代码中。
 
     ```tsx
     import { LangflowClient } from "@datastax/langflow-client";
     ```
 
-2. Initialize a `LangflowClient` object to interact with your server:
+2. 初始化一个 `LangflowClient` 对象来与您的服务器交互：
 
     ```tsx
     const baseUrl = "BASE_URL";
@@ -56,15 +56,15 @@ pnpm add @datastax/langflow-client
     const client = new LangflowClient({ baseUrl, apiKey });
     ```
 
-    Replace `BASE_URL` and `API_KEY` with values from your deployment.
-    The default Langflow base URL is `http://localhost:7860`.
-    To create an API key, see [API keys](/configuration-api-keys).
+    将 `BASE_URL` 和 `API_KEY` 替换为您部署的值。
+    默认的 Langflow 基础 URL 是 `http://localhost:7860`。
+    要创建 API 密钥，请参阅 [API 密钥](/configuration-api-keys)。
 
-## Langflow TypeScript client quickstart
+## Langflow TypeScript 客户端快速入门
 
-1. With your Langflow client initialized, test the connection by calling your Langflow server.
+1. 在初始化 Langflow 客户端后，通过调用您的 Langflow 服务器来测试连接。
 
-    The following example runs a flow (`runFlow`) by sending the flow ID and a chat input string:
+    以下示例通过发送流程 ID 和聊天输入字符串来运行流程（`runFlow`）：
 
     ```tsx
     import { LangflowClient } from "@datastax/langflow-client";
@@ -84,16 +84,16 @@ pnpm add @datastax/langflow-client
     runFlow().catch(console.error);
     ```
 
-    Replace the following:
+    替换以下内容：
 
-    * `baseUrl`: The URL of your Langflow server
-    * `flowId`: The ID of the flow you want to run
-    * `input`: The chat input message you want to send to trigger the flow
+    * `baseUrl`：您的 Langflow 服务器的 URL
+    * `flowId`：您要运行的流程的 ID
+    * `input`：您要发送以触发流程的聊天输入消息
 
 
-2. Review the result to confirm that the client connected to your Langflow server.
+2. 检查结果以确认客户端已连接到您的 Langflow 服务器。
 
-    The following example shows the response from a well-formed `runFlow` request that reached the Langflow server and successfully started the flow:
+    以下示例显示了成功到达 Langflow 服务器并成功启动流程的格式良好的 `runFlow` 请求的响应：
 
     ```
     FlowResponse {
@@ -102,45 +102,45 @@ pnpm add @datastax/langflow-client
     }
     ```
 
-    In this case, the response includes a [`sessionID`](/session-id) that is a unique identifier for the client-server session and an `outputs` array that contains information about the flow run.
+    在这种情况下，响应包括一个 [`sessionID`](/session-id)，它是客户端-服务器会话的唯一标识符，以及一个包含有关流程运行信息的 `outputs` 数组。
 
-3. If you want to get full response objects from the server, change `console.log` to stringify the returned JSON object:
+3. 如果您想从服务器获取完整的响应对象，请将 `console.log` 更改为字符串化返回的 JSON 对象：
 
     ```tsx
     console.log(JSON.stringify(response, null, 2));
     ```
 
-    The exact structure of the returned `inputs` and `outputs` objects depends on the components and configuration of your flow.
+    返回的 `inputs` 和 `outputs` 对象的确切结构取决于您的流程的组件和配置。
 
-4. If you want the response to include only the chat message from the **Chat Output** component, change `console.log` to use the `chatOutputText` convenience function:
+4. 如果您希望响应仅包含来自**聊天输出**组件的聊天消息，请将 `console.log` 更改为使用 `chatOutputText` 便利函数：
 
     ```tsx
     console.log(response.chatOutputText());
     ```
 
-## Use advanced TypeScript client features
+## 使用高级 TypeScript 客户端功能
 
-The TypeScript client can do more than just connect to your server and run a flow.
+TypeScript 客户端不仅可以连接到您的服务器并运行流程。
 
-This example builds on the quickstart with additional features for interacting with Langflow.
+此示例在快速入门的基础上添加了与 Langflow 交互的其他功能。
 
-1. Pass tweaks to your code as an object with the request.
+1. 将调整作为对象与请求一起传递给您的代码。
 
-    Tweaks change values within components for all calls to your flow.
+    调整会为对您的流程的所有调用更改组件内的值。
 
-    This example tweaks the Open-AI model component to enforce using the `gpt-4o-mini` model:
+    此示例调整 OpenAI 模型组件以强制使用 `gpt-4o-mini` 模型：
 
     ```tsx
     const tweaks = { model_name: "gpt-4o-mini" };
     ```
 
-2. Pass a [session ID](/session-id) with the request to separate the conversation from other flow runs, and to be able to continue this conversation by calling the same session ID in the future:
+2. 在请求中传递一个[会话 ID](/session-id) 以将对话与其他流程运行分开，并能够在将来通过调用相同的会话 ID 来继续此对话：
 
     ```tsx
     const session_id = "aa5a238b-02c0-4f03-bc5c-cc3a83335cdf";
     ```
 
-3. Instead of calling `run` on the Flow object, call `stream` with the same arguments:
+3. 不要在 Flow 对象上调用 `run`，而是使用相同的参数调用 `stream`：
 
     ```tsx
     const response = await client.flow(flowId).stream(input);
@@ -150,12 +150,12 @@ This example builds on the quickstart with additional features for interacting w
     }
     ```
 
-    The response is a [`ReadableStream`](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream) of objects.
-    For more information on streaming Langflow responses, see the [`/run` endpoint](/api-flows-run#run-flow).
+    响应是一个对象的 [`ReadableStream`](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)。
+    有关流式 Langflow 响应的更多信息，请参阅 [`/run` 端点](/api-flows-run#run-flow)。
 
-4. Run the modified TypeScript application to run the flow with `tweaks` and `session_id`, and then stream the response back.
+4. 运行修改后的 TypeScript 应用程序以使用 `tweaks` 和 `session_id` 运行流程，然后流式返回响应。
 
-Replace `baseUrl` and `flowId` with values from your deployment.
+将 `baseUrl` 和 `flowId` 替换为您部署的值。
 
     ```tsx
     import { LangflowClient } from "@datastax/langflow-client";
@@ -182,13 +182,13 @@ Replace `baseUrl` and `flowId` with values from your deployment.
     runFlow().catch(console.error);
     ```
 
-    Replace `baseUrl` and `flowId` with your server URL and flow ID, as you did in the previous run.
+    将 `baseUrl` 和 `flowId` 替换为您的服务器 URL 和流程 ID，就像您在上一次运行中所做的那样。
 
     <details>
-    <summary>Result</summary>
+    <summary>结果</summary>
 
-    With streaming enabled, the response includes the flow metatadata and timestamped events for flow activity.
-    For example:
+    启用流式传输后，响应包括流程元数据和流程活动的时间戳事件。
+    例如：
 
     ```text
     {
@@ -377,4 +377,4 @@ Log: Log {
 
 </details>
 
-For more information, see [Logs endpoints](/api-logs).
+有关更多信息，请参阅[日志端点](/api-logs)。

@@ -5,107 +5,107 @@ slug: /bundles-vertexai
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Vertex AI** bundle.
+本页面描述 **Vertex AI** bundle 中可用的组件。
 
-For more information about Vertex AI features and functionality used by Vertex AI components, see the [Vertex AI documentation](https://cloud.google.com/vertex-ai).
+有关 Vertex AI 组件使用的 Vertex AI 功能的更多信息，请参阅 [Vertex AI 文档](https://cloud.google.com/vertex-ai)。
 
-For other Google components, see the [**Google** bundle](/bundles-google).
+有关其他 Google 组件，请参阅 [**Google** bundle](/bundles-google)。
 
-## Vertex AI text generation
+## Vertex AI 文本生成
 
-The **Vertex AI** component generates text using Google Vertex AI models.
+**Vertex AI** 组件使用 Google Vertex AI 模型生成文本。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+它可以输出 **Model Response** ([`Message`](/data-types#message)) 或 **Language Model** ([`LanguageModel`](/data-types#languagemodel))。
 
-Use the **Language Model** output when you want to use a Vertex AI model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要使用 Vertex AI 模型作为其他 LLM 驱动组件（如 **Language Model** 或 **Smart Function** 组件）的 LLM 时，请使用 **Language Model** 输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅 [**Language Model** 组件](/components-models)。
 
-### Vertex AI text generation parameters
+### Vertex AI 文本生成参数
 
-Many **Vertex AI** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+**Vertex AI** 组件的许多输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| credentials | File | Input parameter. JSON credentials file. Leave empty to fall back to environment variables. File type: JSON. For more information, see [Create a service account for Vertex AI authentication](#vertexai-credentials). |
-| model_name | String | Input parameter. The name of the Vertex AI model to use. Default: "gemini-1.5-pro". |
-| project | String | Input parameter. The project ID (advanced). |
-| location | String | Input parameter. The location for the Vertex AI API. Default: "us-central1" (advanced). |
-| max_output_tokens | Integer | Input parameter. The maximum number of tokens to generate (advanced). |
-| max_retries | Integer | Input parameter. Maximum number of retries for API calls. Default: 1 (advanced). |
-| temperature | Float | Input parameter. Controls randomness in the output. Default: 0.0. |
-| top_k | Integer | Input parameter. The number of highest-probability vocabulary tokens to keep for top-k-filtering (advanced). |
-| top_p | Float | Input parameter. The cumulative probability of all highest-probability vocabulary tokens that are kept for nucleus sampling. Default: 0.95 (advanced). |
-| verbose | Boolean | Input parameter. Whether to print verbose output. Default: False (advanced). |
+| credentials | File | 输入参数。JSON 凭据文件。留空以回退到环境变量。文件类型：JSON。有关更多信息，请参阅 [为 Vertex AI 身份验证创建服务账户](#vertexai-credentials)。 |
+| model_name | String | 输入参数。要使用的 Vertex AI 模型名称。默认值："gemini-1.5-pro"。 |
+| project | String | 输入参数。项目 ID（高级）。 |
+| location | String | 输入参数。Vertex AI API 的位置。默认值："us-central1"（高级）。 |
+| max_output_tokens | Integer | 输入参数。要生成的最大 token 数量（高级）。 |
+| max_retries | Integer | 输入参数。API 调用的最大重试次数。默认值：1（高级）。 |
+| temperature | Float | 输入参数。控制输出中的随机性。默认值：0.0。 |
+| top_k | Integer | 输入参数。top-k 过滤保留的最高概率词汇 token 的数量（高级）。 |
+| top_p | Float | 输入参数。核心采样保留的所有最高概率词汇 token 的累积概率。默认值：0.95（高级）。 |
+| verbose | Boolean | 输入参数。是否打印详细输出。默认值：False（高级）。 |
 
-For more information about Vertex AI text generation parameters, see the [Vertex AI content generation parameters documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/content-generation-parameters#token-sampling-parameters).
+有关 Vertex AI 文本生成参数的更多信息，请参阅 [Vertex AI 内容生成参数文档](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/content-generation-parameters#token-sampling-parameters)。
 
 ## Vertex AI Embeddings
 
-The **Vertex AI Embeddings** component is a wrapper around the [Google Vertex AI Embeddings API](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings) for embedding generation.
+**Vertex AI Embeddings** 组件是 [Google Vertex AI Embeddings API](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings) 的包装器，用于嵌入生成。
 
-For more information about using embedding model components in flows, see [**Embedding Model** components](/components-embedding-models).
+有关在流中使用嵌入模型组件的更多信息，请参阅 [**Embedding Model** 组件](/components-embedding-models)。
 
-### Vertex AI Embeddings parameters
+### Vertex AI Embeddings 参数
 
-Many **Vertex AI Embeddings** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+**Vertex AI Embeddings** 组件的许多输入参数在可视化编辑器中默认隐藏。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** 切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| credentials | Credentials | Input parameter. JSON credentials file. Leave empty to fall back to environment variables. File type: JSON. For more information, see [Create a service account for Vertex AI authentication](#vertexai-credentials). |
-| location | String | Input parameter. The default location to use when making API calls. Default: `us-central1`. |
-| max_output_tokens | Integer | Input parameter. The token limit determines the maximum amount of text output from one prompt. Default: `128`. |
-| model_name | String | Input parameter. The name of the Vertex AI large language model. Default: `text-bison`. |
-| project | String | Input parameter. The default GCP project to use when making Vertex API calls. |
-| request_parallelism | Integer | Input parameter. The amount of parallelism allowed for requests issued to Vertex AI models. Default: `5`. |
-| temperature | Float | Input parameter. Tunes the degree of randomness in text generations. Should be a non-negative value. Default: `0`. |
-| top_k | Integer | Input parameter. How the model selects tokens for output. The next token is selected from the top `k` tokens. Default: `40`. |
-| top_p | Float | Input parameter. Tokens are selected from the most probable to least until the sum of their probabilities exceeds the top `p` value. Default: `0.95`. |
-| tuned_model_name | String | Input parameter. The name of a tuned model. If provided, `model_name` is ignored. |
-| verbose | Boolean | Input parameter. This parameter controls the level of detail in the output. When set to `True`, it prints internal states of the chain to help debug. Default: `False`. |
-| embeddings | Embeddings | Output parameter. An instance for generating embeddings using Vertex AI. |
+| credentials | Credentials | 输入参数。JSON 凭据文件。留空以回退到环境变量。文件类型：JSON。有关更多信息，请参阅 [为 Vertex AI 身份验证创建服务账户](#vertexai-credentials)。 |
+| location | String | 输入参数。进行 API 调用时使用的默认位置。默认值：`us-central1`。 |
+| max_output_tokens | Integer | 输入参数。token 限制决定了一个提示的最大文本输出量。默认值：`128`。 |
+| model_name | String | 输入参数。Vertex AI 大语言模型的名称。默认值：`text-bison`。 |
+| project | String | 输入参数。进行 Vertex API 调用时使用的默认 GCP 项目。 |
+| request_parallelism | Integer | 输入参数。对 Vertex AI 模型发出请求的并行度。默认值：`5`。 |
+| temperature | Float | 输入参数。调节文本生成中的随机性程度。应为非负值。默认值：`0`。 |
+| top_k | Integer | 输入参数。模型如何为输出选择 token。下一个 token 从前 `k` 个 token 中选择。默认值：`40`。 |
+| top_p | Float | 输入参数。从最可能到最不可能选择 token，直到它们的概率总和超过 top `p` 值。默认值：`0.95`。 |
+| tuned_model_name | String | 输入参数。调优模型的名称。如果提供，则忽略 `model_name`。 |
+| verbose | Boolean | 输入参数。此参数控制输出的详细程度。设置为 `True` 时，它会打印链的内部状态以帮助调试。默认值：`False`。 |
+| embeddings | Embeddings | 输出参数。使用 Vertex AI 生成嵌入的实例。 |
 
-## Create a service account for Vertex AI authentication {#vertexai-credentials}
+## 为 Vertex AI 身份验证创建服务账户 {#vertexai-credentials}
 
-The **Vertex AI Embeddings** and **Vertex AI** components authenticate with the [Google Vertex AI API](https://console.cloud.google.com/marketplace/product/google/aiplatform.googleapis.com) using a service account JSON file.
+**Vertex AI Embeddings** 和 **Vertex AI** 组件使用服务账户 JSON 文件对 [Google Vertex AI API](https://console.cloud.google.com/marketplace/product/google/aiplatform.googleapis.com) 进行身份验证。
 
-These components require that you provide a service account JSON file in the **Credentials** parameter (`credentials`).
-You can either provide the file directly in your component's settings or you can use a [`GOOGLE_APPLICATION_CREDENTIALS` environment variable](https://cloud.google.com/docs/authentication/application-default-credentials) to reference the path to your JSON file.
+这些组件要求您在 **Credentials** 参数（`credentials`）中提供服务账户 JSON 文件。
+您可以直接在组件设置中提供文件，也可以使用 [`GOOGLE_APPLICATION_CREDENTIALS` 环境变量](https://cloud.google.com/docs/authentication/application-default-credentials)来引用 JSON 文件的路径。
 
-The following steps explain how to create a service account for Langflow, create a service account JSON key file, and then use the JSON key file in Langflow:
+以下步骤解释了如何为 Langflow 创建服务账户、创建服务账户 JSON 密钥文件，然后在 Langflow 中使用 JSON 密钥文件：
 
-1. If you haven't done so already, [enable the Vertex AI APIs in your Google Cloud project](https://cloud.google.com/vertex-ai/docs/start/cloud-environment).
+1. 如果您尚未操作，请在您的 Google Cloud 项目中[启用 Vertex AI API](https://cloud.google.com/vertex-ai/docs/start/cloud-environment)。
 
-2. Create a [service account](https://cloud.google.com/iam/docs/service-account-overview) in your Google Cloud project.
+2. 在您的 Google Cloud 项目中创建一个[服务账户](https://cloud.google.com/iam/docs/service-account-overview)。
 
-    It is recommended that you [create a custom service account for Vertex AI](https://cloud.google.com/vertex-ai/docs/general/custom-service-account) because Langflow uses this account to access the Vertex AI APIs.
+    建议您[为 Vertex AI 创建自定义服务账户](https://cloud.google.com/vertex-ai/docs/general/custom-service-account)，因为 Langflow 使用此账户访问 Vertex AI API。
 
-3. Assign the **Vertex AI Service Agent** role to the service account.
+3. 将 **Vertex AI Service Agent** 角色分配给服务账户。
 
-    This role allows Langflow to access Vertex AI resources.
-    For more information, see [Vertex AI access control with IAM](https://cloud.google.com/vertex-ai/docs/general/access-control).
+    此角色允许 Langflow 访问 Vertex AI 资源。
+    有关更多信息，请参阅 [使用 IAM 进行 Vertex AI 访问控制](https://cloud.google.com/vertex-ai/docs/general/access-control)。
 
-4. [Create a service account key](https://cloud.google.com/iam/docs/keys-create-delete#console) in JSON format for your Langflow Vertex AI service account.
+4. 为您的 Langflow Vertex AI 服务账户[创建服务账户密钥](https://cloud.google.com/iam/docs/keys-create-delete#console)，格式为 JSON。
 
-    When you click **Create**, the JSON key file is downloaded.
+    当您点击 **Create** 时，JSON 密钥文件将被下载。
 
-5. In Langflow, create or open a flow with the **Vertex AI** or **Vertex AI Embeddings** component.
+5. 在 Langflow 中，创建或打开包含 **Vertex AI** 或 **Vertex AI Embeddings** 组件的流。
 
-6. In the component's **Credentials** field, do one of the following:
+6. 在组件的 **Credentials** 字段中，执行以下操作之一：
 
-    * Select your service account JSON file directly.
+    * 直接选择您的服务账户 JSON 文件。
 
-    * Leave the **Credentials** field empty if you want to pull the key file from an environment variable.
-    Then, you must provide the path to your JSON file in a `GOOGLE_APPLICATION_CREDENTIALS` environment variable that is set somewhere relative to your Langflow instance.
-    For example, you can set the environment variable in your terminal, your Langflow `.env` file, or otherwise in the environment where your Langflow server or application runs.
+    * 如果您想从环境变量中提取密钥文件，请将 **Credentials** 字段留空。
+    然后，您必须在相对于您的 Langflow 实例的某个位置设置的 `GOOGLE_APPLICATION_CREDENTIALS` 环境变量中提供 JSON 文件的路径。
+    例如，您可以在终端、Langflow `.env` 文件中设置环境变量，或者在 Langflow 服务器或应用程序运行的环境中设置。
 
     ![Select a local JSON key file for the Vertex AI component](/img/google/configure-vertex-ai-credentials-in-langflow.gif)
 
-7. Run your flow to verify that Langflow can use the service account credentials successfully.
+7. 运行您的流以验证 Langflow 可以成功使用服务账户凭据。
 
-    For example, in a flow with **Chat Input**, **Chat Output**, and **Vertex AI** components, you can open the **Playground** and try chatting with the LLM.
-    If the LLM responds, then the credentials are configured correctly.
+    例如，在包含 **Chat Input**、**Chat Output** 和 **Vertex AI** 组件的流中，您可以打开 **Playground** 并尝试与 LLM 聊天。
+    如果 LLM 响应，则说明凭据配置正确。

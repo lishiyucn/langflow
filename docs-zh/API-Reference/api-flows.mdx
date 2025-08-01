@@ -1,18 +1,18 @@
 ---
-title: Flow management endpoints
+title: 流程管理端点
 slug: /api-flows
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-使用 `/flows` 端点来创建、读取、更新和删除 flow。
+使用 `/flows` 端点来创建、读取、更新和删除流程。
 
-如果您想要使用 Langflow API 运行 flow，请参阅 [Flow 触发端点](/api-flows-run)。
+如果您想要使用 Langflow API 运行流程，请参阅[流程触发端点](/api-flows-run)。
 
-## 创建 flow
+## 创建流程
 
-创建一个新的 flow。
+创建一个新流程。
 
 ```bash
 curl -X POST \
@@ -62,9 +62,9 @@ curl -X POST \
 
 </details>
 
-## 创建多个 flow
+## 创建多个流程
 
-创建多个新的 flow，返回 flow 对象数组。
+创建多个新流程，返回流程对象数组。
 
 ```bash
 curl -X POST \
@@ -114,9 +114,9 @@ curl -X POST \
 }'
 ```
 
-## 读取 flow
+## 读取流程
 
-根据 ID 检索特定的 flow。
+根据 ID 检索特定流程。
 
 ```bash
 curl -X GET \
@@ -145,11 +145,11 @@ curl -X GET \
 
 </details>
 
-## 读取多个 flow
+## 读取多个流程
 
-返回包含 flow 列表的 JSON 对象。
+返回包含流程列表的 JSON 对象。
 
-使用分页检索所有 flow：
+使用分页检索所有流程：
 
 ```bash
 curl -X GET \
@@ -158,7 +158,7 @@ curl -X GET \
   -H "x-api-key: $LANGFLOW_API_KEY"
 ```
 
-要从特定项目检索 flow，请使用 `project_id` 查询参数：
+要从特定项目检索流程，请使用 `project_id` 查询参数：
 
 ```bash
 curl -X GET \
@@ -167,9 +167,9 @@ curl -X GET \
   -H "x-api-key: $LANGFLOW_API_KEY"
 ```
 
-## 读取示例 flow
+## 读取示例流程
 
-检索示例 flow 列表：
+检索示例流程列表：
 
 ```bash
 curl -X GET \
@@ -178,9 +178,9 @@ curl -X GET \
   -H "x-api-key: $LANGFLOW_API_KEY"
 ```
 
-## 更新 flow
+## 更新流程
 
-根据 ID 更新现有的 flow。
+根据 ID 更新现有流程。
 
 此示例将 `endpoint_name` 的值从随机 UUID 更改为 `my_new_endpoint_name`。
 
@@ -225,9 +225,9 @@ curl -X PATCH \
 
 </details>
 
-## 删除 flow
+## 删除流程
 
-根据 ID 删除特定的 flow。
+根据 ID 删除特定流程。
 
 ```bash
 curl -X DELETE \
@@ -247,11 +247,11 @@ curl -X DELETE \
 
 </details>
 
-## 导出 flow
+## 导出流程
 
-将指定的 flow 导出为 ZIP 文件。
+将指定流程导出为 ZIP 文件。
 
-此端点下载包含请求主体中列出的每个 flow ID 的 [Langflow JSON 文件](/concepts-flows-import#langflow-json-file-contents)的 ZIP 文件。
+此端点下载包含请求主体中列出的每个流程 ID 的 [Langflow JSON 文件](/concepts-flows-import#langflow-json-file-contents)的 ZIP 文件。
 
 ```bash
 curl -X POST \
@@ -277,12 +277,12 @@ curl -X POST \
 
 </details>
 
-## 导入 flow
+## 导入流程
 
-通过上传 [Langflow 兼容的 JSON 文件](/concepts-flows-import#langflow-json-file-contents)导入 flow。
+通过上传 [Langflow 兼容的 JSON 文件](/concepts-flows-import#langflow-json-file-contents)导入流程。
 
-要为 flow 指定目标项目，请包含查询参数 `project_id`。
-在上传 flow 之前，目标 `project_id` 必须已存在。调用 [/api/v1/projects/](/api-projects#read-projects) 端点获取可用项目列表。
+要为流程指定目标项目，请包含查询参数 `project_id`。
+在上传流程之前，目标 `project_id` 必须已存在。调用 [/api/v1/projects/](/api-projects#read-projects) 端点获取可用项目列表。
 
 此示例将名为 `agent-with-astra-db-tool.json` 的本地文件上传到由 `PROJECT_ID` 变量指定的项目：
 

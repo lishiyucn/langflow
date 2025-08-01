@@ -1,18 +1,18 @@
 ---
-title: Projects endpoints
+title: 项目端点
 slug: /api-projects
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Use the `/projects` endpoint to create, read, update, and delete [Langflow projects](/concepts-flows#projects).
+使用 `/projects` 端点来创建、读取、更新和删除 [Langflow 项目](/concepts-flows#projects)。
 
-Projects store your flows and components.
+项目存储您的流程和组件。
 
-## Read projects
+## 读取项目
 
-Get a list of Langflow projects, including project IDs, names, and descriptions.
+获取 Langflow 项目列表，包括项目 ID、名称和描述。
 
 ```bash
 curl -X GET \
@@ -22,7 +22,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 [
@@ -37,9 +37,9 @@ curl -X GET \
 
 </details>
 
-## Create project
+## 创建项目
 
-Create a new project.
+创建一个新项目。
 
 ```bash
 curl -X POST \
@@ -55,7 +55,7 @@ curl -X POST \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -68,9 +68,9 @@ curl -X POST \
 
 </details>
 
-To add flows and components at project creation, retrieve the `components_list` and `flows_list` values from the [`/all`](/api-reference-api-examples#get-all-components) and [/flows/read](/api-flows#read-flows) endpoints and add them to the request body.
+要在项目创建时添加流程和组件，请从 [`/all`](/api-reference-api-examples#get-all-components) 和 [/flows/read](/api-flows#read-flows) 端点检索 `components_list` 和 `flows_list` 值，并将它们添加到请求体中。
 
-Adding a flow to a project moves the flow from its previous location. The flow is not copied.
+将流程添加到项目会将流程从其之前的位置移动过来。流程不会被复制。
 
 ```bash
 curl -X POST \
@@ -90,11 +90,11 @@ curl -X POST \
 }'
 ```
 
-## Read project
+## 读取项目
 
-Retrieve details of a specific project.
+检索特定项目的详细信息。
 
-To find the UUID of your project, call the [read projects](#read-projects) endpoint.
+要查找项目的 UUID，请调用 [读取项目](#read-projects) 端点。
 
 ```bash
 curl -X GET \
@@ -104,7 +104,7 @@ curl -X GET \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 [
@@ -119,13 +119,13 @@ curl -X GET \
 
 </details>
 
-## Update project
+## 更新项目
 
-Update the information of a specific project with a `PATCH` request.
+使用 `PATCH` 请求更新特定项目的信息。
 
-Each PATCH request updates the project with the values you send.
-Only the fields you include in your request are updated.
-If you send the same values multiple times, the update is still processed, even if the values are unchanged.
+每个 PATCH 请求都会使用您发送的值更新项目。
+只有您在请求中包含的字段会被更新。
+如果您多次发送相同的值，更新仍会被处理，即使值没有改变。
 
 ```bash
 curl -X PATCH \
@@ -146,7 +146,7 @@ curl -X PATCH \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```json
 {
@@ -159,9 +159,9 @@ curl -X PATCH \
 
 </details>
 
-## Delete project
+## 删除项目
 
-Delete a specific project.
+删除特定项目。
 
 ```bash
 curl -X DELETE \
@@ -171,7 +171,7 @@ curl -X DELETE \
 ```
 
 <details>
-<summary>Result</summary>
+<summary>结果</summary>
 
 ```text
 204 No Content
@@ -179,11 +179,11 @@ curl -X DELETE \
 
 </details>
 
-## Export a project
+## 导出项目
 
-Download all flows from a project as a zip file.
+将项目中的所有流程下载为 zip 文件。
 
-The `--output` flag is optional.
+`--output` 标志是可选的。
 
 ```bash
 curl -X GET \
@@ -193,9 +193,9 @@ curl -X GET \
   --output langflow-project.zip
 ```
 
-## Import a project
+## 导入项目
 
-Import a project and its flows by uploading a Langflow project zip file:
+通过上传 Langflow 项目 zip 文件来导入项目及其流程：
 
 ```bash
 curl -X POST \

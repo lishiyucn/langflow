@@ -5,33 +5,33 @@ slug: /bundles-openrouter
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components)包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **OpenRouter** bundle.
+本页介绍了 **OpenRouter** 组件包中可用的组件。
 
-For more information about OpenRouter features and functionality used by OpenRouter components, see the [OpenRouter documentation](https://openrouter.ai/docs).
+有关 OpenRouter 组件所使用的 OpenRouter 功能和特性的更多信息，请参阅 [OpenRouter 文档](https://openrouter.ai/docs)。
 
-## OpenRouter text generation
+## OpenRouter 文本生成
 
-This component generates text using OpenRouter's unified API for multiple AI models from different providers.
+该组件使用 OpenRouter 的统一 API 生成文本，支持来自不同提供商的多个 AI 模型。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+它可以输出**模型响应** ([`Message`](/data-types#message)) 或**语言模型** ([`LanguageModel`](/data-types#languagemodel))。
 
-Use the **Language Model** output when you want to use an OpenRouter model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要将 OpenRouter 模型用作另一个LLM驱动组件（如**语言模型**或**智能函数**组件）的 LLM 时，请使用**语言模型**输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅[**语言模型**组件](/components-models)。
 
-### OpenRouter text generation parameters
+### OpenRouter 文本生成参数
 
-Many **OpenRouter** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **OpenRouter** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| api_key | SecretString | Input parameter. Your OpenRouter API key for authentication. |
-| site_url | String | Input parameter. Your site URL for OpenRouter rankings (advanced). |
-| app_name | String | Input parameter. Your app name for OpenRouter rankings (advanced). |
-| provider | String | Input parameter. The AI model provider to use. |
-| model_name | String | Input parameter. The specific model to use for chat completion. |
-| temperature | Float | Input parameter. Controls randomness in the output. Range: [0.0, 2.0]. Default: 0.7. |
-| max_tokens | Integer | Input parameter. The maximum number of tokens to generate (advanced). |
+| api_key | SecretString | 输入参数。您的 OpenRouter API 密钥，用于身份验证。 |
+| site_url | String | 输入参数。您的网站 URL，用于 OpenRouter 排名（高级选项）。 |
+| app_name | String | 输入参数。您的应用程序名称，用于 OpenRouter 排名（高级选项）。 |
+| provider | String | 输入参数。要使用的 AI 模型提供商。 |
+| model_name | String | 输入参数。用于聊天完成的特定模型。 |
+| temperature | Float | 输入参数。控制输出的随机性。范围：[0.0, 2.0]。默认值：0.7。 |
+| max_tokens | Integer | 输入参数。要生成的最大令牌数（高级选项）。 |

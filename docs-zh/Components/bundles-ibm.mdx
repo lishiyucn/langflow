@@ -5,85 +5,85 @@ slug: /bundles-ibm
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-**IBM** bundle provides access to IBM watsonx.ai models for text and embedding generation.
-These components require an IBM watsonx.ai deployment and watsonx API credentials.
+**IBM** 组件包提供对 IBM watsonx.ai 模型的访问，用于文本和嵌入生成。
+这些组件需要 IBM watsonx.ai 部署和 watsonx API 凭据。
 
 ## IBM watsonx.ai
 
-The **IBM watsonx.ai** component generates text using [supported foundation models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html?context=wx) in [IBM watsonx.ai](https://www.ibm.com/products/watsonx-ai).
+**IBM watsonx.ai** 组件使用 [IBM watsonx.ai](https://www.ibm.com/products/watsonx-ai) 中[支持的基础模型](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html?context=wx)生成文本。
 
-You can use this component anywhere you need a language model in a flow.
+您可以在流程中需要语言模型的任何地方使用此组件。
 
 ![A basic prompting flow using the IBM watsonx.ai component as the central language model component.](/img/component-watsonx-model.png)
 
-### IBM watsonx.ai parameters {#ibm-watsonxai-parameters}
+### IBM watsonx.ai 参数 {#ibm-watsonxai-parameters}
 
-Many **IBM watsonx.ai** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **IBM watsonx.ai** 组件输入参数在可视化编辑器中默认为隐藏状态。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控件** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| url | String | Input parameter. The [watsonx API base URL](https://cloud.ibm.com/apidocs/watsonx-ai#endpoint-url) for your deployment and region. |
-| project_id | String | Input parameter. Your [watsonx Project ID](https://www.ibm.com/docs/en/watsonx/saas?topic=projects). |
-| api_key | SecretString | Input parameter. A [watsonx API key](https://www.ibm.com/docs/en/watsonx/saas?topic=administration-managing-user-api-key) to authenticate watsonx API access to the specified watsonx.ai deployment and model. |
-| model_name | String | Input parameter. The name of the watsonx model to use. Options are dynamically fetched from the API. |
-| max_tokens | Integer | Input parameter. The maximum number of tokens to generate. Default: `1000`. |
-| stop_sequence | String | Input parameter. The sequence where generation should stop. |
-| temperature | Float | Input parameter. Controls randomness in the output. Default: `0.1`. |
-| top_p | Float | Input parameter. Controls nucleus sampling, which limits the model to tokens whose probability is below the `top_p` value. Range: Default: `0.9`. |
-| frequency_penalty | Float | Input parameter. Controls frequency penalty. A positive value decreases the probability of repeating tokens, and a negative value increases the probability. Range: Default: `0.5`. |
-| presence_penalty | Float | Input parameter. Controls presence penalty. A positive value increases the likelihood of new topics being introduced. Default: `0.3`. |
-| seed | Integer | Input parameter. A random seed for the model. Default: `8`. |
-| logprobs | Boolean | Input parameter. Whether to return log probabilities of output tokens or not. Default: `True`. |
-| top_logprobs | Integer | Input parameter. The number of most likely tokens to return at each position. Default: `3`. |
-| logit_bias | String | Input parameter. A JSON string of token IDs to bias or suppress. |
+| url | String | 输入参数。用于您的部署和区域的 [watsonx API 基础 URL](https://cloud.ibm.com/apidocs/watsonx-ai#endpoint-url)。 |
+| project_id | String | 输入参数。您的 [watsonx 项目 ID](https://www.ibm.com/docs/en/watsonx/saas?topic=projects)。 |
+| api_key | SecretString | 输入参数。用于验证对指定 watsonx.ai 部署和模型的 watsonx API 访问的 [watsonx API 密钥](https://www.ibm.com/docs/en/watsonx/saas?topic=administration-managing-user-api-key)。 |
+| model_name | String | 输入参数。要使用的 watsonx 模型名称。选项从 API 动态获取。 |
+| max_tokens | Integer | 输入参数。要生成的最大令牌数。默认：`1000`。 |
+| stop_sequence | String | 输入参数。应该停止生成的序列。 |
+| temperature | Float | 输入参数。控制输出的随机性。默认：`0.1`。 |
+| top_p | Float | 输入参数。控制核抽样，将模型限制为概率低于 `top_p` 值的令牌。范围：默认：`0.9`。 |
+| frequency_penalty | Float | 输入参数。控制频率惩罚。正值降低重复令牌的概率，负值增加概率。范围：默认：`0.5`。 |
+| presence_penalty | Float | 输入参数。控制存在惩罚。正值增加引入新主题的可能性。默认：`0.3`。 |
+| seed | Integer | 输入参数。模型的随机种子。默认：`8`。 |
+| logprobs | Boolean | 输入参数。是否返回输出令牌的对数概率。默认：`True`。 |
+| top_logprobs | Integer | 输入参数。在每个位置返回的最可能令牌数。默认：`3`。 |
+| logit_bias | String | 输入参数。用于偏置或抑制的令牌 ID 的 JSON 字符串。 |
 
-### IBM watsonx.ai output
+### IBM watsonx.ai 输出
 
-The **IBM watsonx.ai** component can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+**IBM watsonx.ai** 组件可以输出 **模型响应**（[`Message`](/data-types#message)）或 **语言模型**（[`LanguageModel`](/data-types#languagemodel)）。
 
-Use the **Language Model** output when you want to use an IBM watsonx.ai model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
-For more information, see [**Language Model** components](/components-models).
+当您想要将 IBM watsonx.ai 模型用作另一个 LLM 驱动组件（如 **语言模型** 或 **智能函数** 组件）的 LLM 时，请使用 **语言模型** 输出。
+有关更多信息，请参阅 [**语言模型** 组件](/components-models)。
 
-The `LanguageModel` output from the **IBM watsonx.ai** component is an instance of [ChatWatsonx](https://python.langchain.com/docs/integrations/chat/ibm_watsonx/) configured according to the [component's parameters](#ibm-watsonxai-parameters).
+**IBM watsonx.ai** 组件的 `LanguageModel` 输出是根据[组件参数](#ibm-watsonxai-parameters)配置的 [ChatWatsonx](https://python.langchain.com/docs/integrations/chat/ibm_watsonx/) 实例。
 
 ## IBM watsonx.ai Embeddings
 
-The **IBM watsonx.ai Embeddings** component uses the [supported foundation models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html?context=wx) in [IBM watsonx.ai](https://www.ibm.com/products/watsonx-ai) for embedding generation.
+**IBM watsonx.ai Embeddings** 组件使用 [IBM watsonx.ai](https://www.ibm.com/products/watsonx-ai) 中的[支持的基础模型](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html?context=wx)进行嵌入生成。
 
-The output is [`Embeddings`](/data-types#embeddings) generated with [`WatsonxEmbeddings`](https://python.langchain.com/docs/integrations/text_embedding/ibm_watsonx/).
+输出是使用 [`WatsonxEmbeddings`](https://python.langchain.com/docs/integrations/text_embedding/ibm_watsonx/) 生成的 [`Embeddings`](/data-types#embeddings)。
 
-For more information about using embedding model components in flows, see [**Embedding Model** components](/components-embedding-models).
+有关在流程中使用嵌入模型组件的更多信息，请参阅 [**嵌入模型** 组件](/components-embedding-models)。
 
 ![A basic embedding generation flow using the IBM watsonx.ai Embeddings component](/img/component-watsonx-embeddings-chroma.png)
 
-### IBM watsonx.ai Embeddings parameters
+### IBM watsonx.ai Embeddings 参数
 
-Some **IBM watsonx.ai Embeddings** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+一些 **IBM watsonx.ai Embeddings** 组件输入参数在可视化编辑器中默认为隐藏状态。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控件** 来切换参数。
 
-| Name | Display Name | Info |
+| 名称 | 显示名称 | 信息 |
 |------|--------------|------|
-| url | watsonx API Endpoint | Input parameter. The [watsonx API base URL](https://cloud.ibm.com/apidocs/watsonx-ai#endpoint-url) for your deployment and region. |
-| project_id | watsonx project id | Input parameter. Your [watsonx Project ID](https://www.ibm.com/docs/en/watsonx/saas?topic=projects). |
-| api_key | API Key | Input parameter. A [watsonx API key](https://www.ibm.com/docs/en/watsonx/saas?topic=administration-managing-user-api-key) to authenticate watsonx API access to the specified watsonx.ai deployment and model. |
-| model_name | Model Name | Input parameter. The name of the embedding model to use. Supports [default embedding models](#default-embedding-models) and automatically updates after connecting to your watsonx.ai deployment. |
-| truncate_input_tokens | Truncate Input Tokens | Input parameter. The maximum number of tokens to process. Default: `200`. |
-| input_text | Include the original text in the output | Input parameter. Determines if the original text is included in the output. Default: `True`. |
+| url | watsonx API 端点 | 输入参数。用于您的部署和区域的 [watsonx API 基础 URL](https://cloud.ibm.com/apidocs/watsonx-ai#endpoint-url)。 |
+| project_id | watsonx 项目 ID | 输入参数。您的 [watsonx 项目 ID](https://www.ibm.com/docs/en/watsonx/saas?topic=projects)。 |
+| api_key | API 密钥 | 输入参数。用于验证对指定 watsonx.ai 部署和模型的 watsonx API 访问的 [watsonx API 密钥](https://www.ibm.com/docs/en/watsonx/saas?topic=administration-managing-user-api-key)。 |
+| model_name | 模型名称 | 输入参数。要使用的嵌入模型名称。支持[默认嵌入模型](#default-embedding-models)，并在连接到您的 watsonx.ai 部署后自动更新。 |
+| truncate_input_tokens | 截断输入令牌 | 输入参数。要处理的最大令牌数。默认：`200`。 |
+| input_text | 在输出中包含原始文本 | 输入参数。确定输出中是否包含原始文本。默认：`True`。 |
 
-### Default embedding models
+### 默认嵌入模型
 
-By default, the **IBM watsonx.ai Embeddings** component supports the following default models:
+默认情况下，**IBM watsonx.ai Embeddings** 组件支持以下默认模型：
 
-- `sentence-transformers/all-minilm-l12-v2`: 384-dimensional embeddings
-- `ibm/slate-125m-english-rtrvr-v2`: 768-dimensional embeddings
-- `ibm/slate-30m-english-rtrvr-v2`: 768-dimensional embeddings
-- `intfloat/multilingual-e5-large`: 1024-dimensional embeddings
+- `sentence-transformers/all-minilm-l12-v2`：384 维嵌入
+- `ibm/slate-125m-english-rtrvr-v2`：768 维嵌入
+- `ibm/slate-30m-english-rtrvr-v2`：768 维嵌入
+- `intfloat/multilingual-e5-large`：1024 维嵌入
 
-After entering your API endpoint and credentials, the component automatically fetches the list of available models from your watsonx.ai deployment.
+输入 API 端点和凭据后，组件会自动从您的 watsonx.ai 部署中获取可用模型列表。
 
-## See also
+## 相关参考
 
-* [IBM documentation](https://cloud.ibm.com/docs)
+* [IBM 文档](https://cloud.ibm.com/docs)

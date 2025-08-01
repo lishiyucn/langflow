@@ -5,35 +5,35 @@ slug: /bundles-searchapi
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components)包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **SearchApi** bundle.
+本页介绍了 **SearchApi** 组件包中可用的组件。
 
-For more information, see the [SearchApi documentation](https://www.searchapi.io/docs/google).
+有关更多信息，请参阅 [SearchApi 文档](https://www.searchapi.io/docs/google)。
 
-## SearchApi web search
+## SearchApi 网络搜索
 
-This component calls the SearchApi API to run Google, Bing, and DuckDuckGo web searches.
+该组件调用 SearchApi API 来运行 Google、Bing 和 DuckDuckGo 网络搜索。
 
-It returns a list of search results as a [`DataFrame`](/data-types#dataframe).
+它返回搜索结果列表作为 [`DataFrame`](/data-types#dataframe)。
 
-### SearchApi web search parameters
+### SearchApi 网络搜索参数
 
-Some **SearchApi** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+一些 **SearchApi** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| engine | String | Input parameter. The search engine to use. Default: `google`. |
-| api_key | SecretString | Input parameter. The API key for authenticating with SearchApi. |
-| input_value | String | Input parameter. The search query or input for the API call. |
-| max_results | Integer | Input parameter. The maximum number of search results to return. Default: `5`. |
-| max_snippet_length | Integer | Input parameter. The maximum length of the snippet to return. Default: `100`. |
-| search_params | Dict | Input parameter. Additional key-value pairs to customize the request. |
+| engine | String | 输入参数。要使用的搜索引擎。默认值：`google`。 |
+| api_key | SecretString | 输入参数。用于 SearchApi 身份验证的 API 密钥。 |
+| input_value | String | 输入参数。API 调用的搜索查询或输入。 |
+| max_results | Integer | 输入参数。要返回的最大搜索结果数。默认值：`5`。 |
+| max_snippet_length | Integer | 输入参数。要返回的摘要的最大长度。默认值：`100`。 |
+| search_params | Dict | 输入参数。用于自定义请求的附加键值对。 |
 
-## See also
+## 另请参阅
 
-* [**Web Search** component](/components-data#web-search)
-* [**Google** bundle](/bundles-google)
-* [**Bing** bundle](/bundles-bing)
-* [**DuckDuckGo** bundle](/bundles-duckduckgo)
+* [**Web Search** 组件](/components-data#web-search)
+* [**Google** 组件包](/bundles-google)
+* [**Bing** 组件包](/bundles-bing)
+* [**DuckDuckGo** 组件包](/bundles-duckduckgo)

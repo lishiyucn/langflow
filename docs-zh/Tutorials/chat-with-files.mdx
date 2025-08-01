@@ -1,5 +1,5 @@
 ---
-title: Create a chatbot that can ingest files
+title: 创建能够处理文件的聊天机器人
 slug: /chat-with-files
 ---
 
@@ -7,80 +7,80 @@ import Icon from "@site/src/components/icon";
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This tutorial shows you how to build a chatbot that can read and answer questions about files you upload, such as meeting notes or job applications.
+本教程将向您展示如何构建一个能够读取和回答您上传的文件内容问题的聊天机器人，例如会议记录或求职申请。
 
-For example, you could upload a contract and ask, “What are the termination clauses in this agreement?” Or upload a resume and ask, “Does this candidate have experience with marketing analytics?”
+例如，您可以上传一份合同并询问："这份协议中的终止条款是什么？"或者上传一份简历并询问："这位候选人是否有营销分析方面的经验？"
 
-The main focus of this tutorial is to show you how to provide files as input to a Langflow flow, so your chatbot can use the content of those files in its responses.
+本教程的主要重点是向您展示如何将文件作为输入提供给 Langflow 流程，使您的聊天机器人能够在其响应中使用这些文件的内容。
 
-## Prerequisites
+## 前提条件
 
-- [A running Langflow instance](/get-started-installation)
-- [A Langflow API key](/configuration-api-keys)
-- [An OpenAI API key](https://platform.openai.com/api-keys)
+- [正在运行的 Langflow 实例](/get-started-installation)
+- [Langflow API 密钥](/configuration-api-keys)
+- [OpenAI API 密钥](https://platform.openai.com/api-keys)
 
-This tutorial uses an OpenAI LLM. If you want to use a different provider, you need a valid credential for that provider.
+本教程使用 OpenAI LLM。如果您想使用不同的提供商，您需要该提供商的有效凭据。
 
-## Create a flow that accepts file input
+## 创建接受文件输入的流程
 
-To ingest files, your flow must have a **File** component attached to a component that receives input, such as a **Prompt** or **Agent** component.
+要处理文件，您的流程必须有一个 **File** 组件连接到接收输入的组件，例如 **Prompt** 或 **Agent** 组件。
 
-The following steps modify the [**Basic prompting**](/basic-prompting) template to accept file input:
+以下步骤修改 [**基础提示**](/basic-prompting) 模板以接受文件输入：
 
-1. In Langflow, click **New Flow**, and then select the **Basic prompting** template.
-2. In the **Language Model** component, enter your OpenAI API key.
+1. 在 Langflow 中，点击 **New Flow**，然后选择 **Basic prompting** 模板。
+2. 在 **Language Model** 组件中，输入您的 OpenAI API 密钥。
 
-    If you want to use a different provider or model, edit the **Model Provider**, **Model Name**, and **API Key** fields accordingly.
-3. To verify that your API key is valid, click <Icon name="Play" aria-hidden="true" /> **Playground**, and then ask the LLM a question.
-The LLM should respond according to the specifications in the **Prompt** component's **Template** field.
-4. Exit the **Playground**, and then modify the **Prompt** component to accept file input in addition to chat input.
-To do this, edit the **Template** field, and then replace the default prompt with the following text:
+    如果您想使用不同的提供商或模型，请相应地编辑 **Model Provider**、**Model Name** 和 **API Key** 字段。
+3. 要验证您的 API 密钥是否有效，请点击 <Icon name="Play" aria-hidden="true" /> **Playground**，然后向 LLM 提出问题。
+LLM 应该根据 **Prompt** 组件的 **Template** 字段中的规范进行响应。
+4. 退出 **Playground**，然后修改 **Prompt** 组件以接受文件输入和聊天输入。
+为此，请编辑 **Template** 字段，然后用以下文本替换默认提示：
     ```text
     ChatInput:
     {chat-input}
     File:
     {file}
     ```
-    The **Prompt** component gets a new input port for each value in curly braces. At this point, your **Prompt** component should have **chat-input** and **file** input ports.
+    **Prompt** 组件为花括号中的每个值获得一个新的输入端口。此时，您的 **Prompt** 组件应该有 **chat-input** 和 **file** 输入端口。
 
     :::tip
-    Within the curly braces, you can use any port name you like. For this tutorial, the ports are named after the components that connect to them.
+    在花括号内，您可以使用任何您喜欢的端口名称。在本教程中，端口以连接到它们的组件命名。
     :::
 
-5. Add a [File component](/components-data#file) to the flow, and then connect the **Raw Content** output port to the Prompt component's **file** input port.
-To connect ports, click and drag from one port to the other.
+5. 向流程添加一个 [File 组件](/components-data#file)，然后将 **Raw Content** 输出端口连接到 Prompt 组件的 **file** 输入端口。
+要连接端口，请从一个端口点击并拖拽到另一个端口。
 
-    You can add files directly to the file component to pre-load input before running the flow, or you can load files at runtime. The next section of this tutorial covers runtime file uploads.
+    您可以直接向文件组件添加文件以在运行流程之前预加载输入，或者您可以在运行时加载文件。本教程的下一部分涵盖运行时文件上传。
 
-    At this point your flow has five components. The Chat Input and File components are connected to the Prompt component's input ports. Then, the Prompt component's output port is connected to the Language Model component's input port. Finally, the Language Model component's output port is connected to the Chat Output component, which returns the final response to the user.
+    此时您的流程有五个组件。Chat Input 和 File 组件连接到 Prompt 组件的输入端口。然后，Prompt 组件的输出端口连接到 Language Model 组件的输入端口。最后，Language Model 组件的输出端口连接到 Chat Output 组件，该组件向用户返回最终响应。
 
     ![File loader chat flow](/img/tutorial-chat-file-loader.png)
 
 
-## Send requests to your flow from a Python application
+## 从 Python 应用程序向您的流程发送请求
 
-This section of the tutorial demonstrates how you can send file input to a flow from an application.
+本教程的这一部分演示了如何从应用程序向流程发送文件输入。
 
-To do this, your application must send a `POST /run` request to your Langflow server with the file you want to upload and a text prompt.
-The result includes the outcome of the flow run and the LLM's response.
+为此，您的应用程序必须向您的 Langflow 服务器发送 `POST /run` 请求，包含您想要上传的文件和文本提示。
+结果包括流程运行的结果和 LLM 的响应。
 
-This example uses a local Langflow instance, and it asks the LLM to evaluate a sample resume.
-If you don't have a resume on hand, you can download [fake-resume.txt](/files/fake-resume.txt).
+此示例使用本地 Langflow 实例，并要求 LLM 评估示例简历。
+如果您手头没有简历，可以下载 [fake-resume.txt](/files/fake-resume.txt)。
 
 :::tip
-For help with constructing file upload requests in Python, JavaScript, and curl, see the [Langflow File Upload Utility](https://langflow-file-upload-examples.onrender.com).
+有关在 Python、JavaScript 和 curl 中构建文件上传请求的帮助，请参阅 [Langflow File Upload Utility](https://langflow-file-upload-examples.onrender.com)。
 :::
 
-1. To construct the request, gather the following information:
+1. 要构建请求，请收集以下信息：
 
-    * `LANGFLOW_SERVER_ADDRESS`: Your Langflow server's domain. The default value is `127.0.0.1:7860`. You can get this value from the code snippets on your flow's [**API access** pane](/concepts-publish#api-access).
-    * `FLOW_ID`: Your flow's UUID or custom endpoint name. You can get this value from the code snippets on your flow's [**API access** pane](/concepts-publish#api-access).
-    * `FILE_COMPONENT_ID`: The UUID of the File component in your flow, such as `File-KZP68`. To find the component ID, open your flow in Langflow, click the File component, and then click **Controls**.
-    * `CHAT_INPUT`: The message you want to send to the Chat Input of your flow, such as `Evaluate this resume for a job opening in my Marketing department.`
-    * `FILE_NAME` and `FILE_PATH`: The name and path to the local file that you want to send to your flow.
-    * `LANGFLOW_API_KEY`: A valid Langflow API key. To create an API key, see [API keys](/configuration-api-keys).
+    * `LANGFLOW_SERVER_ADDRESS`：您的 Langflow 服务器域名。默认值为 `127.0.0.1:7860`。您可以从流程的 [**API access** 面板](/concepts-publish#api-access) 上的代码片段中获取此值。
+    * `FLOW_ID`：您的流程的 UUID 或自定义端点名称。您可以从流程的 [**API access** 面板](/concepts-publish#api-access) 上的代码片段中获取此值。
+    * `FILE_COMPONENT_ID`：流程中 File 组件的 UUID，例如 `File-KZP68`。要找到组件 ID，请在 Langflow 中打开您的流程，点击 File 组件，然后点击 **Controls**。
+    * `CHAT_INPUT`：您想要发送到流程 Chat Input 的消息，例如 `Evaluate this resume for a job opening in my Marketing department.`
+    * `FILE_NAME` 和 `FILE_PATH`：您想要发送到流程的本地文件的名称和路径。
+    * `LANGFLOW_API_KEY`：有效的 Langflow API 密钥。要创建 API 密钥，请参阅 [API keys](/configuration-api-keys)。
 
-2. Copy the following script into a Python file, and then replace the placeholders with the information you gathered in the previous step:
+2. 将以下脚本复制到 Python 文件中，然后用您在上一步中收集的信息替换占位符：
 
     ```python
     # Python example using requests
@@ -137,22 +137,22 @@ For help with constructing file upload requests in Python, JavaScript, and curl,
 
     ```
 
-    This script contains two requests.
+    此脚本包含两个请求。
 
-    The first request uploads a file, such as `fake-resume.txt`, to your Langflow server at the `/v2/files` endpoint. This request returns a file path that can be referenced in subsequent Langflow requests, such as `02791d46-812f-4988-ab1c-7c430214f8d5/fake-resume.txt`
+    第一个请求将文件（如 `fake-resume.txt`）上传到您的 Langflow 服务器的 `/v2/files` 端点。此请求返回一个文件路径，可在后续的 Langflow 请求中引用，例如 `02791d46-812f-4988-ab1c-7c430214f8d5/fake-resume.txt`
 
-    The second request sends a chat message to the Langflow flow at the `/v1/run/` endpoint.
-    The `tweaks` parameter includes the path to the uploaded file as the variable `uploaded_path`, and sends this file directly to the File component.
+    第二个请求在 `/v1/run/` 端点向 Langflow 流程发送聊天消息。
+    `tweaks` 参数将上传文件的路径作为变量 `uploaded_path` 包含在内，并将此文件直接发送到 File 组件。
 
-3. Save and run the script to send the requests and test the flow.
+3. 保存并运行脚本以发送请求并测试流程。
 
-    The initial output contains the JSON response object from the file upload endpoint, including the internal path where Langflow stores the file.
-    Then, the LLM retrieves the file and evaluates its content, in this case the suitability of the resume for a job position.
+    初始输出包含来自文件上传端点的 JSON 响应对象，包括 Langflow 存储文件的内部路径。
+    然后，LLM 检索文件并评估其内容，在这种情况下是简历对工作职位的适合性。
 
     <details>
-    <summary>Result</summary>
+    <summary>结果</summary>
 
-    The following is an example response from this tutorial's flow. Due to the nature of LLMs and variations in your inputs, your response might be different.
+    以下是本教程流程的示例响应。由于 LLM 的性质和您输入的变化，您的响应可能有所不同。
 
     ```
     {"id":"793ba3d8-5e7a-4499-8b89-d9a7b6325fee","name":"fake-resume (1)","path":"02791d46-812f-4988-ab1c-7c430214f8d5/fake-resume.txt","size":1779,"provider":null}
@@ -182,16 +182,16 @@ For help with constructing file upload requests in Python, JavaScript, and curl,
 
     </details>
 
-## Next steps
+## 下一步
 
-To continue building on this tutorial, try these next steps.
+要继续基于本教程进行构建，请尝试以下步骤。
 
-### Process multiple files loaded at runtime
+### 处理在运行时加载的多个文件
 
-To process multiple files in a single flow run, add a separate **File** component for each file you want to ingest. Then, modify your script to upload each file, retrieve each returned file path, and then pass a unique file path to each **File** component ID.
+要在单次流程运行中处理多个文件，请为每个要摄取的文件添加单独的 **File** 组件。然后，修改您的脚本以上传每个文件，检索每个返回的文件路径，然后将唯一的文件路径传递给每个 **File** 组件 ID。
 
-For example, you can modify `tweaks` to accept multiple file components.
-The following code is just an example; it is not working code:
+例如，您可以修改 `tweaks` 以接受多个文件组件。
+以下代码仅是示例；它不是工作代码：
 
 ```python
 ## set multiple file paths
@@ -209,18 +209,18 @@ def chat_with_flow(input_message, file_paths):
         tweaks[component_id] = {"path": file_path}
 ```
 
-You can also use a [**Directory** component](/components-data#directory) to load all files in a directory or pass an archive file to the **File** component.
+您还可以使用 [**Directory** 组件](/components-data#directory) 加载目录中的所有文件，或将存档文件传递给 **File** 组件。
 
-### Upload external files at runtime
+### 在运行时上传外部文件
 
-To upload files from another machine that is not your local environment, your Langflow server must first be accessible over the internet. Then, authenticated users can upload files to your public Langflow server's `/v2/files/` endpoint, as shown in the tutorial. For more information, see [Langflow deployment overview](/deployment-overview).
+要从不是您本地环境的另一台机器上传文件，您的 Langflow 服务器必须首先可通过互联网访问。然后，经过身份验证的用户可以将文件上传到您的公共 Langflow 服务器的 `/v2/files/` 端点，如教程所示。有关更多信息，请参阅 [Langflow 部署概述](/deployment-overview)。
 
-### Preload files outside the chat session
+### 在聊天会话之外预加载文件
 
-You can use the **File** component to load files anywhere in a flow, not just in a chat session.
+您可以使用 **File** 组件在流程中的任何地方加载文件，而不仅仅是在聊天会话中。
 
-In the visual editor, you can preload files to the file component by selecting them from your local machine or [Langflow file management](/concepts-file-management).
+在可视化编辑器中，您可以通过从本地机器或 [Langflow 文件管理](/concepts-file-management) 中选择文件来预加载文件到文件组件。
 
-For example, you can preload an instructions file for a prompt template, or you can preload a vector store with documents that you want to query in a Retrieval Augmented Generation (RAG) flow.
+例如，您可以为提示模板预加载指令文件，或者您可以使用要在检索增强生成 (RAG) 流程中查询的文档预加载向量存储。
 
-For more information about the **File** component and other data loading components, see [Data components](/components-data).
+有关 **File** 组件和其他数据加载组件的更多信息，请参阅 [数据组件](/components-data)。

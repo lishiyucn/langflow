@@ -5,31 +5,31 @@ slug: /bundles-sambanova
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[组件包](/components-bundle-components)包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **SambaNova** bundle.
+本页介绍了 **SambaNova** 组件包中可用的组件。
 
-For more information about SambaNova features and functionality used by SambaNova components, see the [SambaNova Cloud documentation](https://cloud.sambanova.ai/).
+有关 SambaNova 组件所使用的 SambaNova 功能和特性的更多信息，请参阅 [SambaNova Cloud 文档](https://cloud.sambanova.ai/)。
 
-## SambaNova text generation
+## SambaNova 文本生成
 
-This component generates text using SambaNova LLMs.
+该组件使用 SambaNova LLM 生成文本。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
+它可以输出**模型响应** ([`Message`](/data-types#message)) 或**语言模型** ([`LanguageModel`](/data-types#languagemodel))。
 
-Use the **Language Model** output when you want to use a SambaNova model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要将 SambaNova 模型用作另一个LLM驱动组件（如**语言模型**或**智能函数**组件）的 LLM 时，请使用**语言模型**输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅[**语言模型**组件](/components-models)。
 
-### SambaNova text generation parameters
+### SambaNova 文本生成参数
 
-Many **SambaNova** component input parameters are hidden by default in the visual editor.
-You can toggle parameters through the <Icon name="SlidersHorizontal" aria-hidden="true"/> **Controls** in the [component's header menu](/concepts-components#component-menus).
+许多 **SambaNova** 组件输入参数在可视化编辑器中默认是隐藏的。
+您可以通过[组件标题菜单](/concepts-components#component-menus)中的 <Icon name="SlidersHorizontal" aria-hidden="true"/> **控制** 来切换参数。
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| sambanova_url | String | Input parameter. Base URL path for API requests. Default: `https://api.sambanova.ai/v1/chat/completions`. |
-| sambanova_api_key | SecretString | Input parameter. Your SambaNova API Key. |
-| model_name | String | Input parameter. The name of the SambaNova model to use. Options include various Llama models. |
-| max_tokens | Integer | Input parameter. The maximum number of tokens to generate. Set to 0 for unlimited tokens. |
-| temperature | Float | Input parameter. Controls randomness in the output. Range: [0.0, 1.0]. Default: 0.07. |
+| sambanova_url | String | 输入参数。API 请求的基础 URL 路径。默认值：`https://api.sambanova.ai/v1/chat/completions`。 |
+| sambanova_api_key | SecretString | 输入参数。您的 SambaNova API 密钥。 |
+| model_name | String | 输入参数。要使用的 SambaNova 模型名称。选项包括各种 Llama 模型。 |
+| max_tokens | Integer | 输入参数。要生成的最大令牌数。设置为 0 表示无限制令牌。 |
+| temperature | Float | 输入参数。控制输出的随机性。范围：[0.0, 1.0]。默认值：0.07。 |

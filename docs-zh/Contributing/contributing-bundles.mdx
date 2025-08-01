@@ -1,41 +1,41 @@
 ---
-title: Contribute bundles
+title: 贡献组件包
 slug: /contributing-bundles
 ---
 
-Follow these steps to add new component bundles to the Langflow sidebar.
+按照以下步骤将新的组件包添加到 Langflow 侧边栏。
 
-This example adds a new bundle named `DarthVader`.
+本示例添加了一个名为 `DarthVader` 的新组件包。
 
-## Add the bundle to the backend folder
+## 将组件包添加到后端文件夹
 
-1. Navigate to the backend directory in the Langflow repository and create a new folder for your bundle.
-The path for your new component is `src > backend > base > langflow > components > darth_vader`.
-You can view the [components folder](https://github.com/langflow-ai/langflow/tree/main/src/backend/base/langflow/components) in the Langflow repository.
+1. 导航到 Langflow 仓库中的后端目录，并为您的组件包创建一个新文件夹。
+您新组件的路径是 `src > backend > base > langflow > components > darth_vader`。
+您可以在 Langflow 仓库中查看[组件文件夹](https://github.com/langflow-ai/langflow/tree/main/src/backend/base/langflow/components)。
 
-2. Within the newly created `darth_vader` folder, add the following files:
+2. 在新创建的 `darth_vader` 文件夹中，添加以下文件：
 
-* `darth_vader_component.py` — This file contains the backend logic for the new bundle. Create multiple `.py` files for multiple components.
-* `__init__.py` — This file initializes the bundle components. You can use any existing `__init__.py` as an example to see how it should be structured.
+* `darth_vader_component.py` — 该文件包含新组件包的后端逻辑。为多个组件创建多个 `.py` 文件。
+* `__init__.py` — 该文件初始化组件包组件。您可以使用任何现有的 `__init__.py` 作为示例来查看它应该如何结构化。
 
-For an example of adding multiple components in a bundle, see the [Notion](https://github.com/langflow-ai/langflow/tree/main/src/backend/base/langflow/components/Notion) bundle.
+有关在组件包中添加多个组件的示例，请参阅 [Notion](https://github.com/langflow-ai/langflow/tree/main/src/backend/base/langflow/components/Notion) 组件包。
 
 
-## Add the bundle to the frontend folder
+## 将组件包添加到前端文件夹
 
-1. Navigate to the frontend directory in the Langflow repository to add your bundle's icon.
-The path for your new component icon is `src > frontend > src > icons > DarthVader`
-You can view the [icons folder](https://github.com/langflow-ai/langflow/tree/main/src/frontend/src/icons) in the Langflow repository.
-To add your icon, create **three** files inside the `icons/darth_vader` folder.
+1. 导航到 Langflow 仓库中的前端目录来添加您组件包的图标。
+您新组件图标的路径是 `src > frontend > src > icons > DarthVader`
+您可以在 Langflow 仓库中查看[图标文件夹](https://github.com/langflow-ai/langflow/tree/main/src/frontend/src/icons)。
+要添加您的图标，在 `icons/darth_vader` 文件夹内创建 **三个**文件。
 
-2. In the `icons/darth_vader` folder, add the raw SVG file of your icon, such as `darth_vader-icon.svg`.
+2. 在 `icons/darth_vader` 文件夹中，添加您图标的原始 SVG 文件，如 `darth_vader-icon.svg`。
 :::tip
-To convert the SVG file to JSX format, you can use an online tool like SVG to JSX.
-It's highly recommended to use the original, lighter version of the SVG.
+要将 SVG 文件转换为 JSX 格式，您可以使用 SVG to JSX 等在线工具。
+强烈建议使用原始、较轻版本的 SVG。
 :::
-3. In the `icons/darth_vader` folder, add the icon as a React component in JSX format, such as `DarthVaderIcon.jsx`.
-4. Update the JSX file to include the correct component name and structure.
-Ensure you include the `{...props}` spread operator in your JSX file.
+3. 在 `icons/darth_vader` 文件夹中，将图标作为 React 组件以 JSX 格式添加，如 `DarthVaderIcon.jsx`。
+4. 更新 JSX 文件以包含正确的组件名称和结构。
+确保在您的 JSX 文件中包含 `{...props}` 展开操作符。
 For example, here is `DarthVaderIcon.jsx`:
 ```javascript
 const DarthVaderIcon = (props) => (
@@ -62,8 +62,8 @@ const DarthVaderIcon = (props) => (
 export default DarthVaderIcon;
 ```
 
-5. In the `icons/darth_vader` folder, add the React component itself in TypeScript format, such as `index.tsx`.
-Ensure the icon’s React component name corresponds to the JSX component you just created, such as `DarthVaderIcon`.
+5. 在 `icons/darth_vader` 文件夹中，以 TypeScript 格式添加 React 组件本身，如 `index.tsx`。
+确保图标的 React 组件名称与您刚创建的 JSX 组件相对应，如 `DarthVaderIcon`。
 ```typescript
 import { useDarkStore } from "@/stores/darkStore";
 import React, { forwardRef } from "react";
@@ -81,9 +81,9 @@ export const DarthVaderIcon = forwardRef<
 export default DarthVaderIcon;
 ```
 
-6. To link your new bundle to the frontend, open `/src/frontend/src/icons/lazyIconImports.ts`.
-You can view the [lazyIconImports.ts](https://github.com/langflow-ai/langflow/blob/main/src/frontend/src/icons/lazyIconImports.ts) in the Langflow repository.
-7. Add the name of your icon, which should match the icon name you used in the `.tsx` file.
+6. 要将您的新组件包链接到前端，请打开 `/src/frontend/src/icons/lazyIconImports.ts`。
+您可以在 Langflow 仓库中查看 [lazyIconImports.ts](https://github.com/langflow-ai/langflow/blob/main/src/frontend/src/icons/lazyIconImports.ts)。
+7. 添加您图标的名称，它应该与您在 `.tsx` 文件中使用的图标名称匹配。
 For example:
 ```typescript
   CrewAI: () =>
@@ -94,9 +94,9 @@ For example:
     import("@/icons/DeepSeek").then((mod) => ({ default: mod.DeepSeekIcon })),
 ```
 
-8. To update the bundles sidebar, add the new icon to the `SIDEBAR_BUNDLES` array in `src > frontend > src > utils > styleUtils.ts`.
-You can view the [SIDEBAR_BUNDLES array](https://github.com/langflow-ai/langflow/blob/main/src/frontend/src/utils/styleUtils.ts#L231) in the Langflow repository.\
-The `name` must point to the folder you created within the `src > backend > base > langflow > components` directory.
+8. 要更新组件包侧边栏，请将新图标添加到 `src > frontend > src > utils > styleUtils.ts` 中的 `SIDEBAR_BUNDLES` 数组。
+您可以在 Langflow 仓库中查看 [SIDEBAR_BUNDLES 数组](https://github.com/langflow-ai/langflow/blob/main/src/frontend/src/utils/styleUtils.ts#L231)。\
+`name` 必须指向您在 `src > backend > base > langflow > components` 目录中创建的文件夹。
 For example:
 ```typescript
 { display_name: "AssemblyAI", name: "assemblyai", icon: "AssemblyAI" },
@@ -104,12 +104,12 @@ For example:
 { display_name: "DataStax", name: "astra_assistants", icon: "DarthVader" },
 ```
 
-## Update bundle components with icons
+## 使用图标更新组件包组件
 
-In your component bundle, associate the icon variable with your new bundle.
+在您的组件包中，将图标变量与您的新组件包关联。
 
-In your `darth_vader_component.py` file, in the component class, include the icon that you defined in the frontend.
-The `icon` must point to the directory you created for your icons within the `src > frontend > src > icons` directory.
+在您的 `darth_vader_component.py` 文件中，在组件类中，包含您在前端定义的图标。
+`icon` 必须指向您在 `src > frontend > src > icons` 目录中为图标创建的目录。
 For example:
 ```
 class DarthVaderAPIComponent(LCToolComponent):
@@ -119,9 +119,9 @@ class DarthVaderAPIComponent(LCToolComponent):
     icon = "DarthVader"
 ```
 
-## Ensure the application builds your component bundle
+## 确保应用程序构建您的组件包
 
-1. To rebuild the backend and frontend, run `make install_frontend && make build_frontend && make install_backend && uv run langflow run --port 7860`.
+1. 要重新构建后端和前端，运行 `make install_frontend && make build_frontend && make install_backend && uv run langflow run --port 7860`。
 
-2. Refresh the frontend application.
-Your new bundle called `DarthVader` is available in the sidebar.
+2. 刷新前端应用程序。
+您名为 `DarthVader` 的新组件包在侧边栏中可用。

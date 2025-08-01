@@ -5,33 +5,33 @@ slug: /bundles-groq
 
 import Icon from "@site/src/components/icon";
 
-[Bundles](/components-bundle-components) contain custom components that support specific third-party integrations with Langflow.
+[Bundle](/components-bundle-components) 包含支持与 Langflow 特定第三方集成的自定义组件。
 
-This page describes the components that are available in the **Groq** bundle.
+本页面描述了 **Groq** bundle 中可用的组件。
 
-For more information, see the [Groq documentation](https://groq.com/).
+有关更多信息，请参阅 [Groq 文档](https://groq.com/)。
 
-## Groq text generation
+## Groq 文本生成
 
-This component generates text using Groq's language models.
+此组件使用 Groq 的语言模型生成文本。
 
-It can output either a **Model Response** ([`Message`](/data-types#message)) or a **Language Model** ([`LanguageModel`](/data-types#languagemodel)).
-Specifically, the **Language Model** output is an instance of [`ChatGroq`](https://python.langchain.com/docs/integrations/chat/groq/) configured according to the component's parameters.
+它可以输出 **Model Response**（[`Message`](/data-types#message)）或 **Language Model**（[`LanguageModel`](/data-types#languagemodel)）。
+具体来说，**Language Model** 输出是根据组件参数配置的 [`ChatGroq`](https://python.langchain.com/docs/integrations/chat/groq/) 实例。
 
-Use the **Language Model** output when you want to use a Groq model as the LLM for another LLM-driven component, such as a **Language Model** or **Smart Function** component.
+当您想要使用 Groq 模型作为其他 LLM 驱动组件（如 **Language Model** 或 **Smart Function** 组件）的 LLM 时，请使用 **Language Model** 输出。
 
-For more information, see [**Language Model** components](/components-models).
+有关更多信息，请参阅 [**Language Model** 组件](/components-models)。
 
-![Groq component in a basic prompting flow](/img/component-groq.png)
+![基本提示流中的 Groq 组件](/img/component-groq.png)
 
-### Groq text generation parameters
+### Groq 文本生成参数
 
-| Name | Type | Description |
+| 名称 | 类型 | 描述 |
 |------|------|-------------|
-| groq_api_key | SecretString | Your Groq API key. |
-| groq_api_base | String | Base URL path for API requests. Default: `https://api.groq.com`. |
-| max_tokens | Integer | The maximum number of tokens to generate. |
-| temperature | Float | Controls randomness in the output. Range: `[0.0, 1.0]`. Default: `0.1`. |
-| n | Integer | Number of chat completions to generate for each prompt. |
-| model_name | String | The name of the Groq model to use. Options are dynamically fetched from the Groq API after entering your API key and URL. To refresh your list of models, click <Icon name="RefreshCw" aria-hidden="true"/> **Refresh**. |
-| tool_mode_enabled | Boolean | If enabled, the component only displays models that work with tools. |
+| groq_api_key | SecretString | 您的 Groq API 密钥。 |
+| groq_api_base | String | API 请求的基础 URL 路径。默认：`https://api.groq.com`。 |
+| max_tokens | Integer | 生成的最大令牌数。 |
+| temperature | Float | 控制输出的随机性。范围：`[0.0, 1.0]`。默认：`0.1`。 |
+| n | Integer | 为每个提示生成的聊天完成数量。 |
+| model_name | String | 要使用的 Groq 模型名称。选项在输入 API 密钥和 URL 后从 Groq API 动态获取。要刷新模型列表，请点击 <Icon name="RefreshCw" aria-hidden="true"/> **Refresh**。 |
+| tool_mode_enabled | Boolean | 如果启用，组件仅显示与工具兼容的模型。 |
